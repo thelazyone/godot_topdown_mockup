@@ -2,6 +2,9 @@ extends CharacterBody2D
 
 @export var SPEED = 200
 @export var POSITION_ACC = 8
+@export var FACTION : int = 0
+
+@export var RANGE = 200
 
 @onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent
@@ -14,6 +17,7 @@ func set_move_order(coordinates):
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	nav.setup(get_viewport().size, POSITION_ACC)
+	add_to_group("goons")
 	
 	pass # Replace with function body.
 
