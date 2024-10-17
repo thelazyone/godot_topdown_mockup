@@ -29,6 +29,10 @@ func get_next_move():
 	# TODO next move should be something related with Pursue or Move depending.
 	return target_position
 
+func get_shoot_target():
+	if target_enemy and state == states.ATTACK:
+		return target_enemy.position
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -60,7 +64,7 @@ func _state_number_to_name(state_number: int) -> String:
 		_: return "UNKNOWN"
 
 func _set_state(new_state: states):
-	print("Changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
+	#print("Changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
 	state = new_state
 
 func _set_new_order(order_type: orders, position: Vector2, radius):
@@ -97,7 +101,6 @@ func _apply_strategy():
 				return
 				
 			if _is_in_range(target_enemy.position):
-				print("enemy in range!")
 				_set_state(states.ATTACK)
 			else:
 				target_position = target_enemy.position
@@ -108,7 +111,6 @@ func _apply_strategy():
 				return
 				
 			if !_is_in_range(target_enemy.position):
-				print("enemy lost range!")
 				_pursue(target_enemy)
 				return
 			
@@ -139,10 +141,8 @@ func _spot():
 		for goon in get_tree().get_nodes_in_group("goons"):
 			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < SPOTTING_RANGE:
 				_pursue(goon) 
-				print("goon of faction ", get_parent().FACTION ," spotted an enemy!")
 	
 	elif state != states.MOVE and not should_spot:
-		print("TBR chill")
 		_set_state(states.IDLE)
 
 	
@@ -150,8 +150,10 @@ func _evaluate_spot() -> bool:
 	
 	# Considering (for now)
 	# - distance from objective
-	if get_parent().position.distance_to(target_area) > 200: 
+	if get_parent().position.distance_to(target_area) > 150: 
 		return false 
+		
+	
 	return true
 	
 	

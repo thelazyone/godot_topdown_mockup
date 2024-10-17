@@ -23,3 +23,7 @@ script = ExtResource("3_3mihf")
 
 [node name="StrategyComponent" type="Node2D" parent="."]
 script = ExtResource("4_spkq7")
+
+[node name="LineOfSight" type="Line2D" parent="."]
+width = 0.8
+default_color = Color(1, 0, 0, 1)

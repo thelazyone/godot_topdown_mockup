@@ -31,5 +31,12 @@ func _process(delta: float) -> void:
 		$Image.rotation = velocity.angle() + PI/2
 	else:
 		velocity = Vector2.ZERO
-		
+	
+	# Showing if attacking:
+	var shooting_target = strat.get_shoot_target()
+	$LineOfSight.visible = false
+	if shooting_target:
+		$LineOfSight.visible = true
+		$LineOfSight.points = [Vector2.ZERO, shooting_target - position]
+
 	move_and_slide()
