@@ -21,6 +21,8 @@ func is_setup():
 	return viewport_size != null
 	
 func set_target(input_position):
+	if input_position:
+		print("setting target as ", input_position)
 	target = input_position
 
 func get_move(input_position):

@@ -21,7 +21,7 @@ func _input(event: InputEvent) -> void:
 		if event.is_pressed():
 			var goons = get_tree().get_nodes_in_group("goons")
 			for goon in goons:
-				goon.set_move_target(get_viewport().get_mouse_position())
+				goon.set_move_order(get_viewport().get_mouse_position())
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

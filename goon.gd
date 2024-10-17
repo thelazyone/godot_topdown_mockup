@@ -1,16 +1,15 @@
 extends CharacterBody2D
 
-@export var SPEED = 500
+@export var SPEED = 200
 @export var POSITION_ACC = 8
 
 @onready var nav = $NavigationComponent
+@onready var strat = $StrategyComponent
 
-var target = null
 
 
-func set_move_target(coordinates):
-	target = coordinates
-	nav.set_target(target)
+func set_move_order(coordinates):
+	strat.defend(coordinates)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,7 +20,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
-	#print("calling get_move with position ", position)
+	nav.set_target(strat.get_next_move())
 	var local_target = nav.get_move(position)
 	if local_target :
 		velocity = (local_target-position).normalized() * SPEED
