@@ -1,0 +1,26 @@
+@startuml
+
+title StrategyComponent FSM
+
+[*]-r-> IDLE : stop()
+IDLE -r-> MOVE : move()
+MOVE: towards objective
+PURSUE -u-> IDLE : !spot()
+PURSUE: spotted enemy
+note right of PURSUE: spot() brings here
+PURSUE -d-> ATTACK : in_range()
+ATTACK: target enemy
+ATTACK -l-> PURSUE : !in_range()
+EVADE: all threats
+EVADE -u-> PURSUE : !retreat()
+note right of EVADE: retreat() brings here
+
+footer
+  move() - from Idle if there is an order.
+  spot() - from most states if there is a valid target.
+  in_range() - when pursuing a target and in range.
+  retreat() - when the situation requires distance
+end footer
+
+
+@enduml
