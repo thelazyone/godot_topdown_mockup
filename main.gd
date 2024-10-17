@@ -1,8 +1,17 @@
 extends Node2D
 
+var goon_scene = preload("res://goon.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	
+	# Adding some goons
+	for i in range(5):
+		var goon = goon_scene.instantiate()
+		goon.position += Vector2(10, 10 + 10*i)
+		goon.add_to_group("goons")
+		add_child(goon)
+	
 	pass # Replace with function body.
 	
 
@@ -10,7 +19,9 @@ func _input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseButton and event.button_index == 2:
 		if event.is_pressed():
-			$Goon.set_move_target(get_viewport().get_mouse_position())
+			var goons = get_tree().get_nodes_in_group("goons")
+			for goon in goons:
+				goon.set_move_target(get_viewport().get_mouse_position())
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
