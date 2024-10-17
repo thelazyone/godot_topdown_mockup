@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cjyfr7o4yifig"]
+
+[node name="StaticBody2D" type="StaticBody2D" groups=["terrain"]]
+position = Vector2(199, 133)
+
+[node name="Hitbox" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(0.968268, 0.901754)
+polygon = PackedVector2Array(-52.6714, -22.179, 54.7369, -43.2491, 44.4092, 41.0312, -55.7697, 55.4475)
+
+[node name="Avoid" type="Polygon2D" parent="."]
+position = Vector2(0, 2)
+polygon = PackedVector2Array(-55, -27, 59, -47, 49, 42, -58, 54)

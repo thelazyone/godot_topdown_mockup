@@ -56,7 +56,16 @@ func _create_map(map : AStar2D):
 			var pos = Vector2(xi, yi)
 			astar.add_point(_generate_id(pos), pos)
 			astar.set_point_disabled(_generate_id(pos), false)
-	
+			
+			# Check if point is colliding with terrain
+			var elements = get_tree().get_nodes_in_group("terrain")
+			for element in elements:
+				#var local_point = element.get_node("Hitbox").to_local(_get_pos_from_node(pos))
+				#if Geometry2D.is_point_in_polygon(local_point, element.get_node("Hitbox").get_polygon()):
+				var local_point = element.get_node("Avoid").to_local(_get_pos_from_node(pos))
+				if Geometry2D.is_point_in_polygon(local_point, element.get_node("Avoid").get_polygon()):
+					astar.set_point_disabled(_generate_id(pos), true)
+					break
 						#or with every neighbouring cell, if "diagonalEnabled" is true
 	var neighbours = [Vector2(1, 0), Vector2(-1, 0), Vector2(0,1), Vector2(0,-1)]
 	neighbours.append_array([Vector2(1, 1), Vector2(-1, -1), Vector2(-1,1), Vector2(1,-1)])

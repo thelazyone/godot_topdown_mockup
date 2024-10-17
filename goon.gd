@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-@export var SPEED = 100
-@export var POSITION_ACC = 16
+@export var SPEED = 500
+@export var POSITION_ACC = 8
 
 @onready var nav = $NavigationComponent
 
@@ -25,9 +25,8 @@ func _process(delta: float) -> void:
 	var local_target = nav.get_move(position)
 	if local_target :
 		velocity = (local_target-position).normalized() * SPEED
-		print("moving")
+		$Image.rotation = velocity.angle() + PI/2
 	else:
-		print("not moving")
 		velocity = Vector2.ZERO
 		
 	move_and_slide()
