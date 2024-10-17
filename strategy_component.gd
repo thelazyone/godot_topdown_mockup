@@ -9,7 +9,7 @@ var target_radius = 0. # In the future the radius can be set dragging in-game
 
 # Enemy Targeting 
 var target_enemy = null
-const SPOTTING_RANGE = 300 # probably should be elsewhere
+const SPOTTING_RANGE = 200 # probably should be elsewhere
 
 # State Machine 
 enum states {IDLE, MOVE, PURSUE, ATTACK, EVADE}
@@ -42,7 +42,7 @@ func _process(delta: float) -> void:
 	if state == states.IDLE:
 		_move() # not convinced that this is the right name. Should be "apply order"
 
-	_check_spot()
+	_spot()
 	_check_retreat()
 	
 	# Now deciding the movement order: 
@@ -50,8 +50,20 @@ func _process(delta: float) -> void:
 
 
 # Private Methods
+func _state_number_to_name(state_number: int) -> String:
+	match state_number:
+		0: return "IDLE"
+		1: return "MOVE"
+		2: return "PURSUE"
+		3: return "ATTACK"
+		4: return "EVADE"
+		_: return "UNKNOWN"
+
+func _set_state(new_state: states):
+	print("Changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
+	state = new_state
+
 func _set_new_order(order_type: orders, position: Vector2, radius):
-	print("order of type ", order_type, " received for ", position, ".")
 	current_order = order_type
 	target_area = position
 	target_radius = radius
@@ -69,11 +81,10 @@ func _apply_strategy():
 	match state:
 		states.IDLE:
 			# In the future there should be some random walk, TODO.			
-			target_position = Vector2.ZERO
+			target_position = get_parent().position
 			if current_order != orders.IDLE:
-				print("changing state to MOVE")
 				_get_position_in_area()
-				state = states.MOVE
+				_set_state(states.MOVE)
 				return
 			
 		states.MOVE:
@@ -82,22 +93,31 @@ func _apply_strategy():
 		
 		states.PURSUE:
 			if not target_enemy: 
-				state = states.IDLE
+				_set_state(states.IDLE)
 				return
 				
-			target_position = target_enemy.position
+			if _is_in_range(target_enemy.position):
+				print("enemy in range!")
+				_set_state(states.ATTACK)
+			else:
+				target_position = target_enemy.position
 			
 		states.ATTACK:
 			if not target_enemy: 
-				state = states.IDLE
+				_set_state(states.IDLE)
 				return
 				
 			if !_is_in_range(target_enemy.position):
+				print("enemy lost range!")
 				_pursue(target_enemy)
 				return
 			
-			if  get_parent().position.distance_to(target_enemy.position) > get_parent().RANGE:
+			if  get_parent().position.distance_to(target_enemy.position) > get_parent().RANGE / 2:
+				#print("approach during attack")
 				target_position = target_enemy.position
+			else: 
+				#print("nope, too close!")
+				target_position = get_parent().position
 			
 		states.EVADE:
 			# No evasion implemented for now.
@@ -106,22 +126,34 @@ func _apply_strategy():
 		_:
 			print("WARNING, unexpected state: ", state)
 		
+		
 # Decision Methods
-func _check_spot() -> bool:
-	
-	# TODO this is tbr too - once locked, it doesn't allow for "a better target" to swtich.
-	# But there should be a good logic for that, choosing among targets giving a soft preference
-	# to the one already locked.
-	if state == states.PURSUE:
-		return false
-	
+func _spot():
 	# TODO the spotting should have a better system. For now it's simply a "check if anything is 
 	# within range, and pick just one.
-	for goon in get_tree().get_nodes_in_group("goons"):
-		if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < SPOTTING_RANGE:
-			_pursue(goon) 
-			return true
-	return false
+	
+	var should_spot = _evaluate_spot()
+	
+	# Finding any target, if found pursue.
+	if (state == states.IDLE or state == states.MOVE) and should_spot:
+		for goon in get_tree().get_nodes_in_group("goons"):
+			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < SPOTTING_RANGE:
+				_pursue(goon) 
+				print("goon of faction ", get_parent().FACTION ," spotted an enemy!")
+	
+	elif state != states.MOVE and not should_spot:
+		print("TBR chill")
+		_set_state(states.IDLE)
+
+	
+func _evaluate_spot() -> bool:
+	
+	# Considering (for now)
+	# - distance from objective
+	if get_parent().position.distance_to(target_area) > 200: 
+		return false 
+	return true
+	
 	
 func _check_retreat() -> bool:
 	# TODO the bravest never retreat! Still to implement.
@@ -139,9 +171,9 @@ func _move() -> Vector2:
 	
 func _pursue(target):
 	target_enemy = target
-	state = states.PURSUE
+	_set_state(states.PURSUE)
 
 func _retreat():
 	target_enemy = null
-	state = states.EVADE
+	_set_state(states.EVADE)
 	

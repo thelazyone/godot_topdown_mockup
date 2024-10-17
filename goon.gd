@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var SPEED = 200
+@export var SPEED = 100
 @export var POSITION_ACC = 8
 @export var FACTION : int = 0
 

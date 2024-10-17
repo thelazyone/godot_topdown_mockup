@@ -22,8 +22,7 @@ func is_setup():
 	
 func set_target(input_position):
 	if input_position:
-		print("setting target as ", input_position)
-	target = input_position
+		target = input_position
 
 func get_move(input_position):
 	if not target: return
