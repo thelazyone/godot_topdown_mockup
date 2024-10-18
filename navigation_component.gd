@@ -11,7 +11,9 @@ var position_accuracy = 0 # TODO check if still necessary?
 
 # DIRECTION INERTIA!
 var current_bearing = 0
-const ROTATION_SPEED_RAD_S = 1*PI
+const ROTATION_SPEED_RAD_S = 4*PI
+const FAST_ROTATION_ANGLE = .25*PI
+const SLOW_ROTATION_RATIO = .1
 
 func _wrap_angle(angle) -> float:
 	return fmod(angle + 3*PI, 2*PI) - 3*PI
@@ -22,15 +24,15 @@ func _angle_diff(angle1, angle2) -> float:
 func _rotation_step(target : float, delta : float):
 	#print ("angles are: target " , target, ", curr ", current_bearing)
 	var diff = _angle_diff(target, current_bearing)
-	print ("delta is ", delta * ROTATION_SPEED_RAD_S)
+	var delta_movement = delta * ROTATION_SPEED_RAD_S
+	if abs(diff) < FAST_ROTATION_ANGLE: 
+		delta_movement *= SLOW_ROTATION_RATIO
+		
 	if diff > 0: 
-		print("add")
-		current_bearing += delta * ROTATION_SPEED_RAD_S
+		current_bearing += delta_movement
 	else: 
-		print("sub")
-		current_bearing -= delta * ROTATION_SPEED_RAD_S
+		current_bearing -= delta_movement
 	current_bearing = _wrap_angle(current_bearing)
-	print("debug_bearing ", current_bearing)
 
 
 # PUBLIC METHODS
@@ -83,9 +85,6 @@ func _process(delta: float) -> void:
 		local_target = _update_local_target(get_parent().position)
 		if local_target:
 			var target_bearing = (local_target - get_parent().position).angle()
-			
-			#print ("current bearing is ", current_bearing, " target bearing is ", target_bearing)
-			print ("difference would be ", _angle_diff(current_bearing, target_bearing))
 			_rotation_step(target_bearing, delta)
 	
 	pass
