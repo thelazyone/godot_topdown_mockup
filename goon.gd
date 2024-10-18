@@ -4,7 +4,9 @@ extends CharacterBody2D
 @export var POSITION_ACC = 8
 @export var FACTION : int = 0
 
-@export var RANGE = 200
+@export var WEAPON_RANGE = 100
+@export var SPOTTING_RANGE = 200
+
 
 @onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent

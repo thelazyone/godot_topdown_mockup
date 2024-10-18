@@ -9,7 +9,6 @@ var target_radius = 0. # In the future the radius can be set dragging in-game
 
 # Enemy Targeting 
 var target_enemy = null
-const SPOTTING_RANGE = 200 # probably should be elsewhere
 
 # State Machine 
 enum states {IDLE, MOVE, PURSUE, ATTACK, EVADE}
@@ -64,7 +63,7 @@ func _state_number_to_name(state_number: int) -> String:
 		_: return "UNKNOWN"
 
 func _set_state(new_state: states):
-	#print("Changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
+	print("Goon of faction ", get_parent().FACTION, " changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
 	state = new_state
 
 func _set_new_order(order_type: orders, position: Vector2, radius):
@@ -114,7 +113,9 @@ func _apply_strategy():
 				_pursue(target_enemy)
 				return
 			
-			if  get_parent().position.distance_to(target_enemy.position) > get_parent().RANGE / 2:
+			# TODO now, this is to allow to get closer even when attacking.
+			# there should be a damage increment when getting closer.
+			if  get_parent().position.distance_to(target_enemy.position) > get_parent().WEAPON_RANGE / 2:
 				#print("approach during attack")
 				target_position = target_enemy.position
 			else: 
@@ -139,7 +140,7 @@ func _spot():
 	# Finding any target, if found pursue.
 	if (state == states.IDLE or state == states.MOVE) and should_spot:
 		for goon in get_tree().get_nodes_in_group("goons"):
-			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < SPOTTING_RANGE:
+			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < get_parent().SPOTTING_RANGE:
 				_pursue(goon) 
 	
 	elif state != states.MOVE and not should_spot:
@@ -150,9 +151,18 @@ func _evaluate_spot() -> bool:
 	
 	# Considering (for now)
 	# - distance from objective
-	if get_parent().position.distance_to(target_area) > 150: 
-		return false 
+	
+	# TODO magic numbers here, for now. TBR.
+	
+	# Implementing a hysteresis here.
+	if (state == states.PURSUE or state == states.ATTACK):
+		if get_parent().position.distance_to(target_area) > get_parent().SPOTTING_RANGE + target_radius: 
+			print ("break pursue")
+			return false 
 		
+	elif get_parent().position.distance_to(target_area) > target_radius:
+		#print ("break spot on state ", _state_number_to_name(state))
+		return false
 	
 	return true
 	
@@ -164,7 +174,7 @@ func _check_retreat() -> bool:
 	
 func _is_in_range(target_position) -> bool:
 	# TODO implement a better logic
-	if get_parent().position.distance_to(target_position) < get_parent().RANGE:
+	if get_parent().position.distance_to(target_position) < get_parent().WEAPON_RANGE:
 		return true
 	return false
 	
