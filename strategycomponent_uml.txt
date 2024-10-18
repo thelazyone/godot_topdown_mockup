@@ -3,7 +3,7 @@
 title StrategyComponent FSM
 
 [*]-r-> IDLE : stop()
-IDLE -r-> MOVE : move()
+IDLE -r-> MOVE : target not reached
 MOVE: towards objective
 PURSUE -u-> IDLE : !spot()
 PURSUE: spotted enemy

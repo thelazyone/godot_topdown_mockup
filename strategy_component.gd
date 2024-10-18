@@ -1,10 +1,11 @@
 extends Node2D
 
-enum orders {IDLE, ATTACK, DEFEND}
+enum orders {NONE, ATTACK, DEFEND}
 
-var current_order = orders.IDLE
+var current_order = orders.NONE
 var target_area = Vector2.ZERO
 var target_position = Vector2.ZERO
+var position_margin = 20
 var target_radius = 0. # In the future the radius can be set dragging in-game
 
 # Enemy Targeting 
@@ -40,10 +41,6 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	
-		# Applying the decision logics
-	if state == states.IDLE:
-		_move() # not convinced that this is the right name. Should be "apply order"
 
 	_spot()
 	_check_retreat()
@@ -85,9 +82,13 @@ func _apply_strategy():
 		states.IDLE:
 			# In the future there should be some random walk, TODO.			
 			target_position = get_parent().position
-			if current_order != orders.IDLE:
+			if current_order != orders.NONE:
 				_get_position_in_area()
-				_set_state(states.MOVE)
+				
+				if target_position.distance_to(get_parent().position) > position_margin:
+					_set_state(states.MOVE)
+				else:
+					target_position = get_parent().position
 				return
 			
 		states.MOVE:
@@ -139,11 +140,16 @@ func _spot():
 	
 	# Finding any target, if found pursue.
 	if (state == states.IDLE or state == states.MOVE) and should_spot:
+		var spotting_range = get_parent().SPOTTING_RANGE
+		if state == states.MOVE:
+			spotting_range *= .25
 		for goon in get_tree().get_nodes_in_group("goons"):
-			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < get_parent().SPOTTING_RANGE:
+			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < spotting_range:
 				_pursue(goon) 
 	
-	elif state != states.MOVE and not should_spot:
+	
+	elif state == states.PURSUE or state == states.ATTACK and not should_spot:
+		# TODO what about EVADE?
 		_set_state(states.IDLE)
 
 	
@@ -177,9 +183,6 @@ func _is_in_range(target_position) -> bool:
 	if get_parent().position.distance_to(target_position) < get_parent().WEAPON_RANGE:
 		return true
 	return false
-	
-func _move() -> Vector2:
-	return Vector2.ZERO
 	
 func _pursue(target):
 	target_enemy = target
