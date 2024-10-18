@@ -6,9 +6,8 @@ extends Node2D
 
 func receive_damage(value : float):
 	health -= value
-	print("hit received! Now health is ", health)
 	if health <= 0: 
-		get_parent().die() # TODO handle this with a KILL method instead
+		get_parent().die() 
 
 
 # Called when the node enters the scene tree for the first time.

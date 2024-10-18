@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bp34kpwtqwl0u"]
+
+[ext_resource type="Texture2D" uid="uid://coflkqwjpp12l" path="res://splat.png" id="1_ye522"]
+
+[node name="Splat" type="Sprite2D"]
+z_index = -100
+texture = ExtResource("1_ye522")
