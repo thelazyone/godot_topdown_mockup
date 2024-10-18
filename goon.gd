@@ -1,15 +1,16 @@
 extends CharacterBody2D
 
 @export var SPEED = 100
-@export var POSITION_ACC = 16
+@export var POSITION_ACC = 8
 @export var FACTION : int = 0
 
-@export var WEAPON_RANGE = 100
+@export var WEAPON_RANGE = 300
 @export var SPOTTING_RANGE = 200
 
 
 @onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent
+@onready var shoot = $ShootComponent
 
 
 
@@ -26,6 +27,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
+	# Movement
 	nav.set_target(strat.get_next_move())
 	var local_target = nav.get_move(position)
 	if local_target :
@@ -41,5 +43,9 @@ func _process(delta: float) -> void:
 	if shooting_target:
 		$LineOfSight.visible = true
 		$LineOfSight.points = [Vector2.ZERO, shooting_target - position]
+		
+		# Handling the attack.
+		shoot.try_shoot((shooting_target-position).angle())
+
 
 	move_and_slide()

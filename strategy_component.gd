@@ -32,7 +32,7 @@ func get_next_move():
 	return null
 	
 func get_shoot_target():
-	if target_enemy and state == states.ATTACK:
+	if target_enemy and is_instance_valid(target_enemy) and state == states.ATTACK:
 		return target_enemy.position
 
 
@@ -62,7 +62,7 @@ func _state_number_to_name(state_number: int) -> String:
 		_: return "UNKNOWN"
 
 func _set_state(new_state: states):
-	print("Goon of faction ", get_parent().FACTION, " changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
+	#print("Goon of faction ", get_parent().FACTION, " changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
 	state = new_state
 
 func _set_new_order(order_type: orders, position: Vector2, radius):
