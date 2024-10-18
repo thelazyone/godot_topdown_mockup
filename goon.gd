@@ -6,7 +6,7 @@ extends CharacterBody2D
 
 @export var WEAPON_RANGE = 300
 @export var SPOTTING_RANGE = 200
-
+@export var SPLAT : Resource = null
 
 @onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent
@@ -16,6 +16,12 @@ extends CharacterBody2D
 
 func set_move_order(coordinates):
 	strat.defend(coordinates)
+	
+func die():
+	var new_splat = SPLAT.instantiate()
+	new_splat.position = position
+	get_parent().add_child(new_splat) 
+	queue_free()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

@@ -3,7 +3,7 @@ extends Area2D
 @export var RADIUS = 5
 @export var SPEED = 500
 @export var DURATION_MS = 1000
-@export var DAMAGE = 5
+@export var DAMAGE = 2
 @export var NOCLIP_TIME_MS = 100
 
 @onready var start_time = Time.get_ticks_msec()
