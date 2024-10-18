@@ -5,7 +5,7 @@ enum orders {NONE, ATTACK, DEFEND}
 var current_order = orders.NONE
 var target_area = Vector2.ZERO
 var target_position = Vector2.ZERO
-var position_margin = 20
+const POSITION_MARGIN = 20
 var target_radius = 0. # In the future the radius can be set dragging in-game
 
 # Enemy Targeting 
@@ -27,8 +27,10 @@ func defend(position: Vector2, radius = 50):
 
 func get_next_move():
 	# TODO next move should be something related with Pursue or Move depending.
-	return target_position
-
+	if state != states.IDLE:
+		return target_position
+	return null
+	
 func get_shoot_target():
 	if target_enemy and state == states.ATTACK:
 		return target_enemy.position
@@ -66,6 +68,7 @@ func _set_state(new_state: states):
 func _set_new_order(order_type: orders, position: Vector2, radius):
 	current_order = order_type
 	target_area = position
+	target_position = target_area
 	target_radius = radius
 	_get_position_in_area()
 	
@@ -81,18 +84,17 @@ func _apply_strategy():
 	match state:
 		states.IDLE:
 			# In the future there should be some random walk, TODO.			
-			target_position = get_parent().position
 			if current_order != orders.NONE:
-				_get_position_in_area()
-				
-				if target_position.distance_to(get_parent().position) > position_margin:
+				if not _is_in_place(target_position):
+					_get_position_in_area()
 					_set_state(states.MOVE)
 				else:
 					target_position = get_parent().position
 				return
 			
 		states.MOVE:
-				#Position should be set already.
+			if _is_in_place(target_position):
+				_set_state(states.IDLE)
 			pass
 		
 		states.PURSUE:
@@ -120,7 +122,6 @@ func _apply_strategy():
 				#print("approach during attack")
 				target_position = target_enemy.position
 			else: 
-				#print("nope, too close!")
 				target_position = get_parent().position
 			
 		states.EVADE:
@@ -163,7 +164,6 @@ func _evaluate_spot() -> bool:
 	# Implementing a hysteresis here.
 	if (state == states.PURSUE or state == states.ATTACK):
 		if get_parent().position.distance_to(target_area) > get_parent().SPOTTING_RANGE + target_radius: 
-			print ("break pursue")
 			return false 
 		
 	elif get_parent().position.distance_to(target_area) > target_radius:
@@ -181,6 +181,11 @@ func _check_retreat() -> bool:
 func _is_in_range(target_position) -> bool:
 	# TODO implement a better logic
 	if get_parent().position.distance_to(target_position) < get_parent().WEAPON_RANGE:
+		return true
+	return false
+
+func _is_in_place(target_position) -> bool:
+	if get_parent().position.distance_to(target_position) < POSITION_MARGIN:
 		return true
 	return false
 	

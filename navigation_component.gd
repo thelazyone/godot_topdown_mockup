@@ -3,10 +3,35 @@ extends Node2D
 
 var astar: AStar2D
 var target = null
+var local_target = null
 var current_position = null
 
 var viewport_size = null
-var position_accuracy = 0
+var position_accuracy = 0 # TODO check if still necessary?
+
+# DIRECTION INERTIA!
+var current_bearing = 0
+const ROTATION_SPEED_RAD_S = 1*PI
+
+func _wrap_angle(angle) -> float:
+	return fmod(angle + 3*PI, 2*PI) - 3*PI
+	
+func _angle_diff(angle1, angle2) -> float:
+	return fmod(fmod(angle1, 2 * PI) - fmod(angle2, 2 * PI) + 3 * PI, 2 * PI) - PI
+	
+func _rotation_step(target : float, delta : float):
+	#print ("angles are: target " , target, ", curr ", current_bearing)
+	var diff = _angle_diff(target, current_bearing)
+	print ("delta is ", delta * ROTATION_SPEED_RAD_S)
+	if diff > 0: 
+		print("add")
+		current_bearing += delta * ROTATION_SPEED_RAD_S
+	else: 
+		print("sub")
+		current_bearing -= delta * ROTATION_SPEED_RAD_S
+	current_bearing = _wrap_angle(current_bearing)
+	print("debug_bearing ", current_bearing)
+
 
 # PUBLIC METHODS
 
@@ -25,8 +50,21 @@ func set_target(input_position):
 		target = input_position
 
 func get_move(input_position):
-	if not target: return
-	return _update_local_target(input_position)
+	#if not target: return # TODO TBR?
+	
+
+	# If no target, not moving
+	if not local_target:
+		return null
+		
+	# Updating the debug direction.
+	get_parent().get_node("DebugDirection").points = [Vector2.ZERO, local_target - get_parent().position]
+	
+	## If moving "away" from the target, just rotating:
+	#if (local_target - get_parent().position).dot(Vector2(1., 0.).rotated(current_bearing)) < 0:
+		#return null
+	
+	return get_parent().position + Vector2(1., 0.).rotated(current_bearing)
 
 
 # NODE LOOPS
@@ -38,6 +76,18 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	
+	# Updating the current bearing
+	if target:
+		# TODO limit this call, doesn't need to happen every frame!
+		local_target = _update_local_target(get_parent().position)
+		if local_target:
+			var target_bearing = (local_target - get_parent().position).angle()
+			
+			#print ("current bearing is ", current_bearing, " target bearing is ", target_bearing)
+			print ("difference would be ", _angle_diff(current_bearing, target_bearing))
+			_rotation_step(target_bearing, delta)
+	
 	pass
 
 
@@ -90,11 +140,16 @@ func _update_local_target(input_position):
 	#if not input_position: return
 	current_position = input_position
 	
-	if not target: return
+	if not target: 
+		return
 	
 	var path = astar.get_point_path(_generate_id(_get_node_from_pos(current_position)), _generate_id(_get_node_from_pos(target)))
 	
-	if not path: return
-	if path.size() < 2 : return
+	if not path: 
+		return
+	
+	if path.size() < 2:
+		return
+	
 	# Setting step_target
 	return _get_pos_from_node(path[1])

@@ -8,19 +8,19 @@ func _ready() -> void:
 	# Adding some goons
 	for i in range(1):
 		var goon = goon_scene.instantiate()
-		goon.position += Vector2(10, 10 + 10*i)
+		goon.position += Vector2(400, 400 + 10*i)
 		goon.add_to_group("goons")
 		goon.FACTION = 1
 		add_child(goon)
 		
 	# Adding some enemies
-	for i in range(1):
-		var goon = goon_scene.instantiate()
-		goon.position += Vector2(400, 10 + 10*i)
-		goon.add_to_group("goons")
-		goon.FACTION = 2
-		add_child(goon)
-		goon.set_move_order(Vector2(400, 100))
+	#for i in range(1):
+		#var goon = goon_scene.instantiate()
+		#goon.position += Vector2(400, 10 + 10*i)
+		#goon.add_to_group("goons")
+		#goon.FACTION = 2
+		#add_child(goon)
+		#goon.set_move_order(Vector2(400, 100))
 
 	
 	pass # Replace with function body.

@@ -31,6 +31,7 @@ func _process(delta: float) -> void:
 	if local_target :
 		velocity = (local_target-position).normalized() * SPEED
 		$Image.rotation = velocity.angle() + PI/2
+		$Image.rotation = nav.current_bearing + PI/2
 	else:
 		velocity = Vector2.ZERO
 	
