@@ -26,7 +26,6 @@ func defend(position: Vector2, radius = 50):
 
 
 func get_next_move():
-	# TODO next move should be something related with Pursue or Move depending.
 	if state != states.IDLE:
 		return target_position
 	return null
@@ -85,6 +84,7 @@ func _apply_strategy():
 		states.IDLE:
 			# In the future there should be some random walk, TODO.			
 			if current_order != orders.NONE:
+				
 				if not _is_in_place(target_position):
 					_get_position_in_area()
 					_set_state(states.MOVE)
@@ -93,6 +93,7 @@ func _apply_strategy():
 				return
 			
 		states.MOVE:
+			
 			if _is_in_place(target_position):
 				_set_state(states.IDLE)
 			pass

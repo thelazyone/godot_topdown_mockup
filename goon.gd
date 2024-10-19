@@ -24,7 +24,6 @@ func die():
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	nav.setup(get_viewport().size)
 	add_to_group("goons")
 	
 	pass # Replace with function body.
@@ -35,6 +34,7 @@ func _process(delta: float) -> void:
 	# Movement
 	nav.set_target(strat.get_next_move())
 	var local_target = nav.get_move(position)
+
 	if local_target :
 		velocity = (local_target-position).normalized() * SPEED
 		$Image.rotation = velocity.angle() + PI/2

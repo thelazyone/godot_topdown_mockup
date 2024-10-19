@@ -22,6 +22,7 @@ func setup(size) -> bool:
 func get_next_step(start, end):
 	var path = astar.get_point_path(_generate_id(_get_node_from_pos(start)), _generate_id(_get_node_from_pos(end)))
 	if not path: 
+		print("path not generated with start as ", start, " and end as ", end)
 		return
 	if path.size() < 2:
 		return

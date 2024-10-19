@@ -66,6 +66,7 @@ func _process(delta: float) -> void:
 		# TODO limit this call, doesn't need to happen every frame!
 		local_target = _update_local_target(get_parent().position)
 		if local_target:
+			print("local target is null")
 			var target_bearing = (local_target - get_parent().position).angle()
 			_rotation_step(target_bearing, delta)
 	
