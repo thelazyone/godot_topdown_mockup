@@ -14,11 +14,12 @@ extends CharacterBody2D
 
 
 func set_move_order(coordinates):
-	strat.defend(coordinates)
+	strat.defend(coordinates, 100)
 	
 func die():
 	var new_splat = SPLAT.instantiate()
 	new_splat.position = position
+	new_splat.rotation = randf() * 2*PI
 	get_parent().add_child(new_splat) 
 	queue_free()
 

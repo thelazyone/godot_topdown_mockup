@@ -7,6 +7,7 @@ var target_area = Vector2.ZERO
 var target_position = Vector2.ZERO
 const POSITION_MARGIN = 20
 var target_radius = 0. # In the future the radius can be set dragging in-game
+var last_position_before_pursue = Vector2.ZERO # TEMP TODO TBR?
 
 # Enemy Targeting 
 var target_enemy = null
@@ -149,7 +150,6 @@ func _spot():
 			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < spotting_range:
 				_pursue(goon) 
 	
-	
 	elif state == states.PURSUE or state == states.ATTACK and not should_spot:
 		# TODO what about EVADE?
 		_set_state(states.IDLE)
@@ -159,15 +159,16 @@ func _evaluate_spot() -> bool:
 	
 	# Considering (for now)
 	# - distance from objective
+	var distance_to_target = get_parent().position.distance_to(target_area)
 	
 	# TODO magic numbers here, for now. TBR.
 	
 	# Implementing a hysteresis here.
 	if (state == states.PURSUE or state == states.ATTACK):
-		if get_parent().position.distance_to(target_area) > get_parent().SPOTTING_RANGE + target_radius: 
+		if distance_to_target > get_parent().SPOTTING_RANGE + target_radius: 
 			return false 
 		
-	elif get_parent().position.distance_to(target_area) > target_radius:
+	elif distance_to_target > target_radius:
 		#print ("break spot on state ", _state_number_to_name(state))
 		return false
 	

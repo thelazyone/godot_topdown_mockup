@@ -14,7 +14,8 @@ rotation = 1.04253
 scale = Vector2(1.92839, 1.17095)
 
 [node name="Obstacle3" parent="." instance=ExtResource("2_iri5v")]
-position = Vector2(325, 303)
+position = Vector2(306, 286)
+rotation = 0.70539
 
 [node name="Obstacle4" parent="." instance=ExtResource("2_iri5v")]
 position = Vector2(649, 98)
@@ -22,7 +23,7 @@ rotation = 1.33852
 scale = Vector2(2.42476, 1)
 
 [node name="Obstacle5" parent="." instance=ExtResource("2_iri5v")]
-position = Vector2(485, 504)
+position = Vector2(398, 612)
 rotation = 1.84776
 scale = Vector2(3.57039, 0.265404)
 skew = 0.425006
@@ -34,6 +35,6 @@ scale = Vector2(4.86084, 0.821771)
 skew = 0.423509
 
 [node name="Obstacle7" parent="." instance=ExtResource("2_iri5v")]
-position = Vector2(681, 240)
+position = Vector2(696, 202)
 rotation = -0.840102
 scale = Vector2(1.50373, 1.43967)
