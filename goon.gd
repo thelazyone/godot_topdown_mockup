@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 @export var SPEED = 100
-@export var POSITION_ACC = 8
 @export var FACTION : int = 0
 
 @export var WEAPON_RANGE = 300
@@ -25,7 +24,7 @@ func die():
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	nav.setup(get_viewport().size, POSITION_ACC)
+	nav.setup(get_viewport().size)
 	add_to_group("goons")
 	
 	pass # Replace with function body.
