@@ -28,8 +28,8 @@ func addGoons(number : int) :
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	NavigationMap.setup(get_viewport().size)
-
+	#NavigationMap.setup(get_viewport().size)
+	
 	addGoons(8)
 
 func _input(event: InputEvent) -> void:

@@ -3,4 +3,4 @@
 /android/
 
 # tmps are to be ignored
-.tmp
+*.tmp

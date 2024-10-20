@@ -10,6 +10,8 @@ const ROTATION_SPEED_RAD_S = 4*PI
 const FAST_ROTATION_ANGLE = .25*PI
 const SLOW_ROTATION_RATIO = .1
 
+@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
+
 
 func _rotation_step(target : float, delta : float):
 	#print ("angles are: target " , target, ", curr ", current_bearing)
@@ -35,7 +37,12 @@ func is_setup():
 func set_target(input_position):
 	if input_position:
 		target = input_position
+		print("set target as ", target)
+		navigation_agent.target_position = input_position
+		##print("setting target to ", input_position)
+		NavigationServer2D.agent_set_avoidance_enabled(navigation_agent, true)
 
+	
 func get_move(input_position):
 	#if not target: return # TODO TBR?
 	
@@ -64,8 +71,9 @@ func _process(delta: float) -> void:
 	# Updating the current bearing
 	if target:
 		# TODO limit this call, doesn't need to happen every frame!
-		local_target = _update_local_target(get_parent().position)
+		local_target = navigation_agent.get_next_path_position()
 		if local_target:
+			print("local target is ", local_target)
 			var target_bearing = (local_target - get_parent().position).angle()
 			_rotation_step(target_bearing, delta)
 	

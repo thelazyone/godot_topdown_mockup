@@ -26,6 +26,8 @@ shape = SubResource("CircleShape2D_87qmj")
 [node name="NavigationComponent" type="Node2D" parent="."]
 script = ExtResource("3_3mihf")
 
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="NavigationComponent"]
+
 [node name="StrategyComponent" type="Node2D" parent="."]
 script = ExtResource("4_spkq7")
 

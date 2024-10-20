@@ -1,40 +1,50 @@
-[gd_scene load_steps=3 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=5 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
+[ext_resource type="Script" path="res://navigation_region_2d.gd" id="2_562c3"]
 [ext_resource type="PackedScene" uid="uid://cjyfr7o4yifig" path="res://Obstacle.tscn" id="2_iri5v"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_rumyn"]
+vertices = PackedVector2Array(396.672, 288.141, 601.203, 241.102, 699.203, 336, 468.477, 444.094, 449.742, 410.477, 705.641, 76.1016, 694.398, 93.8438, 670.43, 17.5781, 805.133, 188.773, 1134.98, 17.9922, 948.992, 234.977, 938.297, 240.867, 949.688, 633.328, 416.82, 634.273, 375.039, 634.344, 12.9766, 634.977, 12.0078, 17, 130.578, 200.227, 1134.01, 633.008, 1032.98, 633.188, 1019.45, 282.43, 172.719, 195.5, 226.672, 274.977, 210.313, 292.828, 315.797, 364.023, 436.422, 412.078, 271.219, 340.633, 277.672, 338.289, 564.156, 17.4766, 619.711, 211.82, 374.172, 274.898, 263.891, 125.039, 269.43, 75.8438, 134.313, 99.5469, 262.82, 328.25)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(5, 6, 7), PackedInt32Array(8, 5, 7, 9, 10, 11), PackedInt32Array(11, 12, 13, 3, 2), PackedInt32Array(14, 15, 16, 17), PackedInt32Array(9, 18, 19, 20), PackedInt32Array(9, 20, 10), PackedInt32Array(21, 22, 23, 17), PackedInt32Array(2, 8, 11), PackedInt32Array(24, 0, 4, 25), PackedInt32Array(24, 25, 14), PackedInt32Array(26, 27, 24, 14), PackedInt32Array(28, 29, 1, 0, 30, 31, 32), PackedInt32Array(16, 28, 32, 33), PackedInt32Array(16, 33, 17), PackedInt32Array(14, 17, 23), PackedInt32Array(26, 14, 23, 34)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(2, 7, 3, 645, 1144, 643, 1145, 8)])
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0tp6l")
 
-[node name="Obstacle" parent="." instance=ExtResource("2_iri5v")]
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_rumyn")
+script = ExtResource("2_562c3")
 
-[node name="Obstacle2" parent="." instance=ExtResource("2_iri5v")]
+[node name="Obstacle" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
+
+[node name="Obstacle2" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
 position = Vector2(272, 221)
 rotation = 1.04253
 scale = Vector2(1.92839, 1.17095)
 
-[node name="Obstacle3" parent="." instance=ExtResource("2_iri5v")]
+[node name="Obstacle3" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
 position = Vector2(306, 286)
 rotation = 0.70539
 
-[node name="Obstacle4" parent="." instance=ExtResource("2_iri5v")]
+[node name="Obstacle4" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
 position = Vector2(649, 98)
 rotation = 1.33852
 scale = Vector2(2.42476, 1)
 
-[node name="Obstacle5" parent="." instance=ExtResource("2_iri5v")]
-position = Vector2(398, 612)
+[node name="Obstacle5" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
+position = Vector2(399, 630)
 rotation = 1.84776
 scale = Vector2(3.57039, 0.265404)
 skew = 0.425006
 
-[node name="Obstacle6" parent="." instance=ExtResource("2_iri5v")]
+[node name="Obstacle6" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
 position = Vector2(994, 547)
 rotation = 1.5589
 scale = Vector2(4.86084, 0.821771)
 skew = 0.423509
 
-[node name="Obstacle7" parent="." instance=ExtResource("2_iri5v")]
+[node name="Obstacle7" parent="NavigationRegion2D" instance=ExtResource("2_iri5v")]
 position = Vector2(696, 202)
 rotation = -0.840102
 scale = Vector2(1.50373, 1.43967)
