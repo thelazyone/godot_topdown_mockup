@@ -34,6 +34,6 @@ func _draw():
 	if CONTROL_FACTION < 0.5:
 		color = color.lerp(Color.RED, (1. - 2.*CONTROL_FACTION))
 	else:
-		color = color.lerp(Color.GREEN, (2. * CONTROL_FACTION - 1))
+		color = color.lerp(Color.BLUE, (2. * CONTROL_FACTION - 1))
 	
 	draw_circle(Vector2(20,20), 20.0, color)

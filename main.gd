@@ -1,36 +1,29 @@
 extends Node2D
 
-var goon_scene = preload("res://goon.tscn")
-var start_1 = Vector2(100,400)
-var start_2 = Vector2(1000, 100)
+const goon_scene = preload("res://goon.tscn")
+const start_1 = Vector2(100,400)
+const start_2 = Vector2(1000, 100)
+const max_goons = 20
 
 var cumulateTime = 0
 
-func addGoons(number : int) :
+func add_goons(faction : int, number : int, position : Vector2) :
 	# Adding some goons
 	for i in range(number):
 		var goon = goon_scene.instantiate()
-		goon.position = start_1 + Vector2(0, 15*i)
+		goon.position = position + Vector2(0, 15 * i)
 		goon.add_to_group("goons")
-		goon.FACTION = 1
+		goon.FACTION = faction
+		if (faction > 1):
+			goon.get_node("Image").self_modulate = Color(1,.6,.6,1)
+		else:
+			goon.get_node("Image").self_modulate = Color(.6,.6,1,1)
 		add_child(goon)
-		#goon.set_move_order(get_viewport().size / 2)
-
-	# Adding some enemies
-	for i in range(number):
-		var goon = goon_scene.instantiate()
-		goon.position = start_2 + Vector2(0, 10*i)
-		goon.add_to_group("goons")
-		goon.FACTION = 2
-		add_child(goon)
-		#goon.set_move_order(get_viewport().size / 2)
-		
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#NavigationMap.setup(get_viewport().size)
-	
-	addGoons(8)
+	add_goons(1, 8, start_1)
+	add_goons(2, 8, start_2)
 
 func _input(event: InputEvent) -> void:
 	
@@ -47,6 +40,20 @@ func _process(delta: float) -> void:
 	cumulateTime += delta
 	
 	if cumulateTime > 1:
+		
+		var goon1 = 0
+		var goon2 = 0
+		
+		var goons = get_tree().get_nodes_in_group("goons")
+		for goon in goons:
+			match goon.FACTION:
+				1: goon1 += 1
+				2: goon2 += 1
+				
+		if goon1 < max_goons:
+			add_goons(1, min(max_goons - goon1, 2), start_1)
+		if goon2 < max_goons:
+			add_goons(2, min(max_goons - goon2, 2), start_2)
 		cumulateTime = 0
-		addGoons(2)
+		
 	pass

@@ -21,7 +21,7 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func _draw() -> void:
-	draw_circle(Vector2(0,0), 5.0, Color.WHITE)
+	draw_circle(Vector2(0,0), 2.0, Color.WHITE)
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
