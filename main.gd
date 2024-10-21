@@ -48,5 +48,5 @@ func _process(delta: float) -> void:
 	
 	if cumulateTime > 1:
 		cumulateTime = 0
-		#addGoons(2)
+		addGoons(2)
 	pass

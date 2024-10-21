@@ -61,3 +61,11 @@ script = ExtResource("4_edmum")
 [node name="Checkpoint3" type="Node2D" parent="." groups=["checkpoints"]]
 position = Vector2(942, 154)
 script = ExtResource("4_edmum")
+
+[node name="Checkpoint4" type="Node2D" parent="." groups=["checkpoints"]]
+position = Vector2(409, 144)
+script = ExtResource("4_edmum")
+
+[node name="Checkpoint5" type="Node2D" parent="." groups=["checkpoints"]]
+position = Vector2(743, 519)
+script = ExtResource("4_edmum")
