@@ -3,6 +3,7 @@ extends Node2D
 var target = null
 var local_target = null
 var current_position = null
+const POSITION_PRECISION = 20
 const PATFHINDING_PERIOD_MS = 200
 @onready var last_patfhinding_tick = Time.get_ticks_msec()
 
@@ -73,9 +74,15 @@ func _process(delta: float) -> void:
 	# Updating the current bearing
 	if target:
 		
+		# Updating the pathfinding only every X ms.
+		# TODO - either use a timer or an int counter, if this proves to be 
+		# too computationally intensive. 
 		if Time.get_ticks_msec() - last_patfhinding_tick > PATFHINDING_PERIOD_MS:
 			local_target = navigation_agent.get_next_path_position()
 			last_patfhinding_tick = Time.get_ticks_msec()
+		
+		if get_parent().position.distance_to(target) < POSITION_PRECISION:
+			local_target = null
 			
 		if local_target:
 			print("local target is ", local_target)
