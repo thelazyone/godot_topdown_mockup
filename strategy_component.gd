@@ -96,14 +96,11 @@ func _choose_new_order():
 				nearest_checkpoint = checkpoint
 			elif goon_pos.distance_to(checkpoint.position) < goon_pos.distance_to(nearest_checkpoint.position):
 				nearest_checkpoint = checkpoint
-			print("DEBUG ",goon_pos.distance_to(checkpoint.position), " ", goon_pos.distance_to(nearest_checkpoint.position))
-			
 	
 	if not nearest_checkpoint:
 		_end_order()
 		return
 	
-	print("setting new order as " , nearest_checkpoint.position)
 	_set_new_order(orders.DEFEND, nearest_checkpoint.position, 100)
 	
 	
