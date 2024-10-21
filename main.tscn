@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=6 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
 [ext_resource type="Script" path="res://navigation_region_2d.gd" id="2_562c3"]
 [ext_resource type="PackedScene" uid="uid://cjyfr7o4yifig" path="res://Obstacle.tscn" id="2_iri5v"]
+[ext_resource type="Script" path="res://checkpoint.gd" id="4_edmum"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_rumyn"]
 vertices = PackedVector2Array(396.672, 288.141, 601.203, 241.102, 699.203, 336, 468.477, 444.094, 449.742, 410.477, 705.641, 76.1016, 694.398, 93.8438, 670.43, 17.5781, 805.133, 188.773, 1134.98, 17.9922, 948.992, 234.977, 938.297, 240.867, 949.688, 633.328, 416.82, 634.273, 375.039, 634.344, 12.9766, 634.977, 12.0078, 17, 130.578, 200.227, 1134.01, 633.008, 1032.98, 633.188, 1019.45, 282.43, 172.719, 195.5, 226.672, 274.977, 210.313, 292.828, 315.797, 364.023, 436.422, 412.078, 271.219, 340.633, 277.672, 338.289, 564.156, 17.4766, 619.711, 211.82, 374.172, 274.898, 263.891, 125.039, 269.43, 75.8438, 134.313, 99.5469, 262.82, 328.25)
@@ -48,3 +49,15 @@ skew = 0.423509
 position = Vector2(696, 202)
 rotation = -0.840102
 scale = Vector2(1.50373, 1.43967)
+
+[node name="Checkpoint" type="Node2D" parent="." groups=["checkpoints"]]
+position = Vector2(149, 497)
+script = ExtResource("4_edmum")
+
+[node name="Checkpoint2" type="Node2D" parent="." groups=["checkpoints"]]
+position = Vector2(569, 334)
+script = ExtResource("4_edmum")
+
+[node name="Checkpoint3" type="Node2D" parent="." groups=["checkpoints"]]
+position = Vector2(942, 154)
+script = ExtResource("4_edmum")

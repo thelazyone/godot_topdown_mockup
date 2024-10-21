@@ -40,7 +40,6 @@ func is_setup():
 func set_target(input_position):
 	if input_position:
 		target = input_position
-		print("set target as ", target)
 		navigation_agent.target_position = input_position
 		##print("setting target to ", input_position)
 		NavigationServer2D.agent_set_avoidance_enabled(navigation_agent, true)
@@ -85,7 +84,6 @@ func _process(delta: float) -> void:
 			local_target = null
 			
 		if local_target:
-			print("local target is ", local_target)
 			var target_bearing = (local_target - get_parent().position).angle()
 			_rotation_step(target_bearing, delta)
 	
