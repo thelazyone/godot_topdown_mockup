@@ -3,6 +3,8 @@ extends Node2D
 var target = null
 var local_target = null
 var current_position = null
+const PATFHINDING_PERIOD_MS = 200
+@onready var last_patfhinding_tick = Time.get_ticks_msec()
 
 # DIRECTION INERTIA!
 var current_bearing = 0
@@ -70,8 +72,11 @@ func _process(delta: float) -> void:
 	
 	# Updating the current bearing
 	if target:
-		# TODO limit this call, doesn't need to happen every frame!
-		local_target = navigation_agent.get_next_path_position()
+		
+		if Time.get_ticks_msec() - last_patfhinding_tick > PATFHINDING_PERIOD_MS:
+			local_target = navigation_agent.get_next_path_position()
+			last_patfhinding_tick = Time.get_ticks_msec()
+			
 		if local_target:
 			print("local target is ", local_target)
 			var target_bearing = (local_target - get_parent().position).angle()
