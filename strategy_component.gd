@@ -3,6 +3,9 @@ extends Node2D
 enum orders {NONE, ATTACK, DEFEND}
 
 var current_order = orders.NONE
+const ORDER_PERIOD_S = 2
+var last_order_time_s = 99
+
 var target_area = Vector2.ZERO
 var target_position = Vector2.ZERO
 const POSITION_MARGIN = 20
@@ -47,7 +50,13 @@ func _process(delta: float) -> void:
 	_spot()
 	_check_retreat()
 	
-	# Now deciding the movement order: 
+	# If necessary, evaluating order.
+	last_order_time_s += delta
+	if last_order_time_s > ORDER_PERIOD_S:
+		last_order_time_s = 0
+		_choose_new_order()
+	
+	# Now deciding the movement: 
 	_apply_strategy()
 
 
@@ -64,6 +73,42 @@ func _state_number_to_name(state_number: int) -> String:
 func _set_state(new_state: states):
 	#print("Goon of faction ", get_parent().FACTION, " changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
 	state = new_state
+
+# Called periodically, to decide what to do.
+func _choose_new_order():
+	
+	var target_value : float
+	match get_parent().FACTION:
+		1: target_value = 1
+		2: target_value = 0
+	
+	# TODO Current logic is: "check if there's a node that is not ours, and go there"
+	# It's very basica but it might work for now.
+	var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
+	if not all_checkpoints: 
+		_end_order()
+		return
+	var goon_pos = get_parent().position
+	var nearest_checkpoint = null
+	for checkpoint in all_checkpoints:
+		if abs (checkpoint.CONTROL_FACTION - target_value) > 0.1: 
+			if not nearest_checkpoint:
+				nearest_checkpoint = checkpoint
+			elif goon_pos.distance_to(checkpoint.position) < goon_pos.distance_to(nearest_checkpoint.position):
+				nearest_checkpoint = checkpoint
+			print("DEBUG ",goon_pos.distance_to(checkpoint.position), " ", goon_pos.distance_to(nearest_checkpoint.position))
+			
+	
+	if not nearest_checkpoint:
+		_end_order()
+		return
+	
+	print("setting new order as " , nearest_checkpoint.position)
+	_set_new_order(orders.DEFEND, nearest_checkpoint.position, 100)
+	
+	
+func _end_order():
+	current_order = orders.NONE
 
 func _set_new_order(order_type: orders, position: Vector2, radius):
 	current_order = order_type

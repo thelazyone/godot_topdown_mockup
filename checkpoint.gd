@@ -1,6 +1,6 @@
 extends Node2D
 @export var CONTROL_FACTION : float = 0.5
-@export var CONTROL_SPEED = 0.1
+@export var CONTROL_SPEED = 0.3
 @export var CONTROL_AREA : float = 100
 
 # Called when the node enters the scene tree for the first time.
@@ -36,5 +36,4 @@ func _draw():
 	else:
 		color = color.lerp(Color.GREEN, (2. * CONTROL_FACTION - 1))
 	
-	print ("color is ", color)
 	draw_circle(Vector2(20,20), 20.0, color)

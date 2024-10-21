@@ -14,7 +14,7 @@ func addGoons(number : int) :
 		goon.add_to_group("goons")
 		goon.FACTION = 1
 		add_child(goon)
-		goon.set_move_order(get_viewport().size / 2)
+		#goon.set_move_order(get_viewport().size / 2)
 
 	# Adding some enemies
 	for i in range(number):
@@ -23,7 +23,7 @@ func addGoons(number : int) :
 		goon.add_to_group("goons")
 		goon.FACTION = 2
 		add_child(goon)
-		goon.set_move_order(get_viewport().size / 2)
+		#goon.set_move_order(get_viewport().size / 2)
 		
 
 # Called when the node enters the scene tree for the first time.
@@ -48,5 +48,5 @@ func _process(delta: float) -> void:
 	
 	if cumulateTime > 1:
 		cumulateTime = 0
-		addGoons(2)
+		#addGoons(2)
 	pass
