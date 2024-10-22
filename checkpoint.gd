@@ -1,13 +1,12 @@
 extends Node2D
+
 @export var CONTROL_FACTION : float = 0.5
 @export var CONTROL_SPEED = 0.3
 @export var CONTROL_AREA : float = 100
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_to_group("checkpoints")
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -25,11 +24,13 @@ func _process(delta: float) -> void:
 	if count_1 != 0 or count_2 != 0:
 		CONTROL_FACTION += (count_1 - count_2) / (count_1 + count_2) * delta * CONTROL_SPEED
 		CONTROL_FACTION = clamp(CONTROL_FACTION, 0., 1.)
-		#_draw_with_color()
+		
+		# Call required to force the redraw of the circle with the new colour 
 		queue_redraw()
 
 func _draw():
-	# Color is grey when in the middle, blue when 1, red when 2.
+	
+	# Color is grey when in the middle, blue when controleld byfaction 1, red when 2.
 	var color = Color.GRAY
 	if CONTROL_FACTION < 0.5:
 		color = color.lerp(Color.RED, (1. - 2.*CONTROL_FACTION))

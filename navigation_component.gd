@@ -13,22 +13,7 @@ const ROTATION_SPEED_RAD_S = 4*PI
 const FAST_ROTATION_ANGLE = .25*PI
 const SLOW_ROTATION_RATIO = .1
 
-@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
-
-
-func _rotation_step(target : float, delta : float):
-	#print ("angles are: target " , target, ", curr ", current_bearing)
-	var diff = Geometry.angle_diff(target, current_bearing)
-	var delta_movement = delta * ROTATION_SPEED_RAD_S
-	if abs(diff) < FAST_ROTATION_ANGLE: 
-		delta_movement *= SLOW_ROTATION_RATIO
-		
-	if diff > 0: 
-		current_bearing += delta_movement
-	else: 
-		current_bearing -= delta_movement
-	current_bearing = Geometry.wrap_angle(current_bearing)
-
+@onready var navigation_agent = $NavigationAgent2D
 
 # PUBLIC METHODS
 func setup(size):
@@ -63,11 +48,10 @@ func get_move(input_position):
 
 
 # NODE LOOPS
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	pass
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
 	# Updating the current bearing
@@ -85,7 +69,7 @@ func _process(delta: float) -> void:
 			
 		if local_target:
 			var target_bearing = (local_target - get_parent().position).angle()
-			_rotation_step(target_bearing, delta)
+			_apply_rotation_step(target_bearing, delta)
 	
 	pass
 
@@ -100,3 +84,16 @@ func _update_local_target(input_position):
 		
 	# Setting step_target
 	return NavigationMap.get_next_step(current_position, target)
+
+func _apply_rotation_step(target : float, delta : float):
+	#print ("angles are: target " , target, ", curr ", current_bearing)
+	var diff = Geometry.angle_diff(target, current_bearing)
+	var delta_movement = delta * ROTATION_SPEED_RAD_S
+	if abs(diff) < FAST_ROTATION_ANGLE: 
+		delta_movement *= SLOW_ROTATION_RATIO
+		
+	if diff > 0: 
+		current_bearing += delta_movement
+	else: 
+		current_bearing -= delta_movement
+	current_bearing = Geometry.wrap_angle(current_bearing)

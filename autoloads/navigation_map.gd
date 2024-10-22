@@ -27,12 +27,13 @@ func get_next_step(start, end):
 		return
 	return _get_pos_from_node(path[1])
 
-# Called when the node enters the scene tree for the first time.
+
+# NODE LOOPS
+
 func _ready() -> void:
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 
