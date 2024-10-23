@@ -6,6 +6,7 @@ extends CharacterBody2D
 @export var WEAPON_RANGE = 300
 @export var SPOTTING_RANGE = 200
 @export var SPLAT : Resource = null
+const SHOW_LOF : bool = true
 
 @onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent
@@ -55,11 +56,14 @@ func _process(delta: float) -> void:
 	
 	# Showing if attacking:
 	var shooting_target = strat.get_shoot_target()
-	$LineOfSight.visible = false
-	if shooting_target:
-		$LineOfSight.visible = true
-		$LineOfSight.points = [Vector2.ZERO, shooting_target - position]
+	
+	if SHOW_LOF: 
+		$LineOfSight.visible = false
+		if shooting_target:
+			$LineOfSight.visible = true
+			$LineOfSight.points = [Vector2.ZERO, shooting_target - position]
 		
+	if shooting_target:
 		# Handling the attack.
 		shoot.try_shoot((shooting_target-position).angle())
 		
