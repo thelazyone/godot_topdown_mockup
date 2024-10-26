@@ -10,11 +10,11 @@ const PATFHINDING_PERIOD_MS = 200
 @onready var navigation_agent = $NavigationAgent2D
 
 # PUBLIC METHODS
-func setup(size):
-	NavigationMap.setup(size)
-
-func is_setup():
-	return NavigationMap.is_setup
+#func setup(size):
+	#NavigationMap.setup(size)
+#
+#func is_setup():
+	#return NavigationMap.is_setup
 	
 func set_target(input_position):
 	if input_position:
