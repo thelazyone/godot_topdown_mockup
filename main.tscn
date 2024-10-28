@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=4 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
-[ext_resource type="Script" path="res://checkpoint.gd" id="4_edmum"]
 [ext_resource type="Script" path="res://random_map.gd" id="5_bgfk8"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
@@ -11,26 +10,6 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-1, -5, 1168, -8, 1160,
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0tp6l")
-
-[node name="Checkpoint" type="Node2D" parent="." groups=["checkpoints"]]
-position = Vector2(149, 497)
-script = ExtResource("4_edmum")
-
-[node name="Checkpoint2" type="Node2D" parent="." groups=["checkpoints"]]
-position = Vector2(569, 334)
-script = ExtResource("4_edmum")
-
-[node name="Checkpoint3" type="Node2D" parent="." groups=["checkpoints"]]
-position = Vector2(942, 154)
-script = ExtResource("4_edmum")
-
-[node name="Checkpoint4" type="Node2D" parent="." groups=["checkpoints"]]
-position = Vector2(409, 144)
-script = ExtResource("4_edmum")
-
-[node name="Checkpoint5" type="Node2D" parent="." groups=["checkpoints"]]
-position = Vector2(743, 519)
-script = ExtResource("4_edmum")
 
 [node name="RandomMap" type="Node2D" parent="."]
 script = ExtResource("5_bgfk8")

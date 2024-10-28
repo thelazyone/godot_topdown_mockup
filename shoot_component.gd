@@ -15,8 +15,6 @@ func try_shoot(angle):
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var goon_scene = preload("res://goon.tscn")
-
 	pass # Replace with function body.
 
 
