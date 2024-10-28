@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cveu1hk6senbf"]
 
-[ext_resource type="Script" path="res://projectile.gd" id="1_on25f"]
+[ext_resource type="Script" path="res://scenes/projectile.gd" id="1_on25f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xrefk"]
 radius = 3.0

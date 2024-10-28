@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=3 uid="uid://cxk0bcefp310h"]
 
-[ext_resource type="Script" path="res://goon.gd" id="1_np6xr"]
-[ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://splat.tscn" id="2_qg86p"]
-[ext_resource type="Texture2D" uid="uid://bt4h6wt028j2n" path="res://goon.png" id="2_vgrkw"]
-[ext_resource type="Script" path="res://navigation_component.gd" id="3_3mihf"]
-[ext_resource type="Script" path="res://strategy_component.gd" id="4_spkq7"]
-[ext_resource type="Script" path="res://shoot_component.gd" id="5_ptigm"]
-[ext_resource type="PackedScene" uid="uid://cveu1hk6senbf" path="res://projectile.tscn" id="6_f7efv"]
-[ext_resource type="Script" path="res://health_component.gd" id="7_cq3ig"]
+[ext_resource type="Script" path="res://scenes/actors/goon.gd" id="1_np6xr"]
+[ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://scenes/splat.tscn" id="2_qg86p"]
+[ext_resource type="Texture2D" uid="uid://bt4h6wt028j2n" path="res://scenes/actors/goon.png" id="2_vgrkw"]
+[ext_resource type="Script" path="res://scenes/actors/navigation_component.gd" id="3_3mihf"]
+[ext_resource type="Script" path="res://scenes/actors/strategy_component.gd" id="4_spkq7"]
+[ext_resource type="Script" path="res://scenes/actors/shoot_component.gd" id="5_ptigm"]
+[ext_resource type="PackedScene" uid="uid://cveu1hk6senbf" path="res://scenes/projectile.tscn" id="6_f7efv"]
+[ext_resource type="Script" path="res://scenes/actors/health_component.gd" id="7_cq3ig"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_87qmj"]
 radius = 6.08276

@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var nav_region = $Region
-@onready var checkpoint_scene = preload("res://checkpoint.tscn")
+@onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
