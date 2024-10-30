@@ -27,6 +27,9 @@ func set_target(input_position):
 func get_move(input_position):
 	#if not target: return # TODO TBR?
 	
+	if input_position:
+		set_target(input_position)
+	
 	# If no target, not moving
 	if not local_target:
 		return null

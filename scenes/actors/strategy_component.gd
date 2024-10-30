@@ -3,7 +3,7 @@ extends Node2D
 enum orders {NONE, ATTACK, DEFEND}
 
 var current_order = orders.NONE
-const ORDER_PERIOD_S = 2
+const ORDER_PERIOD_S = .5
 var last_order_time_s = 99
 
 var target_area = Vector2.ZERO
@@ -21,12 +21,15 @@ var state = states.IDLE
 
 
 # Public Commands:
-func attack(position: Vector2, radius = 50):
-	_set_new_order(orders.ATTACK, position, radius)
-	
-	
-func defend(position: Vector2, radius = 50):
+#func attack(position: Vector2, radius = 50):
+	#_set_new_order(orders.ATTACK, position, radius)
+	#
+	#
+func defend(position: Vector2, radius = 50): # TODO TBR
 	_set_new_order(orders.DEFEND, position, radius)
+	#
+#func stop():
+	#_set_new_order(orders.NONE, Vector2.ZERO, 0)
 
 
 func get_next_move():
@@ -34,7 +37,7 @@ func get_next_move():
 		return target_position
 	return null
 	
-func get_shoot_target():
+func is_shooting():
 	if target_enemy and is_instance_valid(target_enemy) and state == states.ATTACK:
 		return target_enemy.position
 
