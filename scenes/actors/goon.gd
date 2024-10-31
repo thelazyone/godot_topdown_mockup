@@ -42,7 +42,7 @@ const SLOW_ROTATION_RATIO = .1
 
 
 func set_move_order(coordinates):
-	strat.defend(coordinates, 100)
+	strat.go_to(coordinates, 100)
 	
 func die():
 	var new_splat = SPLAT.instantiate()

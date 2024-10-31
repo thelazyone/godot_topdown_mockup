@@ -19,3 +19,5 @@ config/icon="res://icon.svg"
 
 Geometry="*res://autoloads/geometry.gd"
 NavigationMap="*res://autoloads/navigation_map.tscn"
+DirectionPattern="*res://autoloads/direction_pattern.gd"
+DirectionField="*res://autoloads/direction_field.gd"

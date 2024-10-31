@@ -12,6 +12,18 @@ const POSITION_MARGIN = 20
 var target_radius = 0. # In the future the radius can be set dragging in-game
 var last_position_before_pursue = Vector2.ZERO # TEMP TODO TBR?
 
+# Directional fields dictionary.
+enum field_types {
+	ORDERS,
+	THREATS,
+	TARGETS,
+}
+@onready var directional_fields = {
+	field_types.ORDERS : DirectionalField.new(),
+	field_types.THREATS : DirectionalField.new(),
+	field_types.TARGETS : DirectionalField.new()
+}
+
 # Enemy Targeting 
 var target_enemy = null
 
@@ -20,23 +32,17 @@ enum states {IDLE, MOVE, PURSUE, ATTACK, EVADE}
 var state = states.IDLE
 
 
-# Public Commands:
-#func attack(position: Vector2, radius = 50):
-	#_set_new_order(orders.ATTACK, position, radius)
-	#
-	#
-func defend(position: Vector2, radius = 50): # TODO TBR
+# Direct mouse commands
+func go_to(position: Vector2, radius = 50): # TODO TBR
 	_set_new_order(orders.DEFEND, position, radius)
-	#
-#func stop():
-	#_set_new_order(orders.NONE, Vector2.ZERO, 0)
 
-
+# Main output
 func get_next_move():
 	if state != states.IDLE:
 		return target_position
 	return null
-	
+
+# Shooting logic
 func is_shooting():
 	if target_enemy and is_instance_valid(target_enemy) and state == states.ATTACK:
 		return target_enemy.position
@@ -44,6 +50,9 @@ func is_shooting():
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	
+	
+
 	pass
 
 
