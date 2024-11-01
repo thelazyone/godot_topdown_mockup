@@ -3,7 +3,7 @@ extends Node2D
 enum orders {NONE, ATTACK, DEFEND}
 
 var current_order = orders.NONE
-const ORDER_PERIOD_S = .5
+const ORDER_PERIOD_S = .2
 var last_order_time_s = 99
 
 var target_area = Vector2.ZERO
@@ -44,7 +44,6 @@ func go_to(position: Vector2, radius = 50): # TODO TBR
 # Main output
 func get_next_move():
 	if state != states.IDLE:
-		print ("tbr" , _get_combined_field_peak())
 		return get_parent().position + _get_combined_field_peak()
 		return navigation_component.get_move(target_position)
 	return null
@@ -86,8 +85,14 @@ func _process(delta: float) -> void:
 func _update_orders_field(delta: float):
 	var temp_vector = navigation_component.get_move(target_position)
 	if temp_vector:
+		temp_vector -= get_parent().position
+		print("\nEBUG: temp vector is ", temp_vector)
+		
+		# Creating the order by adding multiple effects to the field...
 		directional_fields[field_types.ORDERS].add_effect(1, temp_vector.angle()) 
 		print("field is ", directional_fields[field_types.ORDERS].display_debug())
+		
+		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.ORDERS].set_step(delta)
 		print("then is ", directional_fields[field_types.ORDERS].display_debug())
 
@@ -278,6 +283,6 @@ func _retreat():
 func _get_combined_field_peak() -> Vector2:
 	support_directional_field.clear()
 	support_directional_field.combine(directional_fields[field_types.ORDERS])
-	support_directional_field.combine(directional_fields[field_types.THREATS])
-	support_directional_field.combine(directional_fields[field_types.TARGETS])
-	return support_directional_field.get_peak()
+	#support_directional_field.combine(directional_fields[field_types.THREATS])
+	#support_directional_field.combine(directional_fields[field_types.TARGETS])
+	return support_directional_field.get_peak().normalized()

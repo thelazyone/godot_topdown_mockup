@@ -2,7 +2,7 @@ class_name DirectionalField
 extends Node
 
 const DEFAULT_NUM_SECTORS := 16
-const DEFAULT_RESPONSE_TIME := 0.2
+const DEFAULT_RESPONSE_TIME := .02
 
 var sector_size: float
 var num_sectors: int
@@ -43,7 +43,7 @@ func clear():
 		current_pattern.values[i] = 0.
 
 # TODO to validate, I'm not really liking this one.
-func add_effect(value: float, angle: float, spread: float = 1.0) -> void:
+func add_effect(value: float, angle: float, spread: float = .5) -> void:
 	var main_sector : int = fposmod(angle, 2 * PI) / sector_size
 	var falloff := value * spread
 	
