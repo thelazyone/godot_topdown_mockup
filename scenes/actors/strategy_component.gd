@@ -23,6 +23,11 @@ enum field_types {
 	field_types.THREATS : DirectionalField.new(),
 	field_types.TARGETS : DirectionalField.new()
 }
+var support_directional_field = DirectionalField.new()
+
+# For the Navigation Field:
+var navigation_component = Resource
+
 
 # Enemy Targeting 
 var target_enemy = null
@@ -39,7 +44,9 @@ func go_to(position: Vector2, radius = 50): # TODO TBR
 # Main output
 func get_next_move():
 	if state != states.IDLE:
-		return target_position
+		print ("tbr" , _get_combined_field_peak())
+		return get_parent().position + _get_combined_field_peak()
+		return navigation_component.get_move(target_position)
 	return null
 
 # Shooting logic
@@ -67,10 +74,22 @@ func _process(delta: float) -> void:
 	if last_order_time_s > ORDER_PERIOD_S:
 		last_order_time_s = 0
 		_choose_new_order()
+		
+		# Testing out the Fields:
+		_update_orders_field(delta)
+		
+		# Now deciding the movement: 
+		_apply_strategy()
 	
-	# Now deciding the movement: 
-	_apply_strategy()
 
+
+func _update_orders_field(delta: float):
+	var temp_vector = navigation_component.get_move(target_position)
+	if temp_vector:
+		directional_fields[field_types.ORDERS].add_effect(1, temp_vector.angle()) 
+		print("field is ", directional_fields[field_types.ORDERS].display_debug())
+		directional_fields[field_types.ORDERS].set_step(delta)
+		print("then is ", directional_fields[field_types.ORDERS].display_debug())
 
 # Private Methods
 func _state_number_to_name(state_number: int) -> String:
@@ -125,7 +144,8 @@ func _set_new_order(order_type: orders, position: Vector2, radius):
 	target_position = target_area
 	target_radius = radius
 	_get_position_in_area()
-	
+	navigation_component.set_target(target_position)
+
 	
 func _get_position_in_area():
 	# In the future the logic to choose one area over another should depend on
@@ -253,3 +273,11 @@ func _retreat():
 	target_enemy = null
 	_set_state(states.EVADE)
 	
+	
+# Navigation stuff:
+func _get_combined_field_peak() -> Vector2:
+	support_directional_field.clear()
+	support_directional_field.combine(directional_fields[field_types.ORDERS])
+	support_directional_field.combine(directional_fields[field_types.THREATS])
+	support_directional_field.combine(directional_fields[field_types.TARGETS])
+	return support_directional_field.get_peak()

@@ -1,12 +1,13 @@
 class_name DirectionalPattern
+extends Node
 
 var values: Array[float]
 var num_sectors: int
 
-func _init(num_sectors_: int):
-	num_sectors = num_sectors_
+func _init(size: int):
+	num_sectors = size
 	values = []
-	values.resize(num_sectors)
+	values.resize(size)
 	values.fill(0.0)
 
 func set_value(sector: int, value: float) -> void:
@@ -14,12 +15,6 @@ func set_value(sector: int, value: float) -> void:
 
 func get_value(sector: int) -> float:
 	return values[sector]
-
-func duplicate() -> DirectionalPattern:
-	var copy = DirectionalPattern.new(num_sectors)
-	for i in range(num_sectors):
-		copy.values[i] = values[i]
-	return copy
 
 func interpolate_to(target: DirectionalPattern, factor: float) -> void:
 	for i in range(num_sectors):

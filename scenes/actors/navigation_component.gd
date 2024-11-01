@@ -34,9 +34,7 @@ func get_move(input_position):
 	if not local_target:
 		return null
 		
-	# Updating the debug direction.
-	get_parent().get_node("DebugDirection").points = [Vector2.ZERO, local_target - get_parent().position]
-	
+
 	return local_target
 
 # NODE LOOPS

@@ -8,7 +8,7 @@ extends CharacterBody2D
 @export var SPLAT : Resource = null
 const SHOW_LOF : bool = true
 
-@onready var nav = $NavigationComponent
+# @onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent
 @onready var shoot = $ShootComponent
 
@@ -54,13 +54,18 @@ func die():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_to_group("goons")
+	strat.navigation_component = $NavigationComponent
 	
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	# Movement
-	var local_target = nav.get_move(strat.get_next_move())
+	# var local_target = nav.get_move(strat.get_next_move())
+	var local_target = strat.get_next_move()
+	if local_target:
+		get_node("DebugDirection").points = [Vector2.ZERO, local_target - position]
+	
 
 	if local_target :
 		

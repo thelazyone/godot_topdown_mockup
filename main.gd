@@ -3,7 +3,8 @@ extends Node2D
 const goon_scene = preload("res://scenes/actors/goon.tscn")
 const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
-const max_goons = 20
+const start_goons = 1
+const max_goons = 1
 
 var cumulateTime = 0
 
@@ -22,8 +23,8 @@ func add_goons(faction : int, number : int, position : Vector2) :
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	add_goons(1, 8, start_1)
-	add_goons(2, 8, start_2)
+	add_goons(1, start_goons, start_1)
+	add_goons(2, start_goons, start_2)
 
 func _input(event: InputEvent) -> void:
 	

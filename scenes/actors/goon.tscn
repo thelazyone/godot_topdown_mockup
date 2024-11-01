@@ -32,12 +32,10 @@ script = ExtResource("3_3mihf")
 script = ExtResource("4_spkq7")
 
 [node name="LineOfSight" type="Line2D" parent="."]
-visible = false
 width = 0.8
 default_color = Color(1, 0, 0, 1)
 
 [node name="DebugDirection" type="Line2D" parent="."]
-visible = false
 width = 2.0
 default_color = Color(0, 0, 1, 1)
 
