@@ -20,6 +20,9 @@ enum field_types {ORDERS, THREATS, TARGETS}
 	field_types.TARGETS : DirectionalField.new()
 }
 var support_directional_field = DirectionalField.new()
+const THREAT_RADIUS = 200
+const THREAT_BASE_WEIGHT = 10
+const ORDER_BASE_WEIGHT = 5
 
 # For the Navigation Field:
 var navigation_component = Resource
@@ -84,26 +87,28 @@ func _process(delta: float) -> void:
 		_apply_strategy()
 
 
+# Threat field pushes the goon away from threats if too close
 func _update_threats_field(delta: float):
 	for goon in get_tree().get_nodes_in_group("goons"):
-		var spotting_range = get_parent().SPOTTING_RANGE
+		var threat_radius = THREAT_RADIUS
 		var range = get_parent().position.distance_to(goon.position)
-		if goon.FACTION != get_parent().FACTION and range < spotting_range:
+		if goon.FACTION != get_parent().FACTION and range < threat_radius:
 			var threat_angle = (get_parent().position - goon.position).angle()
-			var threat_value = 10 * (spotting_range - range) / spotting_range
+			var threat_value = THREAT_BASE_WEIGHT * (threat_radius - range) / threat_radius
 			
 			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.THREATS].set_step(delta)
 		
+# Order brings the goon in the direction of the objective.
 func _update_orders_field(delta: float):
 	var temp_vector = navigation_component.get_move(target_position)
 	if temp_vector:
 		temp_vector -= get_parent().position
 		
 		# Creating the order by adding multiple effects to the field...
-		directional_fields[field_types.ORDERS].add_effect(1, temp_vector.angle()) 
+		directional_fields[field_types.ORDERS].add_effect(ORDER_BASE_WEIGHT, temp_vector.angle()) 
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.ORDERS].set_step(delta)
@@ -301,6 +306,6 @@ func _get_combined_field_peak() -> Vector2:
 	#support_directional_field.combine(directional_fields[field_types.TARGETS])
 	
 	# For debug use:
-	support_directional_field.display_debug(get_parent().position)
+	# support_directional_field.display_debug(get_parent().position)
 	
 	return support_directional_field.get_peak().normalized()
