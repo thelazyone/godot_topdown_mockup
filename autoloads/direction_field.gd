@@ -10,6 +10,8 @@ var current_pattern: DirectionalPattern
 var target_pattern: DirectionalPattern
 var response_time: float
 
+# For Debug
+var debug_polygon = Polygon2D.new()
 
 func _init(num_sectors_: int = DEFAULT_NUM_SECTORS):
 	num_sectors = num_sectors_
@@ -17,6 +19,8 @@ func _init(num_sectors_: int = DEFAULT_NUM_SECTORS):
 	current_pattern = DirectionalPattern.new(num_sectors)
 	target_pattern = DirectionalPattern.new(num_sectors)
 	response_time = DEFAULT_RESPONSE_TIME
+	debug_polygon.visible = false
+	add_child(debug_polygon)
 
 func set_step(delta: float) -> void:
 	
@@ -109,7 +113,18 @@ func get_peak() -> Vector2:
 	# Convert to Vector2 using cos/sin
 	return Vector2(cos(angle), sin(angle)) * max_value
 	
-func display_debug() -> String:
+func display_debug(parent_position: Vector2) -> String:
+	
+	debug_polygon.visible = true
+	var corners : Array = []
+	for i in range(num_sectors):
+		var angle = 2 * PI / num_sectors * i
+		var offset = parent_position
+		corners.append(offset + Vector2(50, 0).rotated(angle) * current_pattern.values[i])
+	debug_polygon.color = Color.GRAY
+	debug_polygon.set_polygon(PackedVector2Array(corners))
+	
+	# Generating the debug string as well.
 	var debug_string = "DEBUG: "
 	for i in range(num_sectors):
 		debug_string += str(current_pattern.values[i]) + " "

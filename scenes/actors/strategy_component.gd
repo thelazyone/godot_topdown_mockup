@@ -13,11 +13,7 @@ var target_radius = 0. # In the future the radius can be set dragging in-game
 var last_position_before_pursue = Vector2.ZERO # TEMP TODO TBR?
 
 # Directional fields dictionary.
-enum field_types {
-	ORDERS,
-	THREATS,
-	TARGETS,
-}
+enum field_types {ORDERS, THREATS, TARGETS}
 @onready var directional_fields = {
 	field_types.ORDERS : DirectionalField.new(),
 	field_types.THREATS : DirectionalField.new(),
@@ -28,14 +24,18 @@ var support_directional_field = DirectionalField.new()
 # For the Navigation Field:
 var navigation_component = Resource
 
-
 # Enemy Targeting 
 var target_enemy = null
 
 # State Machine 
+# Each state gives different weights to the directional fields, regulating
+# the behaviour accordingly.
 enum states {IDLE, MOVE, PURSUE, ATTACK, EVADE}
 var state = states.IDLE
 
+##############################
+## INTERFACE
+##############################
 
 # Direct mouse commands
 func go_to(position: Vector2, radius = 50): # TODO TBR
@@ -53,12 +53,14 @@ func is_shooting():
 	if target_enemy and is_instance_valid(target_enemy) and state == states.ATTACK:
 		return target_enemy.position
 
+##############################
+## PRIVATE METHODS
+##############################
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
-	
-
+	# Nothing here.
+	add_child(support_directional_field)
 	pass
 
 
@@ -76,25 +78,35 @@ func _process(delta: float) -> void:
 		
 		# Testing out the Fields:
 		_update_orders_field(delta)
-		
+		_update_threats_field(delta)
+
 		# Now deciding the movement: 
 		_apply_strategy()
-	
 
 
+func _update_threats_field(delta: float):
+	for goon in get_tree().get_nodes_in_group("goons"):
+		var spotting_range = get_parent().SPOTTING_RANGE
+		var range = get_parent().position.distance_to(goon.position)
+		if goon.FACTION != get_parent().FACTION and range < spotting_range:
+			var threat_angle = (get_parent().position - goon.position).angle()
+			var threat_value = 10 * (spotting_range - range) / spotting_range
+			
+			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
+		
+		# Finally combining it all in the next "stable" field.
+		directional_fields[field_types.THREATS].set_step(delta)
+		
 func _update_orders_field(delta: float):
 	var temp_vector = navigation_component.get_move(target_position)
 	if temp_vector:
 		temp_vector -= get_parent().position
-		print("\nEBUG: temp vector is ", temp_vector)
 		
 		# Creating the order by adding multiple effects to the field...
 		directional_fields[field_types.ORDERS].add_effect(1, temp_vector.angle()) 
-		print("field is ", directional_fields[field_types.ORDERS].display_debug())
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.ORDERS].set_step(delta)
-		print("then is ", directional_fields[field_types.ORDERS].display_debug())
 
 # Private Methods
 func _state_number_to_name(state_number: int) -> String:
@@ -281,8 +293,14 @@ func _retreat():
 	
 # Navigation stuff:
 func _get_combined_field_peak() -> Vector2:
+	
+	# TODO can be optimized a LOT!
 	support_directional_field.clear()
 	support_directional_field.combine(directional_fields[field_types.ORDERS])
-	#support_directional_field.combine(directional_fields[field_types.THREATS])
+	support_directional_field.combine(directional_fields[field_types.THREATS])
 	#support_directional_field.combine(directional_fields[field_types.TARGETS])
+	
+	# For debug use:
+	support_directional_field.display_debug(get_parent().position)
+	
 	return support_directional_field.get_peak().normalized()

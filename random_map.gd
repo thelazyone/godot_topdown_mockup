@@ -51,6 +51,7 @@ func _populate(num : int) -> void:
 			_add_checkpoint(Vector2(
 				get_viewport_rect().size.x / sections.x * (xi + 1), 
 				get_viewport_rect().size.y / sections.y * (yi + .5)))
+	_add_checkpoint(Vector2(get_viewport_rect().size.x / 2, get_viewport_rect().size.y /2))
 
 func _add_building(pos : Vector2, size : Vector2):
 	
