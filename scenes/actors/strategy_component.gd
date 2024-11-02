@@ -3,7 +3,7 @@ extends Node2D
 enum orders {NONE, ATTACK, DEFEND}
 
 var current_order = orders.NONE
-const ORDER_PERIOD_S = .2
+const ORDER_PERIOD_S = .05
 var last_order_time_s = 99
 
 var target_area = Vector2.ZERO
@@ -21,8 +21,12 @@ enum field_types {ORDERS, THREATS, TARGETS}
 }
 var support_directional_field = DirectionalField.new()
 const THREAT_RADIUS = 200
-const THREAT_BASE_WEIGHT = 10
+const THREAT_BASE_WEIGHT = 7
 const ORDER_BASE_WEIGHT = 5
+const TARGET_RADIUS = 300
+const TARGET_MIN_RADIUS = 80
+const TARGET_BASE_WEIGHT = 4
+
 
 # For the Navigation Field:
 var navigation_component = Resource
@@ -89,12 +93,12 @@ func _process(delta: float) -> void:
 
 # Threat field pushes the goon away from threats if too close
 func _update_threats_field(delta: float):
+	directional_fields[field_types.THREATS].clear_buffer()
 	for goon in get_tree().get_nodes_in_group("goons"):
-		var threat_radius = THREAT_RADIUS
 		var range = get_parent().position.distance_to(goon.position)
-		if goon.FACTION != get_parent().FACTION and range < threat_radius:
-			var threat_angle = (get_parent().position - goon.position).angle()
-			var threat_value = THREAT_BASE_WEIGHT * (threat_radius - range) / threat_radius
+		if goon.FACTION != get_parent().FACTION and range < THREAT_RADIUS:
+			var threat_angle = (goon.position - get_parent().position).angle() + PI
+			var threat_value = THREAT_BASE_WEIGHT * (THREAT_RADIUS - range) / THREAT_RADIUS
 			
 			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
 		
@@ -103,6 +107,7 @@ func _update_threats_field(delta: float):
 		
 # Order brings the goon in the direction of the objective.
 func _update_orders_field(delta: float):
+	directional_fields[field_types.ORDERS].clear_buffer()
 	var temp_vector = navigation_component.get_move(target_position)
 	if temp_vector:
 		temp_vector -= get_parent().position
@@ -112,6 +117,21 @@ func _update_orders_field(delta: float):
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.ORDERS].set_step(delta)
+
+# Target field attracts goons to enemy goons, to a minimum distance.
+# It has the tendency to distract goosn from their main directive, though.
+func _update_targets_field(delta: float):
+	directional_fields[field_types.TARGETS].clear_buffer()
+	for goon in get_tree().get_nodes_in_group("goons"):
+		var range = get_parent().position.distance_to(goon.position)
+		if goon.FACTION != get_parent().FACTION and range < TARGET_RADIUS and range > TARGET_MIN_RADIUS:
+			var target_angle = (goon.position - get_parent().position).angle()
+			var target_value = TARGET_BASE_WEIGHT 
+			
+			directional_fields[field_types.TARGETS].add_effect(target_value, target_angle) 
+		
+		# Finally combining it all in the next "stable" field.
+		directional_fields[field_types.TARGETS].set_step(delta)
 
 # Private Methods
 func _state_number_to_name(state_number: int) -> String:
@@ -300,12 +320,12 @@ func _retreat():
 func _get_combined_field_peak() -> Vector2:
 	
 	# TODO can be optimized a LOT!
-	support_directional_field.clear()
+	support_directional_field.clear_current()
 	support_directional_field.combine(directional_fields[field_types.ORDERS])
 	support_directional_field.combine(directional_fields[field_types.THREATS])
 	#support_directional_field.combine(directional_fields[field_types.TARGETS])
 	
 	# For debug use:
-	# support_directional_field.display_debug(get_parent().position)
+	support_directional_field.display_debug(get_parent().position)
 	
 	return support_directional_field.get_peak().normalized()

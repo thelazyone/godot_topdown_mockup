@@ -3,8 +3,8 @@ extends Node2D
 const goon_scene = preload("res://scenes/actors/goon.tscn")
 const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
-const start_goons = 8
-const max_goons = 8
+const start_goons = 1
+const max_goons = 1
 
 var cumulateTime = 0
 

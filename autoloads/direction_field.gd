@@ -1,8 +1,10 @@
 class_name DirectionalField
 extends Node
 
-const DEFAULT_NUM_SECTORS := 16
-const DEFAULT_RESPONSE_TIME := .02
+const DEFAULT_NUM_SECTORS :=32
+
+# .1 for slow response, .05 for medium, .02 for fast, 0. for instant
+const DEFAULT_RESPONSE_TIME := .05
 
 var sector_size: float
 var num_sectors: int
@@ -26,13 +28,10 @@ func set_step(delta: float) -> void:
 	
 	# Smoothly interpolate current pattern toward target
 	var smooth_factor = 1.0 - exp(-delta / response_time)
+	print("smooth is ", smooth_factor)
 	current_pattern.interpolate_to(target_pattern, smooth_factor)
-	
-	# Clear target pattern for next frame
-	for i in range(num_sectors):
-		target_pattern.set_value(i, 0.0)
+	clear_buffer()
 
-		
 func combine(other : DirectionalField):
 	
 	# Consistency checks from the propeties of the directional fields.
@@ -42,12 +41,16 @@ func combine(other : DirectionalField):
 	for i in range(num_sectors):
 		current_pattern.values[i] += other.current_pattern.values[i]
 
-func clear():
+func clear_buffer():
+	for i in range(num_sectors):
+		target_pattern.values[i] = 0.
+		
+func clear_current():
 	for i in range(num_sectors):
 		current_pattern.values[i] = 0.
 
 # TODO to validate, I'm not really liking this one.
-func add_effect(value: float, angle: float, spread: float = .5) -> void:
+func add_effect(value: float, angle: float, spread: float = .3) -> void:
 	var main_sector : int = fposmod(angle, 2 * PI) / sector_size
 	var falloff := value * spread
 	
@@ -118,10 +121,10 @@ func display_debug(parent_position: Vector2) -> String:
 	debug_polygon.visible = true
 	var corners : Array = []
 	for i in range(num_sectors):
-		var angle = 2 * PI / num_sectors * i
+		var angle = 2 * PI / num_sectors * (i + 1)
 		var offset = parent_position
-		corners.append(offset + Vector2(50, 0).rotated(angle) * current_pattern.values[i])
-	debug_polygon.color = Color.GRAY
+		corners.append(offset + Vector2(10, 0).rotated(angle) * current_pattern.values[i])
+	debug_polygon.color = Color.PURPLE
 	debug_polygon.set_polygon(PackedVector2Array(corners))
 	
 	# Generating the debug string as well.

@@ -4,7 +4,7 @@ extends Area2D
 @export var SPEED = 500
 @export var DURATION_MS = 1000
 @export var DAMAGE = 2
-@export var NOCLIP_TIME_MS = 100
+@export var NOCLIP_TIME_MS = 30
 
 @onready var start_time = Time.get_ticks_msec()
 
