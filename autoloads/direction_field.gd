@@ -28,18 +28,17 @@ func set_step(delta: float) -> void:
 	
 	# Smoothly interpolate current pattern toward target
 	var smooth_factor = 1.0 - exp(-delta / response_time)
-	print("smooth is ", smooth_factor)
 	current_pattern.interpolate_to(target_pattern, smooth_factor)
 	clear_buffer()
 
-func combine(other : DirectionalField):
+func combine(other : DirectionalField, factor : float = 1.):
 	
 	# Consistency checks from the propeties of the directional fields.
 	# TODO
 	
 	# Clear target pattern for next frame
 	for i in range(num_sectors):
-		current_pattern.values[i] += other.current_pattern.values[i]
+		current_pattern.values[i] += other.current_pattern.values[i] * factor
 
 func clear_buffer():
 	for i in range(num_sectors):

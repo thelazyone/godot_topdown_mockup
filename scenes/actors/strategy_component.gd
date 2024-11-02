@@ -20,12 +20,18 @@ enum field_types {ORDERS, THREATS, TARGETS}
 	field_types.TARGETS : DirectionalField.new()
 }
 var support_directional_field = DirectionalField.new()
-const THREAT_RADIUS = 200
-const THREAT_BASE_WEIGHT = 7
-const ORDER_BASE_WEIGHT = 5
-const TARGET_RADIUS = 300
-const TARGET_MIN_RADIUS = 80
-const TARGET_BASE_WEIGHT = 4
+const THREATS_RADIUS = 200
+const THREATS_BASE_WEIGHT = 7
+const ORDERS_BASE_WEIGHT = 5
+const TARGETS_RADIUS = 300
+const TARGETS_MIN_RADIUS = 80
+const TARGETS_BASE_WEIGHT = 4
+
+# Directional field weights.
+# These should be changed depending on the state
+var threats_weight = THREATS_BASE_WEIGHT
+var targets_weight = TARGETS_BASE_WEIGHT
+var orders_weight = ORDERS_BASE_WEIGHT
 
 
 # For the Navigation Field:
@@ -96,9 +102,9 @@ func _update_threats_field(delta: float):
 	directional_fields[field_types.THREATS].clear_buffer()
 	for goon in get_tree().get_nodes_in_group("goons"):
 		var range = get_parent().position.distance_to(goon.position)
-		if goon.FACTION != get_parent().FACTION and range < THREAT_RADIUS:
+		if goon.FACTION != get_parent().FACTION and range < THREATS_RADIUS:
 			var threat_angle = (goon.position - get_parent().position).angle() + PI
-			var threat_value = THREAT_BASE_WEIGHT * (THREAT_RADIUS - range) / THREAT_RADIUS
+			var threat_value = (THREATS_RADIUS - range) / THREATS_RADIUS
 			
 			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
 		
@@ -113,7 +119,7 @@ func _update_orders_field(delta: float):
 		temp_vector -= get_parent().position
 		
 		# Creating the order by adding multiple effects to the field...
-		directional_fields[field_types.ORDERS].add_effect(ORDER_BASE_WEIGHT, temp_vector.angle()) 
+		directional_fields[field_types.ORDERS].add_effect(1, temp_vector.angle()) 
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.ORDERS].set_step(delta)
@@ -124,16 +130,18 @@ func _update_targets_field(delta: float):
 	directional_fields[field_types.TARGETS].clear_buffer()
 	for goon in get_tree().get_nodes_in_group("goons"):
 		var range = get_parent().position.distance_to(goon.position)
-		if goon.FACTION != get_parent().FACTION and range < TARGET_RADIUS and range > TARGET_MIN_RADIUS:
+		if goon.FACTION != get_parent().FACTION and range < TARGETS_RADIUS and range > TARGETS_MIN_RADIUS:
 			var target_angle = (goon.position - get_parent().position).angle()
-			var target_value = TARGET_BASE_WEIGHT 
+			var target_value = 1 # TODO make it variables 
 			
-			directional_fields[field_types.TARGETS].add_effect(target_value, target_angle) 
+			directional_fields[field_types.TARGETS].add_effect(1, target_angle) 
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.TARGETS].set_step(delta)
 
 # Private Methods
+
+# For debug purposes
 func _state_number_to_name(state_number: int) -> String:
 	match state_number:
 		0: return "IDLE"
@@ -321,9 +329,9 @@ func _get_combined_field_peak() -> Vector2:
 	
 	# TODO can be optimized a LOT!
 	support_directional_field.clear_current()
-	support_directional_field.combine(directional_fields[field_types.ORDERS])
-	support_directional_field.combine(directional_fields[field_types.THREATS])
-	#support_directional_field.combine(directional_fields[field_types.TARGETS])
+	support_directional_field.combine(directional_fields[field_types.ORDERS], orders_weight)
+	support_directional_field.combine(directional_fields[field_types.THREATS], threats_weight)
+	support_directional_field.combine(directional_fields[field_types.TARGETS], targets_weight)
 	
 	# For debug use:
 	support_directional_field.display_debug(get_parent().position)
