@@ -20,8 +20,8 @@ enum field_types {ORDERS, THREATS, TARGETS}
 	field_types.TARGETS : DirectionalField.new()
 }
 var support_directional_field = DirectionalField.new()
-const THREATS_RADIUS = 200
-const THREATS_BASE_WEIGHT = 7
+const THREATS_RADIUS = 100
+const THREATS_BASE_WEIGHT = 12
 const ORDERS_BASE_WEIGHT = 5
 const TARGETS_RADIUS = 300
 const TARGETS_MIN_RADIUS = 80

@@ -115,7 +115,7 @@ func get_peak() -> Vector2:
 	# Convert to Vector2 using cos/sin
 	return Vector2(cos(angle), sin(angle)) * max_value
 	
-func display_debug(parent_position: Vector2) -> String:
+func display_debug(parent_position: Vector2 = Vector2.ZERO) -> String:
 	
 	debug_polygon.visible = true
 	var corners : Array = []
