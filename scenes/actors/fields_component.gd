@@ -24,6 +24,27 @@ var orders_weight = ORDERS_BASE_WEIGHT
 # For the Navigation Field:
 var navigation_component = Resource
 
+##############################
+## INTERFACE
+##############################
+
+func get_combined_field_peak() -> Vector2:
+	
+	# TODO can be optimized a LOT!
+	support_directional_field.clear_current()
+	support_directional_field.combine(directional_fields[field_types.ORDERS], orders_weight)
+	support_directional_field.combine(directional_fields[field_types.THREATS], threats_weight)
+	support_directional_field.combine(directional_fields[field_types.TARGETS], targets_weight)
+	
+	# For debug use:
+	support_directional_field.display_debug(get_parent().position)
+	
+	return support_directional_field.get_peak().normalized()
+
+##############################
+## LOOPS
+##############################
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_child(support_directional_field)
@@ -38,7 +59,9 @@ func _process(delta: float) -> void:
 		
 	pass
 
-# Private Methods
+##############################
+## PRIVATE METHODS
+##############################
 
 # Threat field pushes the goon away from threats if too close
 func _update_threats_field(delta: float):
@@ -81,17 +104,3 @@ func _update_targets_field(delta: float):
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.TARGETS].set_step(delta)
-		
-# Navigation stuff:
-func _get_combined_field_peak() -> Vector2:
-	
-	# TODO can be optimized a LOT!
-	support_directional_field.clear_current()
-	support_directional_field.combine(directional_fields[field_types.ORDERS], orders_weight)
-	support_directional_field.combine(directional_fields[field_types.THREATS], threats_weight)
-	support_directional_field.combine(directional_fields[field_types.TARGETS], targets_weight)
-	
-	# For debug use:
-	support_directional_field.display_debug(get_parent().position)
-	
-	return support_directional_field.get_peak().normalized()

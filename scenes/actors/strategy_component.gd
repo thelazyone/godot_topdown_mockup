@@ -36,7 +36,7 @@ func go_to(position: Vector2, radius = 50): # TODO TBR
 # Main output
 func get_next_move():
 	if state != states.IDLE:
-		return get_parent().position + fields_component._get_combined_field_peak()
+		return get_parent().position + fields_component.get_combined_field_peak()
 		return navigation_component.get_move(target_position)
 	return null
 
@@ -46,14 +46,13 @@ func is_shooting():
 		return target_enemy.position
 
 ##############################
-## PRIVATE METHODS
+## LOOPS
 ##############################
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Nothing here.
 	pass
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -70,9 +69,9 @@ func _process(delta: float) -> void:
 		# Now deciding the movement: 
 		_apply_strategy()
 
-
-
-# Private Methods
+##############################
+## PRIVATE METHODS
+##############################
 
 # For debug purposes
 func _state_number_to_name(state_number: int) -> String:
@@ -117,7 +116,6 @@ func _choose_new_order():
 	
 	_set_new_order(orders.DEFEND, nearest_checkpoint.position, 100)
 	
-	
 func _end_order():
 	current_order = orders.NONE
 
@@ -130,7 +128,6 @@ func _set_new_order(order_type: orders, position: Vector2, radius):
 func _update_target_position(new_position):
 	target_position = new_position
 	navigation_component.set_target(new_position)
-
 	
 func _get_position_in_area():
 	# In the future the logic to choose one area over another should depend on
@@ -192,7 +189,6 @@ func _apply_strategy():
 		_:
 			print("WARNING, unexpected state: ", state)
 		
-		
 # Decision Methods
 func _spot():
 	# TODO the spotting should have a better system. For now it's simply a "check if anything is 
@@ -212,7 +208,6 @@ func _spot():
 	elif state == states.PURSUE or state == states.ATTACK and not should_spot:
 		# TODO what about EVADE?
 		_set_state(states.IDLE)
-
 	
 func _evaluate_spot() -> bool:
 	
@@ -232,7 +227,6 @@ func _evaluate_spot() -> bool:
 		return false
 	
 	return true
-	
 	
 func _check_retreat() -> bool:
 	# TODO the bravest never retreat! Still to implement.
@@ -257,5 +251,3 @@ func _pursue(target):
 func _retreat():
 	target_enemy = null
 	_set_state(states.EVADE)
-	
-	

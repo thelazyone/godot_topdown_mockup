@@ -9,12 +9,9 @@ const PATFHINDING_PERIOD_MS = 200
 @onready var last_patfhinding_tick = Time.get_ticks_msec()
 @onready var navigation_agent = $NavigationAgent2D
 
-# PUBLIC METHODS
-#func setup(size):
-	#NavigationMap.setup(size)
-#
-#func is_setup():
-	#return NavigationMap.is_setup
+##############################
+## INTERFACE
+##############################
 	
 func set_target(input_position):
 	if input_position:
@@ -37,7 +34,9 @@ func get_move(input_position = null):
 
 	return local_target
 
-# NODE LOOPS
+##############################
+## LOOPS
+##############################
 
 func _ready() -> void:
 	pass
