@@ -24,7 +24,7 @@ func set_target(input_position):
 		NavigationServer2D.agent_set_avoidance_enabled(navigation_agent, true)
 
 	
-func get_move(input_position):
+func get_move(input_position = null):
 	#if not target: return # TODO TBR?
 	
 	if input_position:

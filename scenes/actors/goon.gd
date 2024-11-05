@@ -8,9 +8,10 @@ extends CharacterBody2D
 @export var SPLAT : Resource = null
 const SHOW_LOF : bool = true
 
-# @onready var nav = $NavigationComponent
+@onready var nav = $NavigationComponent
 @onready var strat = $StrategyComponent
 @onready var shoot = $ShootComponent
+@onready var field = $FieldsComponent
 
 # Rotation handling
 var current_bearing = 0
@@ -54,7 +55,9 @@ func die():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_to_group("goons")
-	strat.navigation_component = $NavigationComponent
+	strat.navigation_component = nav
+	strat.fields_component = field
+	field.navigation_component = nav
 	
 	pass # Replace with function body.
 
