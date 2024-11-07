@@ -1,25 +1,19 @@
 extends Node2D
 
-const goon_scene = preload("res://scenes/actors/goon.tscn")
 const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
-const start_goons = 8
-const max_goons = 8
+const start_goons = 8	
+const max_goons = 12
 
 var cumulateTime = 0
 
-func add_goons(faction : int, number : int, position : Vector2) :
+func add_goons(faction : int, number : int, i_position : Vector2) :
+	
+	var params = UnitParams.new()
+	
 	# Adding some goons
 	for i in range(number):
-		var goon = goon_scene.instantiate()
-		goon.position = position + Vector2(0, 15 * i)
-		goon.add_to_group("goons")
-		goon.FACTION = faction
-		if (faction > 1):
-			goon.get_node("Image").self_modulate = Color(1,.6,.6,1)
-		else:
-			goon.get_node("Image").self_modulate = Color(.6,.6,1,1)
-		add_child(goon)
+		add_child($UnitFactory.create_unit(params, i_position + Vector2(0, 15 * i), faction))
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

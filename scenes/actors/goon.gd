@@ -19,29 +19,6 @@ const ROTATION_SPEED_RAD_S = 4*PI
 const FAST_ROTATION_ANGLE = .25*PI
 const SLOW_ROTATION_RATIO = .1
 
-# An overview of the sub-components:
-#
-# NavigationComponent (nav): interacts with the map (and its NavigationRegion) to
-# provide the player with the next optimal movement direction to reach the set target.
-# This means that if the target is moving it should be updated before the query.
-# - set_target(position) to update the target
-# - get_move() to retrieve the next intermediate target
-# - get_move(position) to do both of the above at ounce.
-#
-# StrategyComponent (strat): deals with the internal logic of individual goons. Should
-# be approached as a black box, with the only interfaces being
-# - get_next_move() to retrieve the next movement to reach (in conflict with nav!)
-# - is_shooting() to check if the unit is shooting.
-# TODO both of these are wrong, the real interface should be something like
-# - get_interests() returning a vector of directions and interests in each
-# or rather, keeping the interest inside the strat:
-# - get_next_move() and get_next_shoot_target
-# if we decide to go more in a decoupled direction between movement and shooting.
-#
-# Either way the current use is 
-# nav.get_move(strat.get_next_move())
-
-
 func set_move_order(coordinates):
 	strat.go_to(coordinates, 100)
 	

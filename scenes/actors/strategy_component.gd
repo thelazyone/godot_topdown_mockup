@@ -1,6 +1,6 @@
 extends Node2D
 
-enum orders {NONE, ATTACK, DEFEND}
+enum orders {NONE, PATROL, DEFEND}
 
 var current_order = orders.NONE
 const ORDER_PERIOD_S = .05
@@ -29,18 +29,22 @@ var state = states.IDLE
 ## INTERFACE
 ##############################
 
+# Proper interface should set general behaviour patterns.
+
 # Direct mouse commands
+# Temporary
 func go_to(position: Vector2, radius = 50): # TODO TBR
 	_set_new_order(orders.DEFEND, position, radius)
 
-# Main output
+# Main output. Returns the point where the Goon should move.
+# The pathfinding is already calculated, so you should just apply this to any logic in the goon.
 func get_next_move():
 	if state != states.IDLE:
 		return get_parent().position + fields_component.get_combined_field_peak()
 		return navigation_component.get_move(target_position)
 	return null
 
-# Shooting logic
+# Shooting logic, to check whether to generate bullets. Returns the target point to shoot towards.
 func is_shooting():
 	if target_enemy and is_instance_valid(target_enemy):
 		return target_enemy.position
@@ -138,6 +142,7 @@ func _get_position_in_area():
 
 func _apply_strategy(): 
 	match state:
+		
 		states.IDLE:
 			# In the future there should be some random walk, TODO.			
 			if current_order != orders.NONE:
@@ -145,8 +150,8 @@ func _apply_strategy():
 				if not _is_in_place(target_position):
 					_update_target_position(_get_position_in_area())
 					_set_state(states.MOVE)
-				else:
-					_update_target_position(get_parent().position)
+				#else:
+					#_update_target_position(get_parent().position)
 				return
 			
 		states.MOVE:
@@ -209,6 +214,7 @@ func _spot():
 		# TODO what about EVADE?
 		_set_state(states.IDLE)
 	
+# Returns true if 
 func _evaluate_spot() -> bool:
 	
 	# Considering (for now)
@@ -243,6 +249,8 @@ func _is_in_place(input_position) -> bool:
 	if get_parent().position.distance_to(input_position) < POSITION_MARGIN:
 		return true
 	return false
+	
+# State change commands
 	
 func _pursue(target):
 	target_enemy = target

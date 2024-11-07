@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=5 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
+[ext_resource type="Script" path="res://unit_factory.gd" id="3_uwktb"]
 [ext_resource type="Script" path="res://random_map.gd" id="5_bgfk8"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
@@ -16,3 +17,6 @@ script = ExtResource("5_bgfk8")
 
 [node name="Region" type="NavigationRegion2D" parent="RandomMap"]
 navigation_polygon = SubResource("NavigationPolygon_gduh2")
+
+[node name="UnitFactory" type="Node2D" parent="."]
+script = ExtResource("3_uwktb")
