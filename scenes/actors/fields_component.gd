@@ -81,7 +81,8 @@ func _update_threats_field(delta: float):
 			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
 			
 			if goon.FACTION == 1:
-				print("goon spotted threat. distance is ", range, " , value is ", threat_value, ".")
+				##print("goon spotted threat. distance is ", range, " , value is ", threat_value, ".")
+				pass
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.THREATS].set_step(delta)

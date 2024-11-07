@@ -1,9 +1,9 @@
 extends Node2D
 
+# Orders vars. Currently always using DEFEND.
 enum orders {NONE, PATROL, DEFEND}
-
 var current_order = orders.NONE
-const ORDER_PERIOD_S = .05
+const ORDER_PERIOD_S = .1
 var last_order_time_s = 99
 
 var target_area = Vector2.ZERO
@@ -53,21 +53,20 @@ func get_shooting_target():
 ## LOOPS
 ##############################
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Nothing here.
 	pass
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 
-	_spot()
-	_check_retreat()
+	# First searching the closest enemy, which is the target.
+	_search_enemy_targets() # returns true if there is a target
 	
-	# If necessary, evaluating order.
+	# Evaluating strategy periodically.
 	last_order_time_s += delta
 	if last_order_time_s > ORDER_PERIOD_S:
 		last_order_time_s = 0
+		
 		_choose_new_order()
 		
 		# Now deciding the movement: 
@@ -91,7 +90,9 @@ func _set_state(new_state: states):
 	#print("Goon of faction ", get_parent().FACTION, " changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
 	state = new_state
 
-# Called periodically, to decide what to do.
+# Called periodically, to set the "node to control", based on various criteria.
+# Note that this is not the state of the goon, just the general order that the 
+# goon should be following if there is nothing else happening.
 func _choose_new_order():
 	
 	var target_value : float
@@ -165,7 +166,7 @@ func _apply_strategy():
 				_set_state(states.IDLE)
 				return
 				
-			if _is_in_range(target_enemy.position):
+			if _is_in_weapon_range(target_enemy.position):
 				_set_state(states.ATTACK)
 			else:
 				_update_target_position(target_enemy.position)
@@ -175,7 +176,7 @@ func _apply_strategy():
 				_set_state(states.IDLE)
 				return
 				
-			if !_is_in_range(target_enemy.position):
+			if !_is_in_weapon_range(target_enemy.position):
 				_pursue(target_enemy)
 				return
 			
@@ -195,51 +196,50 @@ func _apply_strategy():
 			print("WARNING, unexpected state: ", state)
 		
 # Decision Methods
-func _spot():
-	# TODO the spotting should have a better system. For now it's simply a "check if anything is 
-	# within range, and pick just one.
+
+# Spotting simply implies finding or not enemy targets within range. If one is selected already
+# there is a bit of a hysteresis before a new one is selected.
+# TODO use a raycast2d node to see if there is collison.
+func _search_enemy_targets():
 	
-	var should_spot = _evaluate_spot()
+	# Looping on all the goons that are not 
+	var spotting_range : float = get_parent().SPOTTING_RANGE
 	
-	# Finding any target, if found pursue.
-	if (state == states.IDLE or state == states.MOVE) and should_spot:
-		var spotting_range = get_parent().SPOTTING_RANGE
-		if state == states.MOVE:
-			spotting_range *= .25
-		for goon in get_tree().get_nodes_in_group("goons"):
-			if goon.FACTION != get_parent().FACTION and get_parent().position.distance_to(goon.position) < spotting_range:
-				_pursue(goon) 
+	# Searching for the closest. However, if there's a target already the new one should be a bit
+	# quite a bit closer than that. This avoid constant switching.
+	var closest_range : float = 99999
+	if target_enemy and is_instance_valid(target_enemy):
+		closest_range = _range_to(target_enemy) * .9
+
+	for goon in get_tree().get_nodes_in_group("goons"):
+		if goon.FACTION != get_parent().FACTION:
+			var target_distance = _range_to(goon)
+			if target_distance < spotting_range and target_distance < closest_range:
+				closest_range = target_distance
+				_set_target(goon)
+			pass
+			
+	return target_enemy != null
 	
-	elif state == states.PURSUE or state == states.ATTACK and not should_spot:
-		# TODO what about EVADE?
-		_set_state(states.IDLE)
+func _range_to(target : Node) -> float:
+	return get_parent().position.distance_to(target.position)
 	
-# Returns true if 
-func _evaluate_spot() -> bool:
-	
-	# TEMP TODO - this double function makes no sense anymore.
-	return true
-	
-	# Considering (for now)
-	# - distance from objective
-	var distance_to_target = get_parent().position.distance_to(target_area)
-	
-	# Implementing a hysteresis here.
-	if (state == states.PURSUE or state == states.ATTACK):
-		if distance_to_target > get_parent().SPOTTING_RANGE + target_radius: 
-			return false 
-		
-	elif distance_to_target > target_radius:
-		return false
-	
-	return true
+func _set_target(target: Node):
+	Debug.console("debug: target enemy set")
+	target_enemy = target
+
+
+
+
+
+
 	
 func _check_retreat() -> bool:
 	# TODO the bravest never retreat! Still to implement.
 	
 	return false
 	
-func _is_in_range(input_position) -> bool:
+func _is_in_weapon_range(input_position) -> bool:
 	# TODO implement a better logic
 	if get_parent().position.distance_to(input_position) < get_parent().WEAPON_RANGE:
 		return true
