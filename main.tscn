@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
-[ext_resource type="Script" path="res://unit_factory.gd" id="3_uwktb"]
+[ext_resource type="Script" path="res://autoloads/unit_factory.gd" id="3_uwktb"]
 [ext_resource type="Script" path="res://random_map.gd" id="5_bgfk8"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
