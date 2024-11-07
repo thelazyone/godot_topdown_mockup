@@ -14,17 +14,17 @@ var combined_directional_field = DirectionalField.new()
 # Parameters for Threats
 const THREATS_RADIUS = 30
 const THREATS_BASE_WEIGHT = 120
-var threats_weight = THREATS_BASE_WEIGHT
+@onready var threats_weight = THREATS_BASE_WEIGHT
 
 # Parameters for Orders
 const ORDERS_BASE_WEIGHT = 5
-var orders_weight = ORDERS_BASE_WEIGHT
+@onready var orders_weight = ORDERS_BASE_WEIGHT
 
 # Parameters for Targets
 const TARGETS_RADIUS = 300
 const TARGETS_MIN_RADIUS = 80
 const TARGETS_BASE_WEIGHT = 4
-var targets_weight = TARGETS_BASE_WEIGHT
+@onready var targets_weight = TARGETS_BASE_WEIGHT
 
 # Reference to the Navigation Field:
 var navigation_component = Resource

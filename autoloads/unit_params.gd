@@ -13,7 +13,6 @@ func _init():
 	speed = 100
 	melee = false
 
-
 func new() -> UnitParams:
 	var params = UnitParams.new()
 	params._init()

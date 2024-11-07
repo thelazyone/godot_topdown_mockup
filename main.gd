@@ -8,17 +8,25 @@ const max_goons = 12
 var cumulateTime = 0
 
 func add_goons(faction : int, number : int, i_position : Vector2) :
-	
 	var params = UnitParams.new()
+	params.melee = false
 	
 	# Adding some goons
 	for i in range(number):
-		add_child($UnitFactory.create_unit(params, i_position + Vector2(0, 15 * i), faction))
+		$UnitFactory.create_unit(params, i_position + Vector2(0, 15 * i), faction, self)
 
+func add_bugs(faction : int, number : int, i_position : Vector2) :
+	var params = UnitParams.new()
+	params.melee = true
+	
+	# Adding some goons
+	for i in range(number):
+		$UnitFactory.create_unit(params, i_position + Vector2(0, 15 * i), faction, self)
+		
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_goons(1, start_goons, start_1)
-	add_goons(2, start_goons, start_2)
+	add_bugs(2, start_goons, start_2)
 
 func _input(event: InputEvent) -> void:
 	
