@@ -2,8 +2,8 @@ extends Node2D
 
 const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
-const start_goons = 6	
-const max_goons = 18
+const start_goons = 8	
+const max_goons = 16
 
 var cumulateTime = 0
 
@@ -50,19 +50,19 @@ func _process(delta: float) -> void:
 	
 	if cumulateTime > 1:
 		
-		var goon1 = 0
-		var goon2 = 0
+		var goons_counter = 0
+		var bugs_counter = 0
 		
 		var goons = get_tree().get_nodes_in_group("goons")
 		for goon in goons:
 			match goon.FACTION:
-				1: goon1 += 1
-				2: goon2 += 1
+				1: goons_counter += 1
+				2: bugs_counter += 1
 				
-		if goon1 < max_goons:
-			add_goons(min(max_goons - goon1, 1), start_1)
-		if goon2 < max_goons:
-			add_bugs(min(max_goons - goon2, 5), start_2)
+		if goons_counter < max_goons:
+			add_goons(min(max_goons - goons_counter, 1), start_1)
+		if bugs_counter < max_goons * 2:
+			add_bugs(min(max_goons - bugs_counter, 5), start_2)
 		cumulateTime = 0
 		
 	pass

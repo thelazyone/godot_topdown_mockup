@@ -36,10 +36,6 @@ script = ExtResource("4_spkq7")
 width = 0.8
 default_color = Color(1, 0, 0, 1)
 
-[node name="DebugDirection" type="Line2D" parent="."]
-width = 2.0
-default_color = Color(0, 0, 1, 1)
-
 [node name="ShootComponent" type="Node2D" parent="."]
 script = ExtResource("5_ptigm")
 PROJECTILE = ExtResource("6_f7efv")

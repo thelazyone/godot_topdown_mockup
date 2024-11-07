@@ -41,12 +41,8 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	# Movement
-	# var local_target = nav.get_move(strat.get_next_move())
 	var local_target = strat.get_next_move()
-	if local_target:
-		get_node("DebugDirection").points = [Vector2.ZERO, local_target - position]
 	
-
 	if local_target :
 		
 		# Updating the bearing
@@ -60,7 +56,7 @@ func _process(delta: float) -> void:
 		velocity = Vector2.ZERO
 	
 	# Showing if attacking:
-	var shooting_target = strat.is_shooting()
+	var shooting_target = strat.get_shooting_target()
 	
 	if SHOW_LOF: 
 		$LineOfSight.visible = false

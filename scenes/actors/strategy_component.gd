@@ -45,7 +45,7 @@ func get_next_move():
 	return null
 
 # Shooting logic, to check whether to generate bullets. Returns the target point to shoot towards.
-func is_shooting():
+func get_shooting_target():
 	if target_enemy and is_instance_valid(target_enemy):
 		return target_enemy.position
 
@@ -217,11 +217,12 @@ func _spot():
 # Returns true if 
 func _evaluate_spot() -> bool:
 	
+	# TEMP TODO - this double function makes no sense anymore.
+	return true
+	
 	# Considering (for now)
 	# - distance from objective
 	var distance_to_target = get_parent().position.distance_to(target_area)
-	
-	# TODO magic numbers here, for now. TBR.
 	
 	# Implementing a hysteresis here.
 	if (state == states.PURSUE or state == states.ATTACK):
@@ -229,7 +230,6 @@ func _evaluate_spot() -> bool:
 			return false 
 		
 	elif distance_to_target > target_radius:
-		#print ("break spot on state ", _state_number_to_name(state))
 		return false
 	
 	return true

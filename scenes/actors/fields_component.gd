@@ -73,11 +73,15 @@ func _update_threats_field(delta: float):
 	directional_fields[field_types.THREATS].clear_buffer()
 	for goon in get_tree().get_nodes_in_group("goons"):
 		var range = get_parent().position.distance_to(goon.position)
+		
 		if goon.FACTION != get_parent().FACTION and range < THREATS_RADIUS:
 			var threat_angle = (goon.position - get_parent().position).angle() + PI
 			var threat_value = abs((THREATS_RADIUS - range)) / THREATS_RADIUS
 			
 			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
+			
+			if goon.FACTION == 1:
+				print("goon spotted threat. distance is ", range, " , value is ", threat_value, ".")
 		
 		# Finally combining it all in the next "stable" field.
 		directional_fields[field_types.THREATS].set_step(delta)
