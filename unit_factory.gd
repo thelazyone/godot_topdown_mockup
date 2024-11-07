@@ -4,26 +4,28 @@ const goon_scene = preload("res://scenes/actors/goon.tscn")
 # Public Method
 func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_parent) -> Node:
 	
-	print ("debug1")
 	var goon = goon_scene.instantiate()
 	goon.position = i_position
 	goon.FACTION = i_faction
 	goon.add_to_group("goons")
-	print ("debug2")
 	
 	i_parent.add_child(goon)
 	
 	# Setting the MELEE params
 	if i_params.melee == true: 
 		goon.field.threats_weight = 0
-		goon.field.targets_weight = 20
-		goon.field.orders_weight = 0
-		goon.WEAPON_RANGE = 10
+		goon.field.targets_weight = 30
+		goon.field.orders_weight = 0.1
+		goon.WEAPON_RANGE = 15
 	else:
 		goon.field.threats_weight = 200
 		goon.field.targets_weight = 20
 		goon.WEAPON_RANGE = 500
-
+		goon.SPOTTING_RANGE = 500
+		
+	goon.SPEED = i_params.speed
+	goon.shoot.COOLDOWN_TIME_MS = i_params.shoot_speed
+	
 	
 	# Custom color code, very TODO / TBR:
 	if (goon.FACTION > 1):

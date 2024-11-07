@@ -12,7 +12,7 @@ enum field_types {ORDERS, THREATS, TARGETS}
 var combined_directional_field = DirectionalField.new()
 
 # Parameters for Threats
-const THREATS_RADIUS = 30
+const THREATS_RADIUS = 150
 const THREATS_BASE_WEIGHT = 120
 @onready var threats_weight = THREATS_BASE_WEIGHT
 
@@ -22,7 +22,7 @@ const ORDERS_BASE_WEIGHT = 5
 
 # Parameters for Targets
 const TARGETS_RADIUS = 300
-const TARGETS_MIN_RADIUS = 80
+const TARGETS_MIN_RADIUS = 100
 const TARGETS_BASE_WEIGHT = 4
 @onready var targets_weight = TARGETS_BASE_WEIGHT
 

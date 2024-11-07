@@ -20,3 +20,10 @@ navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
 [node name="UnitFactory" type="Node2D" parent="."]
 script = ExtResource("3_uwktb")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 589.0
+offset_right = 60.0
+offset_bottom = 612.0
+text = "Press X to toggle debug fields"

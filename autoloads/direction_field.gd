@@ -116,18 +116,21 @@ func get_peak() -> Vector2:
 	return Vector2(cos(angle), sin(angle)) * max_value
 	
 func display_debug(parent_position: Vector2 = Vector2.ZERO) -> String:
+	if Debug.debug_enabled:
+		debug_polygon.visible = true
+		var corners : Array = []
+		for i in range(num_sectors):
+			var angle = 2 * PI / num_sectors * (i + 1)
+			var offset = parent_position
+			corners.append(offset + Vector2(10, 0).rotated(angle) * current_pattern.values[i])
+		debug_polygon.color = Color.PURPLE
+		debug_polygon.set_polygon(PackedVector2Array(corners))
 	
-	debug_polygon.visible = true
-	var corners : Array = []
-	for i in range(num_sectors):
-		var angle = 2 * PI / num_sectors * (i + 1)
-		var offset = parent_position
-		corners.append(offset + Vector2(10, 0).rotated(angle) * current_pattern.values[i])
-	debug_polygon.color = Color.PURPLE
-	debug_polygon.set_polygon(PackedVector2Array(corners))
-	
-	# Generating the debug string as well.
-	var debug_string = "DEBUG: "
-	for i in range(num_sectors):
-		debug_string += str(current_pattern.values[i]) + " "
-	return debug_string
+		# Generating the debug string as well.
+		var debug_string = "DEBUG: "
+		for i in range(num_sectors):
+			debug_string += str(current_pattern.values[i]) + " "
+		return debug_string
+	else:
+		debug_polygon.visible = false
+		return ""
