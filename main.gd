@@ -2,8 +2,8 @@ extends Node2D
 
 const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
-const start_goons = 1	
-const max_goons =1
+const start_goons = 8	
+const max_goons =8
 
 var cumulateTime = 0
 
@@ -44,7 +44,7 @@ func _input(event: InputEvent) -> void:
 		Debug.debug_enabled = !Debug.debug_enabled
 		
 	if Input.is_action_just_pressed("debug_console"):
-		Debug.debug_enabled = !Debug.debug_console_enabled
+		Debug.debug_console_enabledc = !Debug.debug_console_enabled
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
