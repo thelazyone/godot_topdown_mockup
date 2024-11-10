@@ -2,22 +2,16 @@
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
 [ext_resource type="Script" path="res://autoloads/unit_factory.gd" id="3_uwktb"]
-[ext_resource type="Script" path="res://random_map.gd" id="5_bgfk8"]
+[ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
-vertices = PackedVector2Array(1150.11, 645.93, 0.132813, 638.063, 8.85938, 4.96875, 1157.87, 2.02344)
+vertices = PackedVector2Array(581, -327, 577, 317, -580, 323, -587, -328)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-1, -5, 1168, -8, 1160, 656, -10, 648)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-598, -339, 1315, -332, 1319, 336, -590, 334)])
 source_geometry_group_name = &"navigation_polygon_source_group"
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0tp6l")
-
-[node name="RandomMap" type="Node2D" parent="."]
-script = ExtResource("5_bgfk8")
-
-[node name="Region" type="NavigationRegion2D" parent="RandomMap"]
-navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
 [node name="UnitFactory" type="Node2D" parent="."]
 script = ExtResource("3_uwktb")
@@ -28,3 +22,13 @@ offset_top = 621.0
 offset_right = 398.0
 offset_bottom = 644.0
 text = "Press X to toggle debug fields, Z for debug console."
+
+[node name="InfiniteMap" type="Node2D" parent="."]
+script = ExtResource("4_nyr5v")
+
+[node name="NavRegion" type="NavigationRegion2D" parent="InfiniteMap"]
+position = Vector2(580, 326)
+navigation_polygon = SubResource("NavigationPolygon_gduh2")
+
+[node name="Camera" type="Camera2D" parent="InfiniteMap"]
+position = Vector2(583, 325)
