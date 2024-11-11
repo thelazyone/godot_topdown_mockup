@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://do08dvg41xbl7"]
+
+[ext_resource type="Script" path="res://random_map.gd" id="1_gm7ej"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
+vertices = PackedVector2Array(1204, -81, 1203, 711, -59, 683, -31, -88)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-41, -99, 1215, -91, 1213, 722, -70, 693)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+
+[node name="RandomMap" type="Node2D"]
+visible = false
+script = ExtResource("1_gm7ej")
+
+[node name="Region" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_gduh2")
