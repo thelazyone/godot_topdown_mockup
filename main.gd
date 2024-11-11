@@ -5,6 +5,9 @@ const start_2 = Vector2(1000, 300)
 const start_goons = 8	
 const max_goons =8
 const max_bugs = 36
+#const start_goons = 1	
+#const max_goons =1
+#const max_bugs = 1
 
 var cumulateTime = 0
 

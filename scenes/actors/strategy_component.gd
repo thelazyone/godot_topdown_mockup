@@ -212,17 +212,32 @@ func _search_enemy_targets():
 	# quite a bit closer than that. This avoid constant switching.
 	var closest_range : float = 99999
 	if target_enemy and is_instance_valid(target_enemy):
-		closest_range = _range_to(target_enemy) * .9
+		if _check_line_of_sight(target_enemy):
+			closest_range = _range_to(target_enemy) * .9
 
 	for goon in get_tree().get_nodes_in_group("goons"):
 		if goon.FACTION != get_parent().FACTION:
 			var target_distance = _range_to(goon)
-			if target_distance < spotting_range and target_distance < closest_range:
+			if target_distance < spotting_range and \
+				target_distance < closest_range and \
+				_check_line_of_sight(goon):
 				closest_range = target_distance
 				_set_target(goon)
 			pass
 			
 	return target_enemy != null
+
+func _check_line_of_sight(target_object) -> bool:
+	
+	if target_object and is_instance_valid(target_object):
+		# Using this: https://www.reddit.com/r/godot/comments/duy05l/npc_line_of_sight_godot_2d_tutorial_the_combat/
+		var space_state = get_world_2d().direct_space_state
+		var raycast_query = PhysicsRayQueryParameters2D.create(get_parent().position, target_object.position, get_parent().collision_mask, [self, target_object])
+		var raycast_result = space_state.intersect_ray(raycast_query)
+		if raycast_result.is_empty():
+			return true
+	return false
+	
 	
 func _range_to(target : Node) -> float:
 	return get_parent().position.distance_to(target.position)
