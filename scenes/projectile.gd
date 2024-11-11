@@ -4,7 +4,7 @@ extends Area2D
 @export var SPEED = 500
 @export var DURATION_MS = 1000
 @export var DAMAGE = 2
-@export var NOCLIP_TIME_MS = 30
+@export var NOCLIP_TIME_MS = 0
 @export var FACTION = 0
 
 @onready var start_time = Time.get_ticks_msec()
@@ -44,7 +44,11 @@ func _process(delta: float) -> void:
 		queue_free()
 
 func _deal_damage(body):
+	if "FACTION" in body and body.FACTION == FACTION: 
+		return
+	
 	if body.has_node("HealthComponent"):
 		if body.FACTION != FACTION: 
 			body.get_node("HealthComponent").receive_damage(DAMAGE)
-			queue_free()
+	
+	queue_free()
