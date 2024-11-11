@@ -14,16 +14,20 @@ var sector_counter : int = 0
 # Camera Stuff
 @onready var camera_offset = $Camera.position.x
 var camera_position: float = 0
+var camera_target_position : float = 0
 const CAMERA_SPEED = 800
 
 func move_camera(new_position : float):
-	if new_position > camera_position:
-		camera_position = new_position
-		$Camera.position.x = camera_offset + camera_position
-	return camera_position
-# Private Methods
+	if new_position > camera_target_position:
+		camera_target_position = new_position
 
 func _process(delta):
+	
+	# Moving the camera if target has changed.
+	var camera_spread = camera_target_position - camera_position
+	if abs(camera_spread) > .1:
+		camera_position += min(camera_spread, CAMERA_SPEED * sign(camera_spread))
+		$Camera.position.x = camera_position + camera_offset
 
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 2) * sector_size.x:

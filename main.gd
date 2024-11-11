@@ -47,7 +47,8 @@ func _process(delta: float) -> void:
 	for goon in goons: 
 		if goon.position.x < leftmost_pos:
 			leftmost_pos = goon.position.x
-	current_camera_position = $InfiniteMap.move_camera(leftmost_pos - CAMERA_MARGIN)
+	$InfiniteMap.move_camera(leftmost_pos - CAMERA_MARGIN)
+	
 	
 	#REPOPULATE 
 	cumulateTime += delta
