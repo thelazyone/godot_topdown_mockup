@@ -62,7 +62,6 @@ func _populate_buildings():
 			)
 			
 			_add_building(center, _random_rect(building_size, 0.5))
-			print("creating building in ", center)
 			
 			# Adding side-buildings around it
 			for i in range(4):

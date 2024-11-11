@@ -26,14 +26,12 @@ func _process(delta):
 	if camera_position > (sector_counter - 2) * sector_size.x:
 		generate_new_sector()
 		sector_counter += 1
-		print ("sector counter is ", sector_counter)
 
 	# Remove old sectors if they're far left
 	if sectors.size() > 0 and camera_position - sectors[0].position.x > removal_distance:
 		remove_old_sector()
 
 func generate_new_sector():
-	print("DEBUG: Generating new sector!")
 	var sector_position_x = sector_counter * sector_size.x
 
 	# Create a new MapSector instance
@@ -76,21 +74,7 @@ func add_building(rect: Rect2, sector_offset: Vector2) -> Dictionary:
 	static_body.add_child(collision_shape)
 	nav_region.add_child(static_body)
 	static_body.set_global_position(building_center)
-
-
-
-	# Create collision shape for navigation
-	#var collision_shape = CollisionPolygon2D.new()
-	#var polygon = [
-		#Vector2(0, 0),
-		#Vector2(rect.size.x, 0),
-		#Vector2(rect.size.x, rect.size.y),
-		#Vector2(0, rect.size.y)
-	#]
-	#collision_shape.polygon = polygon
-	#collision_shape.position = sector_offset + rect.position
-	#nav_region.add_child(collision_shape)
-
+	
 	return {
 		"building_node": building_node,
 		"collision_shape": collision_shape
@@ -113,20 +97,14 @@ func remove_old_sector():
 	
 
 func _rebake_navigation():
-	
-	## Thanks to https://www.reddit.com/r/godot/comments/rzmfh3/is_there_a_way_to_get_the_rect2_of_the_camera/
-	#var camera_rect = get_canvas_transform().affine_inverse().basis_xform(get_viewport_rect().size)
-
-	
 
 	# Move the navigation region centered where it should be, then bake
 	nav_region.navigation_polygon.clear_outlines()
 	var polygon = [
-		Vector2(camera_position + 60, 0),
+		Vector2(camera_position, 0),
 		Vector2(get_viewport().size.x * 2 + camera_position, 0),
 		Vector2(get_viewport().size.x * 2 + camera_position, get_viewport().size.y),
-		Vector2(camera_position + 60, get_viewport().size.y),
+		Vector2(camera_position, get_viewport().size.y),
 	]
 	nav_region.navigation_polygon.add_outline(polygon)
-	print("adding nav polygon at ", polygon)
 	nav_region.bake_navigation_polygon()
