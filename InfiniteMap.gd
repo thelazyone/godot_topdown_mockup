@@ -1,5 +1,7 @@
 extends Node2D
 
+@onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
+
 # Adjustable parameters
 var sector_size : Vector2 = Vector2(800, 600)
 var sectors = []                           # List to keep track of active sectors
@@ -14,24 +16,26 @@ var sector_counter : int = 0
 var camera_position: float = 0
 const CAMERA_SPEED = 800
 
-func move_camera():
-	$Camera.position.x = camera_offset + camera_position
+func move_camera(new_position : float):
+	if new_position > camera_position:
+		camera_position = new_position
+		$Camera.position.x = camera_offset + camera_position
+	return camera_position
+# Private Methods
 
 func _process(delta):
-	if Input.is_action_pressed("right"):
-		camera_position += delta * CAMERA_SPEED
-		move_camera()
 
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 2) * sector_size.x:
-		generate_new_sector()
+		_generate_new_sector()
 		sector_counter += 1
 
 	# Remove old sectors if they're far left
 	if sectors.size() > 0 and camera_position - sectors[0].position.x > removal_distance:
-		remove_old_sector()
+		_remove_old_sector()
 
-func generate_new_sector():
+
+func _generate_new_sector():
 	var sector_position_x = sector_counter * sector_size.x
 
 	# Create a new MapSector instance
@@ -41,12 +45,17 @@ func generate_new_sector():
 
 	# Create buildings and collision shapes
 	for building_rect in sector_instance.get_building_rects():
-		var nodes = add_building(building_rect, Vector2(sector_position_x, 0))
+		var nodes = _add_building(building_rect, Vector2(sector_position_x, 0))
 		
 		# Tracking for removal only.
 		sector_instance.building_nodes.append(nodes["building_node"])
 		sector_instance.collision_shapes.append(nodes["collision_shape"])
-
+	
+	# Adding Checkpoints
+	for checkpoint in sector_instance.get_checkpoint_positions():
+		print("adding checkpoints in" , checkpoint)
+		_add_checkpoint(checkpoint, Vector2(sector_position_x, 0))
+	
 	# Enemies can be handled similarly if needed
 	# for enemy_pos in sector_instance.get_enemy_positions():
 	#     spawn_enemy(enemy_pos + Vector2(sector_position_x, 0))
@@ -56,7 +65,7 @@ func generate_new_sector():
 	# Rebake the navigation mesh
 	_rebake_navigation()
 
-func add_building(rect: Rect2, sector_offset: Vector2) -> Dictionary:
+func _add_building(rect: Rect2, sector_offset: Vector2) -> Dictionary:
 	# Create visual representation
 	var building_node = ColorRect.new()
 	building_node.color = Color(0.5, 0.5, 0.5)  # Gray color
@@ -79,8 +88,15 @@ func add_building(rect: Rect2, sector_offset: Vector2) -> Dictionary:
 		"building_node": building_node,
 		"collision_shape": collision_shape
 	}
+	
+func _add_checkpoint(pos : Vector2, sector_offset: Vector2) -> void :
+	var checkpoint = checkpoint_scene.instantiate()
+	checkpoint.position = pos + sector_offset
+	checkpoint.kill_if_blue = true
+	add_child(checkpoint)
+	
 
-func remove_old_sector():
+func _remove_old_sector():
 
 	var old_sector = sectors.pop_front()
 

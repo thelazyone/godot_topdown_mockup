@@ -21,9 +21,9 @@ const ORDERS_BASE_WEIGHT = 5
 @onready var orders_weight = ORDERS_BASE_WEIGHT
 
 # Parameters for Targets
-const TARGETS_RADIUS = 300
-const TARGETS_MIN_RADIUS = 100
-const TARGETS_BASE_WEIGHT = 4
+var TARGETS_RADIUS = 300
+var TARGETS_MIN_RADIUS = 100
+var TARGETS_BASE_WEIGHT = 4
 @onready var targets_weight = TARGETS_BASE_WEIGHT
 
 # Reference to the Navigation Field:

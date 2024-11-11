@@ -225,11 +225,10 @@ func _range_to(target : Node) -> float:
 	return get_parent().position.distance_to(target.position)
 	
 func _set_target(target: Node):
-	Debug.console("debug: target enemy set")
 	target_enemy = target
 
 
-
+# TODO PROBABLY TO PURGE
 
 
 

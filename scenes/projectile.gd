@@ -5,10 +5,14 @@ extends Area2D
 @export var DURATION_MS = 1000
 @export var DAMAGE = 2
 @export var NOCLIP_TIME_MS = 30
+@export var FACTION = 0
 
 @onready var start_time = Time.get_ticks_msec()
 
 var velocity = Vector2.ZERO
+
+func set_faction(faction : int):
+	FACTION = faction
 
 func shoot(angle : float):
 	position = Vector2(0,0).rotated(angle)
@@ -35,22 +39,13 @@ func _process(delta: float) -> void:
 		
 	# Enabling the collision shape: 
 	get_node("CollisionShape2D").disabled = false
-		
-	#var targets = get_colliding_bodies()
-	#if not targets.is_empty():
-		#print("HIT SOMETHING!")
-		#for target in targets:
-			## Only first target receives damage, the others are safe!
-			#if target.has_node("HealthComponent"):
-				#target.get_node("HealthComponent").receive_damage(DAMAGE)
-				#print("target ", target, " hit!")
-				##queue_free()
-		#
+
 	# Check if projectile should disappear
 	if Time.get_ticks_msec() - start_time > DURATION_MS:
 		queue_free()
 
 func _deal_damage(body):
 	if body.has_node("HealthComponent"):
-		body.get_node("HealthComponent").receive_damage(DAMAGE)
-		queue_free()
+		if body.FACTION != FACTION: 
+			body.get_node("HealthComponent").receive_damage(DAMAGE)
+			queue_free()

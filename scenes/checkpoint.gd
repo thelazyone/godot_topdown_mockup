@@ -4,6 +4,8 @@ extends Node2D
 @export var CONTROL_SPEED = 0.3
 @export var CONTROL_AREA : float = 100
 
+var kill_if_blue : bool = false
+
 func _ready() -> void:
 	add_to_group("checkpoints")
 	pass # Replace with function body.
@@ -27,6 +29,10 @@ func _process(delta: float) -> void:
 		
 		# Call required to force the redraw of the circle with the new colour 
 		queue_redraw()
+	
+	if kill_if_blue:
+		if CONTROL_FACTION == 1.:
+			queue_free()
 
 func _draw():
 	

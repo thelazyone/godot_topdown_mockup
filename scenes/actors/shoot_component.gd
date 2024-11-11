@@ -9,6 +9,8 @@ func try_shoot(angle):
 	if Time.get_ticks_msec() - last_shot_tick_ms > COOLDOWN_TIME_MS:
 		var curr_projectile = PROJECTILE.instantiate()
 		add_child(curr_projectile)
+		curr_projectile.FACTION = get_parent().FACTION
+		
 		curr_projectile.shoot(angle)
 		last_shot_tick_ms = Time.get_ticks_msec()
 

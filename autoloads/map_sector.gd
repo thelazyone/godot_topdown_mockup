@@ -3,6 +3,7 @@ extends Node2D
 
 var buildings: Array[Rect2] = []  # Array of Rect2 representing building positions and sizes
 var enemies: Array[Vector2] = []  # Array of Vector2 representing enemy positions
+var checkpoints: Array[Vector2] = []  # Array of Vector2 representing enemy positions
 
 var sector_size
 
@@ -15,6 +16,7 @@ var collision_shapes = []   # Collision shapes for navigation
 func generate_content(size: Vector2):
 	sector_size = size
 	_generate_buildings()
+	_generate_checkpoints()
 	_generate_enemies()
 	
 # Methods to access data
@@ -23,10 +25,19 @@ func get_building_rects() -> Array:
 
 func get_enemy_positions() -> Array:
 	return enemies
+	
+func get_checkpoint_positions() -> Array:
+	return checkpoints
 
 func _generate_buildings():
 	# Generate Rect2 for where the buildings are and store them in "buildings"
 	_populate_buildings()
+	
+func _generate_checkpoints():
+	
+	# TODO Temp - creating two checkpoints now.
+	checkpoints.append(Vector2(sector_size.x * .25, sector_size.y * .5))
+	checkpoints.append(Vector2(sector_size.x * .75, sector_size.y * .5))
 
 func _generate_enemies():
 	# Generate Vector2 for where the enemies are and store them in "enemies"

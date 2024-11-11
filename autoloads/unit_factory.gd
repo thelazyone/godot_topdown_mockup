@@ -15,8 +15,10 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_pa
 	if i_params.melee == true: 
 		goon.field.threats_weight = 0
 		goon.field.targets_weight = 30
-		goon.field.orders_weight = 0.1
+		goon.field.orders_weight = 0
+		goon.field.TARGETS_RADIUS = 1300
 		goon.WEAPON_RANGE = 15
+		
 	else:
 		goon.field.threats_weight = 200
 		goon.field.targets_weight = 20
