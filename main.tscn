@@ -5,9 +5,9 @@
 [ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
-vertices = PackedVector2Array(581, -327, 577, 317, -580, 323, -587, -328)
+vertices = PackedVector2Array(1170.05, 654.008, -4.03906, 655.977, -6.96094, 1, 1173.94, 1)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-598, -339, 1315, -332, 1319, 336, -590, 334)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-17, -9, 1184, -9, 1180, 664, -14, 666)])
 source_geometry_group_name = &"navigation_polygon_source_group"
 
 [node name="Main" type="Node2D"]
@@ -27,7 +27,6 @@ text = "Press X to toggle debug fields, Z for debug console."
 script = ExtResource("4_nyr5v")
 
 [node name="NavRegion" type="NavigationRegion2D" parent="InfiniteMap"]
-position = Vector2(580, 326)
 navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
 [node name="Camera" type="Camera2D" parent="InfiniteMap"]
