@@ -31,7 +31,7 @@ static func get_soldier() -> UnitParams :
 	par.hp = 100
 	par.speed = 100
 	par.spotting_range = 500
-	par.attack_speed = 500
+	par.attack_speed = 50
 	par.attack_damage = 2
 	par.attack_range = 500
 	par.threats_weight = 5
@@ -39,7 +39,7 @@ static func get_soldier() -> UnitParams :
 	par.targets_weight = 5
 	par.targets_range = 500
 	par.targets_min_range = 100
-	par.orders_weight = 5
+	par.orders_weight = 10
 	return par
 
 static func get_bug() -> UnitParams :

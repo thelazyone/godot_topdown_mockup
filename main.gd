@@ -4,6 +4,7 @@ const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
 const start_goons = 8	
 const max_goons =8
+const max_bugs = 36
 
 var cumulateTime = 0
 
@@ -48,7 +49,7 @@ func _process(delta: float) -> void:
 		if goon.position.x < leftmost_pos:
 			leftmost_pos = goon.position.x
 	$InfiniteMap.move_camera(leftmost_pos - CAMERA_MARGIN)
-	
+	current_camera_position = $InfiniteMap.get_camera_position()
 	
 	#REPOPULATE 
 	cumulateTime += delta
@@ -62,8 +63,8 @@ func _process(delta: float) -> void:
 				
 		#if goons_counter < max_goons:
 			#add_goons(min(max_goons - goons_counter, 1), start_1 + Vector2(current_camera_position, 0))
-		if bugs_counter < max_goons * 3:
-			add_bugs(min(max_goons - bugs_counter, 5), start_2 + Vector2(current_camera_position, 0))
+		if bugs_counter < max_bugs:
+			add_bugs(min(max_bugs - bugs_counter, 16), start_2 + Vector2(current_camera_position, 0))
 		cumulateTime = 0
 		
 	pass

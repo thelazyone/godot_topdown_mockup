@@ -78,6 +78,14 @@ func get_value_at_angle(angle: float) -> float:
 		current_pattern.get_value(sector2), 
 		t
 	)
+	
+func get_sum() -> Vector2:
+	var final_vector = Vector2.ZERO
+	for i in range(num_sectors):
+		var angle = 2 * PI / num_sectors * (i + 1)
+		final_vector += Vector2(1, 0).rotated(angle) * current_pattern.values[i]
+	
+	return final_vector.normalized()
 
 # Interpolates the value to give a continuous angular result.
 func get_peak() -> Vector2:

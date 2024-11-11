@@ -21,6 +21,9 @@ func move_camera(new_position : float):
 	if new_position > camera_target_position:
 		camera_target_position = new_position
 
+func get_camera_position() -> float:
+	return camera_position
+
 func _process(delta):
 	
 	# Moving the camera if target has changed.
@@ -85,6 +88,7 @@ func _add_building(rect: Rect2, sector_offset: Vector2) -> Dictionary:
 	var static_body = StaticBody2D.new()
 	static_body.add_child(collision_shape)
 	nav_region.add_child(static_body)
+	static_body.add_to_group("obstacles")
 	static_body.set_global_position(building_center)
 	
 	return {
