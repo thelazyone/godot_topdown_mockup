@@ -8,34 +8,40 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_pa
 	goon.position = i_position
 	goon.FACTION = i_faction
 	goon.add_to_group("goons")
-	
 	i_parent.add_child(goon)
 	
-	# Setting the MELEE params
-	if i_params.melee == true: 
-		goon.field.threats_weight = 0
-		goon.field.targets_weight = 30
-		goon.field.orders_weight = 0
-		goon.field.TARGETS_RADIUS = 1300
-		goon.WEAPON_RANGE = 15
-		
-	else:
-		goon.field.threats_weight = 200
-		goon.field.targets_weight = 20
-		goon.WEAPON_RANGE = 500
-		goon.SPOTTING_RANGE = 500
-		
+	# General Params
+	goon.NAME = i_params.name_id
+	goon.health.HEALTH = i_params.hp
 	goon.SPEED = i_params.speed
-	goon.shoot.COOLDOWN_TIME_MS = i_params.shoot_speed
-	
-	
-	# Custom color code, very TODO / TBR:
-	if (goon.FACTION > 1):
-		goon.get_node("Image").self_modulate = Color(1,.6,.6,1)
-	else:
-		goon.get_node("Image").self_modulate = Color(.6,.6,1,1)
+	goon.SPOTTING_RANGE = i_params.spotting_range
 
-	# Skip most of the params for now (TODO)
+	# Attack Params
+	goon.shoot.COOLDOWN_TIME_MS = i_params.attack_speed
+	##goon.shoot.PROJECTILE.DAMAGE = i_params.attack_damage # TODO this gives error
+	goon.WEAPON_RANGE = i_params.attack_range
+
+	# Behaviour Fields Params
+	# Threats Field
+	goon.field.threats_weight = i_params.threats_weight
+	goon.field.threats_range = i_params.threats_range
+
+	# Targets Field
+	goon.field.targets_weight = i_params.targets_weight
+	goon.field.targets_range = i_params.targets_range
+	goon.field.targets_min_range = i_params.targets_min_range
+
+	# Orders Field
+	if goon.FACTION != 1:
+		goon.field.orders_weight = 0
+	else:
+		goon.field.orders_weight = i_params.orders_weight
+
+	match goon.FACTION:
+		1: goon.get_node("Image").self_modulate = Color.ROYAL_BLUE
+		2: goon.get_node("Image").self_modulate = Color.PALE_VIOLET_RED
+		3: goon.get_node("Image").self_modulate = Color.LIGHT_GREEN
+		_: goon.get_node("Image").self_modulate = Color.WEB_GRAY
 	
 	return goon
 	

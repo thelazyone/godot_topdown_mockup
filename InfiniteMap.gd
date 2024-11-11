@@ -53,7 +53,6 @@ func _generate_new_sector():
 	
 	# Adding Checkpoints
 	for checkpoint in sector_instance.get_checkpoint_positions():
-		print("adding checkpoints in" , checkpoint)
 		_add_checkpoint(checkpoint, Vector2(sector_position_x, 0))
 	
 	# Enemies can be handled similarly if needed

@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+@export var NAME : String = ""
 @export var SPEED = 100
 @export var FACTION : int = 0
 
@@ -11,6 +12,7 @@ extends CharacterBody2D
 @onready var strat = $StrategyComponent
 @onready var shoot = $ShootComponent
 @onready var field = $FieldsComponent
+@onready var health = $HealthComponent
 
 # Rotation handling
 var current_bearing = 0

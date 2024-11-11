@@ -90,6 +90,9 @@ func get_peak() -> Vector2:
 		if value > max_value:
 			max_value = value
 			max_sector = i
+	
+	if max_value == 0:
+		return Vector2.ZERO
 			
 	# Get the neighboring sectors (wrapping around)
 	var prev_sector = (max_sector - 1 + num_sectors) % num_sectors

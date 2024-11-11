@@ -15,23 +15,12 @@ func _ready() -> void:
 
 
 func add_goons(number : int, i_position : Vector2) :
-	var params = UnitParams.new()
-	params.melee = false
-	params.speed = 80
-	params.shoot_speed = 500
-
-	# Adding some goons
 	for i in range(number):
-		$UnitFactory.create_unit(params, i_position + Vector2(10 * i, 0), 1, self)
+		$UnitFactory.create_unit(UnitParams.get_soldier(), i_position + Vector2(10 * i, 0), 1, self)
 
 func add_bugs(number : int, i_position : Vector2) :
-	var params = UnitParams.new()
-	params.melee = true
-	params.speed = 160
-	
-	# Adding some goons
 	for i in range(number):
-		$UnitFactory.create_unit(params, i_position + Vector2(10 * i, 0), 2, self)
+		$UnitFactory.create_unit(UnitParams.get_bug(), i_position + Vector2(10 * i, 0), 2, self)
 
 
 func _input(event: InputEvent) -> void:

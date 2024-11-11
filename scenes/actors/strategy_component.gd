@@ -40,14 +40,17 @@ func go_to(position: Vector2, radius = 50): # TODO TBR
 # The pathfinding is already calculated, so you should just apply this to any logic in the goon.
 func get_next_move():
 	if state != states.IDLE:
-		return get_parent().position + fields_component.get_combined_field_peak()
-		return navigation_component.get_move(target_position)
+		var curr_direction = fields_component.get_combined_field_peak()
+		if curr_direction == Vector2.ZERO:
+			return null
+		return get_parent().position + curr_direction
 	return null
 
 # Shooting logic, to check whether to generate bullets. Returns the target point to shoot towards.
 func get_shooting_target():
 	if target_enemy and is_instance_valid(target_enemy):
-		return target_enemy.position
+		if _is_in_weapon_range(target_enemy.position):
+			return target_enemy.position
 
 ##############################
 ## LOOPS

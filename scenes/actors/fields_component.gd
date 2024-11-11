@@ -12,19 +12,16 @@ enum field_types {ORDERS, THREATS, TARGETS}
 var combined_directional_field = DirectionalField.new()
 
 # Parameters for Threats
-const THREATS_RADIUS = 150
-const THREATS_BASE_WEIGHT = 120
-@onready var threats_weight = THREATS_BASE_WEIGHT
+@onready var threats_range = 150
+@onready var threats_weight = 10
 
 # Parameters for Orders
-const ORDERS_BASE_WEIGHT = 5
-@onready var orders_weight = ORDERS_BASE_WEIGHT
+@onready var orders_weight = 10
 
 # Parameters for Targets
-var TARGETS_RADIUS = 300
-var TARGETS_MIN_RADIUS = 100
-var TARGETS_BASE_WEIGHT = 4
-@onready var targets_weight = TARGETS_BASE_WEIGHT
+@onready var targets_range = 300
+@onready var targets_min_range = 100
+@onready var targets_weight = 4
 
 # Reference to the Navigation Field:
 var navigation_component = Resource
@@ -74,9 +71,9 @@ func _update_threats_field(delta: float):
 	for goon in get_tree().get_nodes_in_group("goons"):
 		var range = get_parent().position.distance_to(goon.position)
 		
-		if goon.FACTION != get_parent().FACTION and range < THREATS_RADIUS:
+		if goon.FACTION != get_parent().FACTION and range < threats_range:
 			var threat_angle = (goon.position - get_parent().position).angle() + PI
-			var threat_value = abs((THREATS_RADIUS - range)) / THREATS_RADIUS
+			var threat_value = abs((threats_range - range)) / threats_range
 			
 			directional_fields[field_types.THREATS].add_effect(threat_value, threat_angle) 
 			
@@ -106,7 +103,7 @@ func _update_targets_field(delta: float):
 	directional_fields[field_types.TARGETS].clear_buffer()
 	for goon in get_tree().get_nodes_in_group("goons"):
 		var range = get_parent().position.distance_to(goon.position)
-		if goon.FACTION != get_parent().FACTION and range < TARGETS_RADIUS and range > TARGETS_MIN_RADIUS:
+		if goon.FACTION != get_parent().FACTION and range < targets_range and range > targets_min_range:
 			var target_angle = (goon.position - get_parent().position).angle()
 			var target_value = 1 # TODO make it variables 
 			
