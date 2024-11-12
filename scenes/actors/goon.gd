@@ -49,7 +49,7 @@ func _process(delta: float) -> void:
 		# Updating the bearing
 		var target_bearing = (local_target - position).angle()
 		_apply_rotation_step(target_bearing, delta)		
-		$Image.rotation = current_bearing + PI/2
+		#$Image.rotation = current_bearing + PI/2
 		
 		# Speed is in the direction of the facing, rather than directly towards the target
 		velocity = Vector2(1,0).rotated(current_bearing) * SPEED

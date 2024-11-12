@@ -4,7 +4,7 @@ const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
 const start_goons = 8	
 const max_goons =8
-const max_bugs = 0
+const max_bugs = 16
 #const start_goons = 1	
 #const max_goons =1
 #const max_bugs = 1
@@ -15,23 +15,12 @@ const CAMERA_MARGIN : float = 200
 var current_camera_position : float = 0
 		
 func _ready() -> void:
-	add_goons(start_goons, start_1)
-	add_totems(1, start_2)
+	add_units(start_goons, UnitParams.Types.SOLDIER, 1, start_1)
+	add_units(1,  UnitParams.Types.TOTEM, 2, start_2)
 
-
-func add_goons(number : int, i_position : Vector2) :
+func add_units(number : int, type : UnitParams.Types, faction : int, i_position : Vector2) :
 	for i in range(number):
-		$UnitFactory.create_unit(UnitParams.get_soldier(), i_position + Vector2(10 * i, 0), 1, self)
-
-func add_bugs(number : int, i_position : Vector2) :
-	for i in range(number):
-		$UnitFactory.create_unit(UnitParams.get_bug(), i_position + Vector2(10 * i, 0), 2, self)
-
-func add_totems(number : int, i_position : Vector2) :
-	for i in range(number):
-		$UnitFactory.create_unit(UnitParams.get_totem(), i_position + Vector2(10 * i, 0), 2, self)
-
-
+		$UnitFactory.create_unit(UnitParams.get_unit_params(type), i_position + Vector2(10 * i, 0), faction, self)
 
 func _input(event: InputEvent) -> void:
 	
@@ -73,7 +62,7 @@ func _process(delta: float) -> void:
 		#if goons_counter < max_goons:
 			#add_goons(min(max_goons - goons_counter, 1), start_1 + Vector2(current_camera_position, 0))
 		if bugs_counter < max_bugs:
-			add_bugs(min(max_bugs - bugs_counter, 16), start_2 + Vector2(current_camera_position, 0))
+			add_units(min(max_bugs - bugs_counter, 16), UnitParams.Types.BUG, 2, start_2 + Vector2(current_camera_position, 0))
 		cumulateTime = 0
 		
 	pass

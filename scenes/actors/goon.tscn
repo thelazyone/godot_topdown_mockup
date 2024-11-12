@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scenes/actors/goon.gd" id="1_np6xr"]
 [ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://scenes/splat.tscn" id="2_qg86p"]
-[ext_resource type="Texture2D" uid="uid://bt4h6wt028j2n" path="res://scenes/actors/goon.png" id="2_vgrkw"]
 [ext_resource type="Script" path="res://scenes/actors/navigation_component.gd" id="3_3mihf"]
+[ext_resource type="Texture2D" uid="uid://dc8van0gdv2w4" path="res://scenes/actors/enlisted_troop_gun.png" id="3_yhdra"]
 [ext_resource type="Script" path="res://scenes/actors/strategy_component.gd" id="4_spkq7"]
 [ext_resource type="Script" path="res://scenes/actors/shoot_component.gd" id="5_ptigm"]
 [ext_resource type="PackedScene" uid="uid://cveu1hk6senbf" path="res://scenes/projectile.tscn" id="6_f7efv"]
@@ -18,8 +18,7 @@ script = ExtResource("1_np6xr")
 SPLAT = ExtResource("2_qg86p")
 
 [node name="Image" type="Sprite2D" parent="."]
-scale = Vector2(0.5625, 0.5625)
-texture = ExtResource("2_vgrkw")
+texture = ExtResource("3_yhdra")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_87qmj")
