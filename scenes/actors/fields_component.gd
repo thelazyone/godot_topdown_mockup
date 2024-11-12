@@ -43,7 +43,6 @@ func get_combined_field_peak() -> Vector2:
 	combined_directional_field.combine(directional_fields[field_types.THREATS], threats_weight)
 	combined_directional_field.combine(directional_fields[field_types.TARGETS], targets_weight)
 	combined_directional_field.combine(directional_fields[field_types.FORMATION], formation_weight)
-	combined_directional_field.combine(directional_fields[field_types.FORMATION], formation_weight)
 	
 	# For debug use:
 	combined_directional_field.display_debug(get_parent().position)
@@ -125,7 +124,7 @@ func _update_targets_field(delta: float):
 # Checks if there are allies nearby, and pushes them away a bit.
 func _update_formation_field(delta: float):
 	
-	directional_fields[field_types.TARGETS].clear_buffer()
+	directional_fields[field_types.FORMATION].clear_buffer()
 	
 	for goon in get_tree().get_nodes_in_group("goons"):
 		

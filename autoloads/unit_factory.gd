@@ -12,7 +12,7 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_pa
 	
 	# General Params
 	goon.NAME = i_params.name_id
-	goon.health.HEALTH = i_params.hp
+	goon.health.health = i_params.hp
 	goon.SPEED = i_params.speed
 	goon.SPOTTING_RANGE = i_params.spotting_range
 

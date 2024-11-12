@@ -28,7 +28,7 @@ var orders_weight : float	= 5
 static func get_soldier() -> UnitParams :
 	var par = UnitParams.new()
 	par.name_id = "Soldier"
-	par.hp = 100
+	par.hp = 10
 	par.speed = 100
 	par.spotting_range = 500
 	par.attack_speed = 50
@@ -45,7 +45,7 @@ static func get_soldier() -> UnitParams :
 static func get_bug() -> UnitParams :
 	var par = UnitParams.new()
 	par.name_id = "Bug"
-	par.hp = 60
+	par.hp = 6
 	par.speed = 150
 	par.spotting_range = 500
 	par.attack_speed = 200
@@ -57,4 +57,21 @@ static func get_bug() -> UnitParams :
 	par.targets_range = 1500
 	par.targets_min_range = 0
 	par.orders_weight = 1
+	return par
+
+static func get_totem() -> UnitParams :
+	var par = UnitParams.new()
+	par.name_id = "Totem"
+	par.hp = 1500
+	par.speed = 0
+	par.spotting_range = 500
+	par.attack_speed = 50
+	par.attack_damage = 2
+	par.attack_range = 100
+	par.threats_weight = 5
+	par.threats_range = 100
+	par.targets_weight = 5
+	par.targets_range = 500
+	par.targets_min_range = 100
+	par.orders_weight = 10
 	return par

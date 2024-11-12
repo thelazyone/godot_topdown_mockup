@@ -4,7 +4,7 @@ const start_1 = Vector2(100,300)
 const start_2 = Vector2(1000, 300)
 const start_goons = 8	
 const max_goons =8
-const max_bugs = 36
+const max_bugs = 0
 #const start_goons = 1	
 #const max_goons =1
 #const max_bugs = 1
@@ -16,6 +16,7 @@ var current_camera_position : float = 0
 		
 func _ready() -> void:
 	add_goons(start_goons, start_1)
+	add_totems(1, start_2)
 
 
 func add_goons(number : int, i_position : Vector2) :
@@ -25,6 +26,11 @@ func add_goons(number : int, i_position : Vector2) :
 func add_bugs(number : int, i_position : Vector2) :
 	for i in range(number):
 		$UnitFactory.create_unit(UnitParams.get_bug(), i_position + Vector2(10 * i, 0), 2, self)
+
+func add_totems(number : int, i_position : Vector2) :
+	for i in range(number):
+		$UnitFactory.create_unit(UnitParams.get_totem(), i_position + Vector2(10 * i, 0), 2, self)
+
 
 
 func _input(event: InputEvent) -> void:

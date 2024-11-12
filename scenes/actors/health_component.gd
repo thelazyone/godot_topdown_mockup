@@ -1,10 +1,10 @@
 extends Node2D
 
-@export var HEALTH = 10
-
-@onready var health = HEALTH
+@export var MAX_HEALTH = 10
+@onready var health = MAX_HEALTH
 
 func receive_damage(value : float):
+	print("receiving " , value , " damage. Current health is ", health)
 	health -= value
 	if health <= 0: 
 		get_parent().die() 
