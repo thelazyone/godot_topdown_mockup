@@ -36,9 +36,9 @@ static func get_soldier() -> UnitParams :
 	par.attack_range = 500
 	par.threats_weight = 5
 	par.threats_range = 100
-	par.targets_weight = 5
+	par.targets_weight = 10
 	par.targets_range = 500
-	par.targets_min_range = 100
+	par.targets_min_range = 200
 	par.orders_weight = 10
 	return par
 

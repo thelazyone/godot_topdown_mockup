@@ -79,13 +79,30 @@ func get_value_at_angle(angle: float) -> float:
 		t
 	)
 	
+# A bit of a mix, doing something like:
+# getting the sum, subtracting the total with a certain ratio.
+func get_composite_result() -> Vector2:
+	var cumulative_value = 0
+	for i in range(num_sectors):
+		cumulative_value += current_pattern.values[i]
+	
+	var result_intensity = get_sum().length()
+	var temp_ratio = result_intensity / cumulative_value
+	print("DEBUG: ratio is ", temp_ratio)
+	
+	if temp_ratio < .7:
+		return Vector2.ZERO
+	
+	return get_sum()
+	
+	
 func get_sum() -> Vector2:
 	var final_vector = Vector2.ZERO
 	for i in range(num_sectors):
 		var angle = 2 * PI / num_sectors * (i + 1)
 		final_vector += Vector2(1, 0).rotated(angle) * current_pattern.values[i]
 	
-	return final_vector.normalized()
+	return final_vector
 
 # Interpolates the value to give a continuous angular result.
 func get_peak() -> Vector2:
