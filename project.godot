@@ -23,6 +23,12 @@ DirectionPattern="*res://autoloads/direction_pattern.gd"
 DirectionField="*res://autoloads/direction_field.gd"
 Debug="*res://autoloads/debug.gd"
 
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=800
+window/size/initial_position_type=2
+
 [input]
 
 debug={

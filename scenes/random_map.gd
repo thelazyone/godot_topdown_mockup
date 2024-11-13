@@ -8,8 +8,6 @@ extends Node2D
 func _ready() -> void:
 	seed(12345)
 	# Prints a random integer between 0 and 49.
-	print(randi() % 50)
-	
 	_populate(5)
 	
 	pass # Replace with function body.

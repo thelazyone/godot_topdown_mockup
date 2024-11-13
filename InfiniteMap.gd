@@ -3,13 +3,20 @@ extends Node2D
 @onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
 
 # Adjustable parameters
-var sector_size : Vector2 = Vector2(800, 600)
-var sectors = []                           # List to keep track of active sectors
-var removal_distance = sector_size.x * 2    # Distance after which sectors are removed
+var sectors = []                           		# List to keep track of active sectors
 var sector_counter : int = 0
+@onready var sector_size : Vector2 = Vector2(get_viewport().size.y / 2, get_viewport().size.y)
+@onready var removal_distance = sector_size.x * 5    	# Distance after which sectors are removed
 
 # References to child nodes
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
+
+func _ready():
+	# Generate the initial sector
+	_generate_new_sector()
+	# Initialize the FogOfWar
+	$FogOfWar.size = Vector2(sector_size.x, get_viewport().size.y)
+	$FogOfWar.position = Vector2(sector_size.x, 0)
 
 # Camera Stuff
 @onready var camera_offset = $Camera.position.x
@@ -29,26 +36,32 @@ func _process(delta):
 	# Moving the camera if target has changed.
 	var camera_spread = camera_target_position - camera_position
 	if abs(camera_spread) > .1:
-		camera_position += min(camera_spread, CAMERA_SPEED * sign(camera_spread))
+		var move_amount = CAMERA_SPEED * delta * sign(camera_spread)
+		camera_position += min(abs(camera_spread), abs(move_amount)) * sign(camera_spread)
 		$Camera.position.x = camera_position + camera_offset
 
 	# Generate new sector if needed
-	if camera_position > (sector_counter - 2) * sector_size.x:
+	if camera_position > (sector_counter - 3) * sector_size.x:
+		print("Generating Sector ", sector_counter)
 		_generate_new_sector()
 		sector_counter += 1
 
 	# Remove old sectors if they're far left
 	if sectors.size() > 0 and camera_position - sectors[0].position.x > removal_distance:
 		_remove_old_sector()
-
-
+		
+	# Update FogOfWar position to the right of the latest sector
+	$FogOfWar.position.x = sector_counter * sector_size.x
+	$FogOfWar.position.y = 0
+	
 func _generate_new_sector():
 	var sector_position_x = sector_counter * sector_size.x
+	#var sector_position_x = sector_counter * sector_size.x
 
 	# Create a new MapSector instance
 	var sector_instance = MapSector.new()
 	sector_instance.position.x = sector_position_x
-	sector_instance.generate_content(Vector2(sector_size))
+	sector_instance.generate_content(sector_size)
 
 	# Create buildings and collision shapes
 	for building_rect in sector_instance.get_building_rects():

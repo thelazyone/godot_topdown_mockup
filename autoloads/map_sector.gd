@@ -37,7 +37,6 @@ func _generate_checkpoints():
 	
 	# TODO Temp - creating two checkpoints now.
 	checkpoints.append(Vector2(sector_size.x * .25, sector_size.y * .5))
-	checkpoints.append(Vector2(sector_size.x * .75, sector_size.y * .5))
 
 func _generate_enemies():
 	# Generate Vector2 for where the enemies are and store them in "enemies"
@@ -63,7 +62,7 @@ func _random_point() -> Vector2:
 
 func _populate_buildings():
 	var sections = Vector2(2, 2)
-	var building_size = Vector2(200, 200)
+	var building_size = Vector2(100, 100)
 	for xi in range(int(sections.x)):
 		for yi in range(int(sections.y)):
 			# Adding a central building
@@ -71,6 +70,7 @@ func _populate_buildings():
 				sector_size.x / sections.x * (xi + 0.5),
 				sector_size.y / sections.y * (yi + 0.5)
 			)
+			print("center is ", center)
 			
 			_add_building(center, _random_rect(building_size, 0.5))
 			

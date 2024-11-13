@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=7 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
 [ext_resource type="Script" path="res://autoloads/unit_factory.gd" id="3_uwktb"]
+[ext_resource type="Shader" path="res://striped.gdshader" id="4_h84fu"]
 [ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
@@ -9,6 +10,15 @@ vertices = PackedVector2Array(1170.05, 654.008, -4.03906, 655.977, -6.96094, 1, 
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-17, -9, 1184, -9, 1180, 664, -14, 666)])
 source_geometry_group_name = &"navigation_polygon_source_group"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b2edw"]
+shader = ExtResource("4_h84fu")
+shader_parameter/color_gap = Vector4(0.25, 0.25, 0.25, 0.25)
+shader_parameter/color_stripe = Vector4(1, 0.75, 0, 1)
+shader_parameter/divisions = 24.0
+shader_parameter/stripe_bias = 2.0
+shader_parameter/speed = 0.03
+shader_parameter/angle = 1.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0tp6l")
@@ -30,4 +40,7 @@ script = ExtResource("4_nyr5v")
 navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
 [node name="Camera" type="Camera2D" parent="InfiniteMap"]
-position = Vector2(583, 325)
+position = Vector2(801, 397)
+
+[node name="FogOfWar" type="ColorRect" parent="InfiniteMap"]
+material = SubResource("ShaderMaterial_b2edw")

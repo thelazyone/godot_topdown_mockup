@@ -86,9 +86,9 @@ func get_composite_result() -> Vector2:
 	for i in range(num_sectors):
 		cumulative_value += current_pattern.values[i]
 	
+	# TODO This solution is hacky, but works for now.
 	var result_intensity = get_sum().length()
 	var temp_ratio = result_intensity / cumulative_value
-	print("DEBUG: ratio is ", temp_ratio)
 	
 	if temp_ratio < .7:
 		return Vector2.ZERO

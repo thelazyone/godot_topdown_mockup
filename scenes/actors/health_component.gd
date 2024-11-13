@@ -4,7 +4,6 @@ extends Node2D
 @onready var health = MAX_HEALTH
 
 func receive_damage(value : float):
-	print("receiving " , value , " damage. Current health is ", health)
 	health -= value
 	if health <= 0: 
 		get_parent().die() 

@@ -91,7 +91,6 @@ func _update_threats_field(delta: float):
 			directional_fields[field_types.THREATS].add_effect(effect_value, effect_angle) 
 			
 			if goon.FACTION == 1:
-				##print("goon spotted threat. distance is ", range, " , value is ", threat_value, ".")
 				pass
 		
 	# Finally combining it all in the next "stable" field.
@@ -100,6 +99,7 @@ func _update_threats_field(delta: float):
 # Order brings the goon in the direction of the objective.
 func _update_orders_field(delta: float):
 	directional_fields[field_types.ORDERS].clear_buffer()
+	
 	var temp_vector = navigation_component.get_move()
 	if temp_vector:
 		temp_vector -= get_parent().position

@@ -186,7 +186,6 @@ func _apply_strategy():
 			# TODO now, this is to allow to get closer even when attacking.
 			# there should be a damage increment when getting closer.
 			if  get_parent().position.distance_to(target_enemy.position) > get_parent().WEAPON_RANGE / 2:
-				#print("approach during attack")
 				_update_target_position(target_enemy.position)
 			else: 
 				_update_target_position(get_parent().position)
