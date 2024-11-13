@@ -18,7 +18,7 @@ func _process(delta: float) -> void:
 	var count_1 : float = 0
 	var count_2 : float = 0
 	for goon in all_goons:
-		if goon.position.distance_to(position) < CONTROL_AREA:
+		if goon.global_position.distance_to(global_position) < CONTROL_AREA:
 			match goon.FACTION:
 				1: count_1 += 1
 				2: count_2 += 1

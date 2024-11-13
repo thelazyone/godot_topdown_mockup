@@ -122,7 +122,7 @@ func _choose_new_order():
 		_end_order()
 		return
 	
-	_set_new_order(orders.DEFEND, nearest_checkpoint.position, 100)
+	_set_new_order(orders.DEFEND, nearest_checkpoint.global_position, 100)
 	
 func _end_order():
 	current_order = orders.NONE
