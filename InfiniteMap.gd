@@ -44,7 +44,15 @@ func _process(delta):
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 3) * sector_size.x:
 		print("InfiniteMap: Generating Sector ", sector_counter)
-		_generate_new_sector()
+		if sector_counter == 0:
+			var main_node = get_node("/root/Main")
+			var current_sector_handle = _generate_new_sector()
+			var spaw_offset = current_sector_handle.get_grid_gateway()
+			spaw_offset *= current_sector_handle.sector_size.y/current_sector_handle.sector_grid_size.y
+			var spaw_position = Vector2(0, spaw_offset)
+			main_node.add_units(main_node.start_goons, UnitParams.Types.SOLDIER, 1, spaw_position)
+		else: 
+			_generate_new_sector()
 		sector_counter += 1
 
 	# Remove old sectors if they're far left
@@ -67,6 +75,8 @@ func _generate_new_sector():
 
 	# Rebake the navigation mesh
 	_rebake_navigation()
+	
+	return sector_instance
 
 # Blindly destroying the oldest sector when the conditions require it.
 func _remove_old_sector():

@@ -18,23 +18,26 @@ func _fill_grid(entry_points : Array) -> Array:
 	
 	return sector_grid_data
 	
+func get_grid_gateway() -> int :
+	if sector_grid_data.is_empty():
+		return -1
+	
+	var start_point = randi() % sector_grid_data[0].size()
+	var gateway_idx = 0
+	for i in range(sector_grid_data[0].size()):
+		var wrap_idx = (i + start_point) % sector_grid_data[0].size()
+		if sector_grid_data[0][wrap_idx] != GridContent.FILLED:
+			gateway_idx = wrap_idx
+	return gateway_idx
+	
 func _fill_grid_column(prev_points : Array):
 	
-	#print("DEBUG prev points are ", prev_points)
 	var out_column = []
 	out_column.resize(sector_grid_size.y)
 	out_column.fill(GridContent.FILLED)
 	
 	# First deciding which entry point is the sure gateway.
-	var start_point = randi() % prev_points.size()
-	var gateway_idx = 0
-	for i in range(prev_points.size()):
-		var wrap_idx = (i + start_point) % prev_points.size()
-		if prev_points[wrap_idx] != GridContent.FILLED:
-			gateway_idx = wrap_idx
-			out_column[wrap_idx] = GridContent.EMPTY
-			print("gateway is ", wrap_idx)
-			break
+	out_column[get_grid_gateway()] = GridContent.EMPTY
 	
 	# Then populate straight channels.
 	for i in range(prev_points.size()):
@@ -72,23 +75,11 @@ func generate_content(latest_grid_column: Array):
 	_generate_buildings()
 	_generate_checkpoints()
 	_generate_enemies()
-	
-# Methods to access data
-func get_building_rects() -> Array:
-	return buildings
 
-func get_enemy_positions() -> Array:
-	return enemies
-	
-func get_checkpoint_positions() -> Array:
-	return checkpoints
-	
 # Private Function
-
 func _generate_buildings():
 
 	for xi in range(int(sector_grid_size.x)):
-		print(sector_grid_data[xi])
 		for yi in range(int(sector_grid_size.y)):
 			if sector_grid_data[xi][yi] == GridContent.FILLED:
 				var grid_elem_size = sector_size / sector_grid_size
@@ -108,8 +99,9 @@ func _get_free_spot(col_idx : int) -> Vector2:
 	return Vector2.ZERO
 
 func _generate_checkpoints():
-	const checkpoint_x_pos = 1
-	_add_checkpoint(_get_free_spot(checkpoint_x_pos))
+	var checkpoint_pos = _get_free_spot(1)	
+	print("checkpoint position at", checkpoint_pos)
+	_add_checkpoint(checkpoint_pos)
 
 func _generate_enemies():
 	# TODO very temp)
@@ -162,7 +154,7 @@ func _add_building(rect: Rect2) -> Dictionary:
 	
 func _add_checkpoint(pos : Vector2) -> void :
 	var checkpoint = checkpoint_scene.instantiate()
-	checkpoint.position = pos
+	checkpoint.global_position = pos
 	checkpoint.kill_if_blue = true
 	add_child(checkpoint)
 	
