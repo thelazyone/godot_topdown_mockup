@@ -17,15 +17,21 @@ func _fill_grid(entry_points : Array) -> Array:
 	
 	return sector_grid_data
 	
-func get_grid_gateway() -> int :
+func get_sector_entry() -> int:
 	if sector_grid_data.is_empty():
 		return -1
+		
+	return _get_grid_gateway(sector_grid_data[0])
 	
-	var start_point = randi() % sector_grid_data[0].size()
+func _get_grid_gateway(column: Array) -> int :
+	if column.is_empty():
+		return -1
+	
+	var start_point = randi() % column.size()
 	var gateway_idx = 0
-	for i in range(sector_grid_data[0].size()):
-		var wrap_idx = (i + start_point) % sector_grid_data[0].size()
-		if sector_grid_data[0][wrap_idx] != GridContent.FILLED:
+	for i in range(column.size()):
+		var wrap_idx = (i + start_point) % column.size()
+		if column[wrap_idx] != GridContent.FILLED:
 			gateway_idx = wrap_idx
 	return gateway_idx
 	
@@ -36,7 +42,8 @@ func _fill_grid_column(prev_points : Array):
 	out_column.fill(GridContent.FILLED)
 	
 	# First deciding which entry point is the sure gateway.
-	out_column[get_grid_gateway()] = GridContent.EMPTY
+	var gateway_idx = _get_grid_gateway(prev_points)
+	out_column[gateway_idx] = GridContent.EMPTY
 	
 	# Then populate straight channels.
 	for i in range(prev_points.size()):
@@ -99,14 +106,13 @@ func _get_free_spot(col_idx : int) -> Vector2:
 
 func _generate_checkpoints():
 	var checkpoint_pos = _get_free_spot(1)	
-	print("checkpoint position at", checkpoint_pos)
 	_add_checkpoint(checkpoint_pos)
 
 func _generate_enemies():
-	# TODO very temp)
-	var num_enemies = 5  # Adjust as needed
+	# TODO very temp
+	var num_enemies = 1
 	for i in range(num_enemies):
-		var enemy_position = _get_free_spot(1)
+		var enemy_position = _get_free_spot(2)
 		if enemy_position != Vector2.ZERO:
 			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 2, enemy_position)
 
@@ -156,5 +162,3 @@ func _add_checkpoint(pos : Vector2) -> void :
 	add_child(checkpoint)
 	checkpoint.global_position = pos
 	checkpoint.kill_if_blue = true
-	
-	

@@ -9,7 +9,6 @@ var last_sector_column = []
 func _init() -> void:
 	last_sector_column.resize(sector_grid_size.y)
 	last_sector_column.fill(MapSector.GridContent.EMPTY)
-	print("DEBUG - ", last_sector_column)
 
 func new_sector(parent: Node, position_x: float) -> MapSector:
 	var sector_instance = MapSector.new()

@@ -41,7 +41,7 @@ static func get_unit_params(unit_type : Types) -> UnitParams :
 			par.attack_range = 500
 			par.threats_weight = 5
 			par.threats_range = 100
-			par.targets_weight = 10
+			par.targets_weight = 6
 			par.targets_range = 500
 			par.targets_min_range = 200
 			par.orders_weight = 10
@@ -69,7 +69,7 @@ static func get_unit_params(unit_type : Types) -> UnitParams :
 			par.attack_range = 50
 			par.threats_weight = 0
 			par.threats_range = 100
-			par.targets_weight =3
+			par.targets_weight = 3
 			par.targets_range = 1500
 			par.targets_min_range = 0
 			par.orders_weight = 1

@@ -43,11 +43,10 @@ func _process(delta):
 
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 3) * sector_size.x:
-		print("InfiniteMap: Generating Sector ", sector_counter)
 		if sector_counter == 0:
 			var main_node = get_node("/root/Main")
 			var current_sector_handle = _generate_new_sector()
-			var spaw_offset = current_sector_handle.get_grid_gateway()
+			var spaw_offset = current_sector_handle.get_sector_entry()
 			spaw_offset *= current_sector_handle.sector_size.y/current_sector_handle.sector_grid_size.y
 			var spaw_position = Vector2(0, spaw_offset)
 			main_node.add_units(main_node.start_goons, UnitParams.Types.SOLDIER, 1, spaw_position)
