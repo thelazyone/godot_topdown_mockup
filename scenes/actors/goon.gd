@@ -36,6 +36,7 @@ func _ready() -> void:
 	strat.navigation_component = nav
 	strat.fields_component = field
 	field.navigation_component = nav
+	field.strategy_component = strat
 	
 	pass # Replace with function body.
 

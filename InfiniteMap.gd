@@ -10,14 +10,24 @@ var sector_counter : int = 0
 
 # References to child nodes
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
+@onready var fow = $NavRegion/FogOfWar
 
 func _ready():
 	# Generate the initial sector
 	sector_factory.sector_size = sector_size
 	
 	# Initialize the FogOfWar
-	$FogOfWar.size = Vector2(sector_size.x, get_viewport().size.y)
-	$FogOfWar.position = Vector2(sector_size.x, 0)
+	fow.size = Vector2(sector_size.x, get_viewport().size.y)
+	fow.position = Vector2(sector_size.x, 0)
+	var shape = RectangleShape2D.new()
+	shape.size = fow.size
+	var collision_shape = CollisionShape2D.new()
+	collision_shape.set_shape(shape)
+	var static_body = StaticBody2D.new()
+	static_body.add_child(collision_shape)
+	static_body.position = shape.size / 2
+	fow.add_child(static_body)
+	
 
 # Camera Stuff
 @onready var camera_offset = $Camera.position.x
@@ -59,8 +69,8 @@ func _process(delta):
 		_remove_old_sector()
 		
 	# Update FogOfWar position to the right of the latest sector
-	$FogOfWar.position.x = sector_counter * sector_size.x
-	$FogOfWar.position.y = 0
+	fow.position.x = sector_counter * sector_size.x
+	fow.position.y = 0
 
 # Adding a new sector to the list.
 func _generate_new_sector():

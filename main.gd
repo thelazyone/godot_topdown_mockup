@@ -46,7 +46,7 @@ func _process(delta: float) -> void:
 	var leftmost_pos : float = 99999
 	var goon_found = false
 	for goon in goons: 
-		if goon.global_position.x < leftmost_pos:
+		if goon.FACTION == 1 and goon.global_position.x < leftmost_pos:
 			leftmost_pos = goon.global_position.x
 			goon_found = true
 	if goon_found: 

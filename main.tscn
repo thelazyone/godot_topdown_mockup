@@ -39,8 +39,8 @@ script = ExtResource("4_nyr5v")
 [node name="NavRegion" type="NavigationRegion2D" parent="InfiniteMap"]
 navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
+[node name="FogOfWar" type="ColorRect" parent="InfiniteMap/NavRegion"]
+material = SubResource("ShaderMaterial_b2edw")
+
 [node name="Camera" type="Camera2D" parent="InfiniteMap"]
 position = Vector2(801, 397)
-
-[node name="FogOfWar" type="ColorRect" parent="InfiniteMap"]
-material = SubResource("ShaderMaterial_b2edw")

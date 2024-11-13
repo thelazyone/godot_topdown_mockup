@@ -1,7 +1,7 @@
 class_name MapSectorFactory
 extends Node
 
-const sector_grid_size = Vector2(3, 4)
+const sector_grid_size = Vector2(5, 8)
 var sector_size = Vector2.ZERO
 var roba = 3
 var last_sector_column = []

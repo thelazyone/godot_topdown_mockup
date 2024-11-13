@@ -135,7 +135,6 @@ func _set_new_order(order_type: orders, position: Vector2, radius):
 	
 func _update_target_position(new_position):
 	target_position = new_position
-	navigation_component.set_target(new_position)
 	
 func _get_position_in_area():
 	# In the future the logic to choose one area over another should depend on

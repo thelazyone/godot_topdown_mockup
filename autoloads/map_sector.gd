@@ -46,9 +46,10 @@ func _fill_grid_column(prev_points : Array):
 	out_column[gateway_idx] = GridContent.EMPTY
 	
 	# Then populate straight channels.
+	var straight_counter = 1
 	for i in range(prev_points.size()):
 		if prev_points[i] == GridContent.EMPTY:
-			if randf() > .8:
+			if randf() > .2 + straight_counter * .2:
 				out_column[i] = GridContent.EMPTY
 	
 	# Then check vertical channels.	
@@ -56,7 +57,7 @@ func _fill_grid_column(prev_points : Array):
 		var prev_idx = max(0, i - 1)
 		var next_idx = min(i + 1, out_column.size() - 1)
 		if out_column[prev_idx] == GridContent.EMPTY or out_column[next_idx] == GridContent.EMPTY:
-			if randf() > .7:
+			if randf() > .5:
 				out_column[i] = GridContent.EMPTY
 	
 	return out_column
@@ -93,6 +94,10 @@ func _generate_buildings():
 					(xi) * grid_elem_size.x,\
 					(yi) * grid_elem_size.y)
 				_add_building(Rect2(building_position, grid_elem_size))
+	
+	# Finally adding buildings on top and bottom.
+	_add_building(Rect2(Vector2(0,-90), Vector2(sector_size.x, 100)))
+	_add_building(Rect2(Vector2(0,sector_size.y - 10), Vector2(sector_size.x, 100)))
 
 func _get_free_spot(col_idx : int) -> Vector2:
 	for i in range(	sector_grid_data[col_idx].size()):
@@ -110,11 +115,11 @@ func _generate_checkpoints():
 
 func _generate_enemies():
 	# TODO very temp
-	var num_enemies = 1
+	var num_enemies = 10
 	for i in range(num_enemies):
 		var enemy_position = _get_free_spot(2)
 		if enemy_position != Vector2.ZERO:
-			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 2, enemy_position)
+			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 2, enemy_position + (Vector2(1 * i,0)))
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(randf() * i_rect.x, randf() * i_rect.y) + weight * i_rect
