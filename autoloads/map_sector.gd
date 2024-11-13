@@ -32,7 +32,8 @@ func _fill_grid_column(prev_points : Array):
 		var wrap_idx = (i + start_point) % prev_points.size()
 		if prev_points[wrap_idx] != GridContent.FILLED:
 			gateway_idx = wrap_idx
-			out_column[gateway_idx] = GridContent.EMPTY
+			out_column[wrap_idx] = GridContent.EMPTY
+			print("gateway is ", wrap_idx)
 			break
 	
 	# Then populate straight channels.
@@ -43,8 +44,8 @@ func _fill_grid_column(prev_points : Array):
 	
 	# Then check vertical channels.	
 	for i in range(out_column.size()):
-		var prev_idx = (out_column.size() + i - 1) % out_column.size()
-		var next_idx = (i + 1) % out_column.size()
+		var prev_idx = max(0, i - 1)
+		var next_idx = min(i + 1, out_column.size() - 1)
 		if out_column[prev_idx] == GridContent.EMPTY or out_column[next_idx] == GridContent.EMPTY:
 			if randf() > .8:
 				out_column[i] = GridContent.EMPTY
@@ -86,9 +87,8 @@ func get_checkpoint_positions() -> Array:
 
 func _generate_buildings():
 
-	# For each column (moving along x
 	for xi in range(int(sector_grid_size.x)):
-		
+		print(sector_grid_data[xi])
 		for yi in range(int(sector_grid_size.y)):
 			if sector_grid_data[xi][yi] == GridContent.FILLED:
 				var grid_elem_size = sector_size / sector_grid_size
@@ -116,7 +116,6 @@ func _generate_enemies():
 	var num_enemies = 5  # Adjust as needed
 	for i in range(num_enemies):
 		var enemy_position = _get_free_spot(1)
-		print("generating enemy at ", enemy_position, ". position is ", global_position)
 		if enemy_position != Vector2.ZERO:
 			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 2, enemy_position)
 
@@ -136,7 +135,6 @@ func _is_overlapping_building(point: Vector2) -> bool:
 
 func _add_building(rect: Rect2) -> Dictionary:
 	
-	print("addbuilding called for ", rect)
 	# Create visual representation
 	var building_node = ColorRect.new()
 	building_node.color = Color(0.5, 0.5, 0.5)  # Gray color
