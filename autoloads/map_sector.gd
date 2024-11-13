@@ -7,7 +7,6 @@ var sector_grid_data : Array = [] #Saved as Column Major.
 @onready var sector_grid_size = MapSectorFactory.sector_grid_size
 
 func _fill_grid(entry_points : Array) -> Array:
-	
 	sector_grid_data.clear()
 	# Working Column after Column, making sure that as least one is connected.
 	var temp_column = _fill_grid_column(entry_points)
@@ -50,7 +49,7 @@ func _fill_grid_column(prev_points : Array):
 		var prev_idx = max(0, i - 1)
 		var next_idx = min(i + 1, out_column.size() - 1)
 		if out_column[prev_idx] == GridContent.EMPTY or out_column[next_idx] == GridContent.EMPTY:
-			if randf() > .8:
+			if randf() > .7:
 				out_column[i] = GridContent.EMPTY
 	
 	return out_column
@@ -154,8 +153,8 @@ func _add_building(rect: Rect2) -> Dictionary:
 	
 func _add_checkpoint(pos : Vector2) -> void :
 	var checkpoint = checkpoint_scene.instantiate()
+	add_child(checkpoint)
 	checkpoint.global_position = pos
 	checkpoint.kill_if_blue = true
-	add_child(checkpoint)
 	
 	
