@@ -90,7 +90,7 @@ func get_composite_result() -> Vector2:
 	var result_intensity = get_sum().length()
 	var temp_ratio = result_intensity / cumulative_value
 	
-	if temp_ratio < .7:
+	if temp_ratio < .3:
 		return Vector2.ZERO
 	
 	return get_sum()

@@ -33,6 +33,10 @@ func _process(delta: float) -> void:
 	if kill_if_blue:
 		if CONTROL_FACTION == 1.:
 			queue_free()
+	
+	# If it reaches negative positions,
+	if global_position.x < 0:
+		queue_free
 
 func _draw():
 	

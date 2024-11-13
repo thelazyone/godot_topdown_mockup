@@ -5,6 +5,7 @@ enum GridContent {EMPTY, CHECKPOINT, FILLED}
 
 var sector_grid_data : Array = [] #Saved as Column Major.
 @onready var sector_grid_size = MapSectorFactory.sector_grid_size
+var gateway_index = -1
 
 func _fill_grid(entry_points : Array) -> Array:
 	sector_grid_data.clear()
@@ -18,10 +19,7 @@ func _fill_grid(entry_points : Array) -> Array:
 	return sector_grid_data
 	
 func get_sector_entry() -> int:
-	if sector_grid_data.is_empty():
-		return -1
-		
-	return _get_grid_gateway(sector_grid_data[0])
+	return gateway_index
 	
 func _get_grid_gateway(column: Array) -> int :
 	if column.is_empty():
@@ -42,8 +40,8 @@ func _fill_grid_column(prev_points : Array):
 	out_column.fill(GridContent.FILLED)
 	
 	# First deciding which entry point is the sure gateway.
-	var gateway_idx = _get_grid_gateway(prev_points)
-	out_column[gateway_idx] = GridContent.EMPTY
+	gateway_index = _get_grid_gateway(prev_points)
+	out_column[gateway_index] = GridContent.EMPTY
 	
 	# Then populate straight channels.
 	var straight_counter = 1
