@@ -6,13 +6,15 @@ var sectors = []                           		# List to keep track of active sect
 var sector_counter : int = 0
 @onready var sector_size : Vector2 = Vector2(get_viewport().size.y / 2, get_viewport().size.y)
 @onready var removal_distance = sector_size.x * 5    	# Distance after which sectors are removed
+@onready var sector_factory = MapSectorFactory.new()
 
 # References to child nodes
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
 
 func _ready():
 	# Generate the initial sector
-	_generate_new_sector()
+	sector_factory.sector_size = sector_size
+	
 	# Initialize the FogOfWar
 	$FogOfWar.size = Vector2(sector_size.x, get_viewport().size.y)
 	$FogOfWar.position = Vector2(sector_size.x, 0)
@@ -21,7 +23,7 @@ func _ready():
 @onready var camera_offset = $Camera.position.x
 var camera_position: float = 0
 var camera_target_position : float = 0
-const CAMERA_SPEED = 800
+const CAMERA_SPEED = 150
 
 func move_camera(new_position : float):
 	if new_position > camera_target_position:
@@ -41,7 +43,7 @@ func _process(delta):
 
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 3) * sector_size.x:
-		print("Generating Sector ", sector_counter)
+		print("InfiniteMap: Generating Sector ", sector_counter)
 		_generate_new_sector()
 		sector_counter += 1
 
@@ -59,12 +61,9 @@ func _generate_new_sector():
 	#var sector_position_x = sector_counter * sector_size.x
 
 	# Create a new MapSector instance
-	var sector_instance = MapSector.new()
-	nav_region.add_child(sector_instance)
-	
-	sector_instance.generate_content(sector_size)
-	sector_instance.position.x = sector_position_x
-	sectors.append(sector_instance) #TODO TBR
+	var sector_instance = sector_factory.new_sector(self.nav_region, sector_position_x)
+	#sector_instance.position.x = sector_position_x
+	sectors.append(sector_instance) # TODO unelegant, double instancing!
 
 	# Rebake the navigation mesh
 	_rebake_navigation()

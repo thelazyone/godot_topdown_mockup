@@ -16,7 +16,8 @@ var current_camera_position : float = 0
 		
 func _ready() -> void:
 	add_units(start_goons, UnitParams.Types.SOLDIER, 1, start_1)
-	add_units(1,  UnitParams.Types.TOTEM, 2, start_2)
+	#add_units(1,  UnitParams.Types.TOTEM, 2, start_2)
+	pass
 
 func add_units(number : int, type : UnitParams.Types, faction : int, i_position : Vector2) :
 	for i in range(number):
@@ -61,8 +62,8 @@ func _process(delta: float) -> void:
 				
 		#if goons_counter < max_goons:
 			#add_goons(min(max_goons - goons_counter, 1), start_1 + Vector2(current_camera_position, 0))
-		if bugs_counter < max_bugs:
-			add_units(min(max_bugs - bugs_counter, 16), UnitParams.Types.BUG, 2, start_2 + Vector2(current_camera_position, 0))
+		#if bugs_counter < max_bugs:
+			#add_units(min(max_bugs - bugs_counter, 16), UnitParams.Types.BUG, 2, start_2 + Vector2(current_camera_position, 0))
 		cumulateTime = 0
 		
 	pass

@@ -1,8 +1,55 @@
 class_name MapSector
 extends Node2D
 
-var sector_grid_size = Vector2(3, 4)
-var sector_grid_data = []
+enum GridContent {EMPTY, CHECKPOINT, FILLED}
+
+var sector_grid_data : Array = [] #Saved as Column Major.
+@onready var sector_grid_size = MapSectorFactory.sector_grid_size
+
+func _fill_grid(entry_points : Array) -> Array:
+	
+	sector_grid_data.clear()
+	# Working Column after Column, making sure that as least one is connected.
+	var temp_column = _fill_grid_column(entry_points)
+	sector_grid_data.append(temp_column)
+	for i in range(sector_grid_size.x - 1):
+		temp_column = _fill_grid_column(temp_column)
+		sector_grid_data.append(temp_column)
+	
+	return sector_grid_data
+	
+func _fill_grid_column(prev_points : Array):
+	
+	#print("DEBUG prev points are ", prev_points)
+	var out_column = []
+	out_column.resize(sector_grid_size.y)
+	out_column.fill(GridContent.FILLED)
+	
+	# First deciding which entry point is the sure gateway.
+	var start_point = randi() % prev_points.size()
+	var gateway_idx = 0
+	for i in range(prev_points.size()):
+		var wrap_idx = (i + start_point) % prev_points.size()
+		if prev_points[wrap_idx] != GridContent.FILLED:
+			gateway_idx = wrap_idx
+			out_column[gateway_idx] = GridContent.EMPTY
+			break
+	
+	# Then populate straight channels.
+	for i in range(prev_points.size()):
+		if prev_points[i] == GridContent.EMPTY:
+			if randf() > .8:
+				out_column[i] = GridContent.EMPTY
+	
+	# Then check vertical channels.	
+	for i in range(out_column.size()):
+		var prev_idx = (out_column.size() + i - 1) % out_column.size()
+		var next_idx = (i + 1) % out_column.size()
+		if out_column[prev_idx] == GridContent.EMPTY or out_column[next_idx] == GridContent.EMPTY:
+			if randf() > .8:
+				out_column[i] = GridContent.EMPTY
+	
+	return out_column
 
 var buildings: Array[Rect2] = []  # Array of Rect2 representing building positions and sizes
 var enemies: Array[Vector2] = []  # Array of Vector2 representing enemy positions
@@ -17,8 +64,10 @@ var collision_shapes = []   # Collision shapes for navigation
 @onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
 
 # Public Functions:
-func generate_content(size: Vector2):
-	sector_size = size
+func generate_content(latest_grid_column: Array):
+	
+	_fill_grid(latest_grid_column)
+
 	_generate_buildings()
 	_generate_checkpoints()
 	_generate_enemies()
@@ -36,28 +85,40 @@ func get_checkpoint_positions() -> Array:
 # Private Function
 
 func _generate_buildings():
-	# Generate Rect2 for where the buildings are and store them in "buildings"
-	_populate_buildings()
-	
+
+	# For each column (moving along x
+	for xi in range(int(sector_grid_size.x)):
+		
+		for yi in range(int(sector_grid_size.y)):
+			if sector_grid_data[xi][yi] == GridContent.FILLED:
+				var grid_elem_size = sector_size / sector_grid_size
+				var building_position = Vector2(\
+					(xi) * grid_elem_size.x,\
+					(yi) * grid_elem_size.y)
+				_add_building(Rect2(building_position, grid_elem_size))
+
+func _get_free_spot(col_idx : int) -> Vector2:
+	for i in range(	sector_grid_data[col_idx].size()):
+		if sector_grid_data[col_idx][i] != GridContent.FILLED:
+			var grid_elem_size = sector_size / sector_grid_size
+			var central_position = Vector2(\
+				col_idx * grid_elem_size.x,\
+				i * grid_elem_size.y)
+			return global_position + central_position + grid_elem_size / 2
+	return Vector2.ZERO
+
 func _generate_checkpoints():
-	
-	# TODO Temp - creating two checkpoints now.
-	_add_checkpoint(Vector2(sector_size.x * .25, sector_size.y * .5))
+	const checkpoint_x_pos = 1
+	_add_checkpoint(_get_free_spot(checkpoint_x_pos))
 
 func _generate_enemies():
-	# Generate Vector2 for where the enemies are and store them in "enemies"
-	# Ensure enemies do not overlap with buildings
+	# TODO very temp)
 	var num_enemies = 5  # Adjust as needed
-	var max_attempts = 10
 	for i in range(num_enemies):
-		var enemy_pos = null
-		for attempt in range(max_attempts):
-			var pos = _random_point()
-			if not _is_overlapping_building(pos):
-				enemy_pos = pos
-				break
-		if enemy_pos:
-			enemies.append(enemy_pos)
+		var enemy_position = _get_free_spot(1)
+		print("generating enemy at ", enemy_position, ". position is ", global_position)
+		if enemy_position != Vector2.ZERO:
+			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 2, enemy_position)
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(randf() * i_rect.x, randf() * i_rect.y) + weight * i_rect
@@ -66,25 +127,6 @@ func _random_point() -> Vector2:
 	# Generate a random point within the sector bounds
 	return Vector2(randf() * sector_size.x, randf() * sector_size.y)
 
-func _populate_buildings():
-	var sections = Vector2(2, 2)
-	var building_size = Vector2(100, 100)
-	for xi in range(int(sections.x)):
-		for yi in range(int(sections.y)):
-			# Adding a central building
-			var center = Vector2(
-				sector_size.x / sections.x * (xi + 0.5),
-				sector_size.y / sections.y * (yi + 0.5)
-			)
-			
-			_add_building(Rect2(center, _random_rect(building_size, 0.5)))
-			
-			# Adding side-buildings around it
-			for i in range(4):
-				var offset = _random_rect(building_size) - building_size / 2
-				var size = _random_rect(building_size / 3, 0.7)
-				_add_building(Rect2(center + offset, size))
-				
 
 func _is_overlapping_building(point: Vector2) -> bool:
 	for building in buildings:
@@ -93,6 +135,8 @@ func _is_overlapping_building(point: Vector2) -> bool:
 	return false
 
 func _add_building(rect: Rect2) -> Dictionary:
+	
+	print("addbuilding called for ", rect)
 	# Create visual representation
 	var building_node = ColorRect.new()
 	building_node.color = Color(0.5, 0.5, 0.5)  # Gray color
@@ -111,7 +155,7 @@ func _add_building(rect: Rect2) -> Dictionary:
 	
 	add_child(static_body)
 	static_body.add_to_group("obstacles")
-	static_body.set_global_position(building_center)
+	static_body.set_position(building_center)
 	
 	return {
 		"building_node": building_node,
