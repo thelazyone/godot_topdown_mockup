@@ -15,8 +15,6 @@ const CAMERA_MARGIN : float = 200
 var current_camera_position : float = 0
 		
 func _ready() -> void:
-	#add_units(start_goons, UnitParams.Types.SOLDIER, 1, start_1)
-	#add_units(1,  UnitParams.Types.TOTEM, 2, start_2)
 	pass
 
 func add_units(number : int, type : UnitParams.Types, faction : int, i_position : Vector2) :

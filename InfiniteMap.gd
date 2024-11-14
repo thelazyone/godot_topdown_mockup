@@ -11,6 +11,7 @@ var sector_counter : int = 0
 # References to child nodes
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
 @onready var fow = $NavRegion/FogOfWar
+@onready var camera : Node = %Camera
 
 func _ready():
 	# Generate the initial sector
@@ -30,7 +31,7 @@ func _ready():
 	
 
 # Camera Stuff
-@onready var camera_offset = $Camera.position.x
+@onready var camera_offset = camera.position.x
 var camera_position: float = 0
 var camera_target_position : float = 0
 const CAMERA_SPEED = 150
@@ -49,7 +50,7 @@ func _process(delta):
 	if abs(camera_spread) > .1:
 		var move_amount = CAMERA_SPEED * delta * sign(camera_spread)
 		camera_position += min(abs(camera_spread), abs(move_amount)) * sign(camera_spread)
-		$Camera.position.x = camera_position + camera_offset
+		camera.position.x = camera_position + camera_offset
 
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 3) * sector_size.x:

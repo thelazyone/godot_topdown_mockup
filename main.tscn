@@ -42,5 +42,6 @@ navigation_polygon = SubResource("NavigationPolygon_gduh2")
 [node name="FogOfWar" type="ColorRect" parent="InfiniteMap/NavRegion"]
 material = SubResource("ShaderMaterial_b2edw")
 
-[node name="Camera" type="Camera2D" parent="InfiniteMap"]
+[node name="Camera" type="Camera2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(801, 397)
