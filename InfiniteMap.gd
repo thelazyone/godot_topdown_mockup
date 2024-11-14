@@ -5,7 +5,7 @@ extends Node2D
 var sectors = []                           		# List to keep track of active sectors
 var sector_counter : int = 0
 const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
-@onready var gaming_area_height = get_viewport().size.y - 300
+@onready var gaming_area_height = get_viewport().size.y 
 @onready var sector_size : Vector2 = Vector2(gaming_area_height * sector_size_ratio, gaming_area_height)
 @onready var removal_distance = sector_size.x * 5    	# Distance after which sectors are removed
 @onready var sector_factory = MapSectorFactory.new()
@@ -64,6 +64,7 @@ func _process(delta):
 			spaw_offset *= current_sector_handle.sector_size.y/current_sector_handle.sector_grid_size.y
 			var spaw_position = Vector2(0, spaw_offset)
 			main_node.add_units(main_node.start_goons, UnitParams.Types.SOLDIER, 1, spaw_position)
+			main_node.add_units(6, UnitParams.Types.TANK, 1, spaw_position)
 		else: 
 			_generate_new_sector()
 		sector_counter += 1

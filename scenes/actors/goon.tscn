@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cxk0bcefp310h"]
+[gd_scene load_steps=10 format=3 uid="uid://cxk0bcefp310h"]
 
 [ext_resource type="Script" path="res://scenes/actors/goon.gd" id="1_np6xr"]
 [ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://scenes/splat.tscn" id="2_qg86p"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://dc8van0gdv2w4" path="res://scenes/actors/enlisted_troop_gun.png" id="3_yhdra"]
 [ext_resource type="Script" path="res://scenes/actors/strategy_component.gd" id="4_spkq7"]
 [ext_resource type="Script" path="res://scenes/actors/shoot_component.gd" id="5_ptigm"]
-[ext_resource type="PackedScene" uid="uid://cveu1hk6senbf" path="res://scenes/projectile.tscn" id="6_f7efv"]
 [ext_resource type="Script" path="res://scenes/actors/health_component.gd" id="7_cq3ig"]
 [ext_resource type="Script" path="res://scenes/actors/fields_component.gd" id="9_myp1d"]
 
@@ -37,7 +36,6 @@ default_color = Color(1, 0, 0, 1)
 
 [node name="ShootComponent" type="Node2D" parent="."]
 script = ExtResource("5_ptigm")
-PROJECTILE = ExtResource("6_f7efv")
 
 [node name="HealthComponent" type="Node2D" parent="."]
 script = ExtResource("7_cq3ig")

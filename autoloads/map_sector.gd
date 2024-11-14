@@ -101,12 +101,9 @@ func _generate_buildings():
 			var local_pos = Vector2((randf() * .5) * main_rect.size.x, (randf() * .5) * main_rect.size.y)
 			var protrusion_value = randf() * .55 * min(main_rect.size.x, main_rect.size.y)
 			var random_sign = Vector2(sign(randf() - .5),sign(randf() - .5))
-			print("randomsign ", random_sign)
 			var new_position = main_rect.position + local_pos * random_sign
-			print("protrusion is ", protrusion_value)
 			var new_size_x = min(main_rect.size.x - local_pos.x, local_pos.x) + protrusion_value 
 			var new_size_y = min(main_rect.size.y - local_pos.y, local_pos.y) + protrusion_value 
-			print("DEBUG ", new_position, " " , new_size_x, " ", new_size_y)
 			_add_building(Rect2(new_position, Vector2(new_size_x, new_size_y)))
 	
 	# Finally adding buildings on top and bottom.

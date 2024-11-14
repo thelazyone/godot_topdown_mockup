@@ -90,7 +90,6 @@ func _state_number_to_name(state_number: int) -> String:
 		_: return "UNKNOWN"
 
 func _set_state(new_state: states):
-	#print("Goon of faction ", get_parent().FACTION, " changing state: ",_state_number_to_name(state),"->",_state_number_to_name(new_state))
 	state = new_state
 
 # Called periodically, to set the "node to control", based on various criteria.

@@ -13,12 +13,14 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_pa
 	# General Params
 	goon.NAME = i_params.name_id
 	goon.health.health = i_params.hp
+	goon.get_node("Image").texture = load(i_params.icon)
 	goon.SPEED = i_params.speed
 	goon.SPOTTING_RANGE = i_params.spotting_range
 
 	# Attack Params
 	goon.shoot.COOLDOWN_TIME_MS = i_params.attack_speed
-	##goon.shoot.PROJECTILE.DAMAGE = i_params.attack_damage # TODO this gives error
+	goon.shoot.PROJECTILE.DAMAGE = i_params.attack_damage
+	goon.shoot.PROJECTILE.DURATION_MS = i_params.attack_range * 2
 	goon.WEAPON_RANGE = i_params.attack_range
 
 	# Behaviour Fields Params
