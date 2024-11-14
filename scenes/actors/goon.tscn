@@ -10,13 +10,14 @@
 [ext_resource type="Script" path="res://scenes/actors/fields_component.gd" id="9_myp1d"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_87qmj"]
-radius = 6.08276
 
 [node name="Goon" type="CharacterBody2D"]
+y_sort_enabled = true
 script = ExtResource("1_np6xr")
 SPLAT = ExtResource("2_qg86p")
 
 [node name="Image" type="Sprite2D" parent="."]
+y_sort_enabled = true
 texture = ExtResource("3_yhdra")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
