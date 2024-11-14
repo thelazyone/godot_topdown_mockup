@@ -60,11 +60,15 @@ func _process(delta):
 		if sector_counter == 0:
 			var main_node = get_node("/root/Main")
 			var current_sector_handle = _generate_new_sector()
-			var spaw_offset = current_sector_handle.get_sector_entry()
-			spaw_offset *= current_sector_handle.sector_size.y/current_sector_handle.sector_grid_size.y
-			var spaw_position = Vector2(0, spaw_offset)
-			main_node.add_units(main_node.start_goons, UnitParams.Types.SOLDIER, 1, spaw_position)
-			main_node.add_units(6, UnitParams.Types.TANK, 1, spaw_position)
+			var spawn_offset = current_sector_handle.get_sector_entry_position()
+			print("spawn position is ", spawn_offset)
+			var spawn_position = Vector2(0, spawn_offset)
+			
+			var player_starting_units = %LevelData.player_units
+			for i in range(player_starting_units.size()):
+				var unit = player_starting_units[i]
+				var offset = Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
+				main_node.add_units(1, unit.type, 1, spawn_position + offset)
 		else: 
 			_generate_new_sector()
 		sector_counter += 1

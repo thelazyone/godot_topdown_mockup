@@ -18,8 +18,11 @@ func _fill_grid(entry_points : Array) -> Array:
 	
 	return sector_grid_data
 	
-func get_sector_entry() -> int:
+func get_sector_entry_index() -> int:
 	return gateway_index
+	
+func get_sector_entry_position() -> float:
+	return (get_sector_entry_index() + .5) * (sector_size.y / sector_grid_size.y)
 	
 func _get_grid_gateway(column: Array) -> int :
 	if column.is_empty():
