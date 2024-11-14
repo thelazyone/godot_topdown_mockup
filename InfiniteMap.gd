@@ -4,7 +4,9 @@ extends Node2D
 # Adjustable parameters
 var sectors = []                           		# List to keep track of active sectors
 var sector_counter : int = 0
-@onready var sector_size : Vector2 = Vector2(get_viewport().size.y / 2, get_viewport().size.y)
+const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
+@onready var gaming_area_height = get_viewport().size.y - 300
+@onready var sector_size : Vector2 = Vector2(gaming_area_height * sector_size_ratio, gaming_area_height)
 @onready var removal_distance = sector_size.x * 5    	# Distance after which sectors are removed
 @onready var sector_factory = MapSectorFactory.new()
 
@@ -16,6 +18,7 @@ var sector_counter : int = 0
 func _ready():
 	# Generate the initial sector
 	sector_factory.sector_size = sector_size
+	print("Sector size is ", sector_size)
 	
 	# Initialize the FogOfWar
 	fow.size = Vector2(sector_size.x, get_viewport().size.y)

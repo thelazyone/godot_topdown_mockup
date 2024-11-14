@@ -55,7 +55,7 @@ func _fill_grid_column(prev_points : Array):
 		var prev_idx = max(0, i - 1)
 		var next_idx = min(i + 1, out_column.size() - 1)
 		if out_column[prev_idx] == GridContent.EMPTY or out_column[next_idx] == GridContent.EMPTY:
-			if randf() > .5:
+			if randf() > .3:
 				out_column[i] = GridContent.EMPTY
 	
 	return out_column
@@ -83,7 +83,8 @@ func generate_content(latest_grid_column: Array):
 
 # Private Function
 func _generate_buildings():
-
+	
+	var main_building_rects = []
 	for xi in range(int(sector_grid_size.x)):
 		for yi in range(int(sector_grid_size.y)):
 			if sector_grid_data[xi][yi] == GridContent.FILLED:
@@ -91,7 +92,22 @@ func _generate_buildings():
 				var building_position = Vector2(\
 					(xi) * grid_elem_size.x,\
 					(yi) * grid_elem_size.y)
-				_add_building(Rect2(building_position, grid_elem_size))
+				_add_building(Rect2(building_position, grid_elem_size * 1.05))
+				main_building_rects.append(Rect2(building_position, grid_elem_size))
+	
+	#for each main rect, adding a few sub-rects
+	for main_rect in main_building_rects:
+		for i in range(randi() % 4):
+			var local_pos = Vector2((randf() * .5) * main_rect.size.x, (randf() * .5) * main_rect.size.y)
+			var protrusion_value = randf() * .55 * min(main_rect.size.x, main_rect.size.y)
+			var random_sign = Vector2(sign(randf() - .5),sign(randf() - .5))
+			print("randomsign ", random_sign)
+			var new_position = main_rect.position + local_pos * random_sign
+			print("protrusion is ", protrusion_value)
+			var new_size_x = min(main_rect.size.x - local_pos.x, local_pos.x) + protrusion_value 
+			var new_size_y = min(main_rect.size.y - local_pos.y, local_pos.y) + protrusion_value 
+			print("DEBUG ", new_position, " " , new_size_x, " ", new_size_y)
+			_add_building(Rect2(new_position, Vector2(new_size_x, new_size_y)))
 	
 	# Finally adding buildings on top and bottom.
 	_add_building(Rect2(Vector2(0,-90), Vector2(sector_size.x, 100)))
@@ -99,11 +115,13 @@ func _generate_buildings():
 
 func _get_free_spot(col_idx : int) -> Vector2:
 	for i in range(	sector_grid_data[col_idx].size()):
-		if sector_grid_data[col_idx][i] != GridContent.FILLED:
+		var wrap_idx = i + randi() % sector_grid_data[col_idx].size()
+		wrap_idx = wrap_idx % sector_grid_data[col_idx].size()
+		if sector_grid_data[col_idx][wrap_idx] != GridContent.FILLED:
 			var grid_elem_size = sector_size / sector_grid_size
 			var central_position = Vector2(\
 				col_idx * grid_elem_size.x,\
-				i * grid_elem_size.y)
+				wrap_idx * grid_elem_size.y)
 			return global_position + central_position + grid_elem_size / 2
 	return Vector2.ZERO
 
