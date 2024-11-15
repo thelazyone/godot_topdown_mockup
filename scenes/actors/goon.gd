@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 @export var NAME : String = ""
+@export var ID : int = 0
 @export var SPEED = 100
 @export var FACTION : int = 0
 

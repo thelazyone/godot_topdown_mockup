@@ -2,11 +2,12 @@ extends Node2D
 const goon_scene = preload("res://scenes/actors/goon.tscn")
 
 # Public Method
-func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_parent) -> Node:
+func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction: int, i_parent) -> Node:
 	
 	var goon = goon_scene.instantiate()
 	goon.position = i_position
 	goon.FACTION = i_faction
+	goon.ID = i_id
 	goon.add_to_group("goons")
 	i_parent.add_child(goon)
 	
@@ -21,6 +22,7 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_faction: int, i_pa
 	goon.shoot.COOLDOWN_TIME_MS = i_params.attack_speed
 	goon.shoot.PROJECTILE.DAMAGE = i_params.attack_damage
 	goon.shoot.PROJECTILE.DURATION_MS = i_params.attack_range * 2
+	goon.shoot.PROJECTILE.UNIT_ID = goon.ID
 	goon.WEAPON_RANGE = i_params.attack_range
 
 	# Behaviour Fields Params

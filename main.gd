@@ -17,9 +17,9 @@ func _ready() -> void:
 	
 	pass
 
-func add_units(number : int, type : UnitParams.Types, faction : int, i_position : Vector2) :
+func add_units(number : int, type : UnitParams.Types, i_id: int, faction : int, i_position : Vector2) :
 	for i in range(number):
-		$UnitFactory.create_unit(UnitParams.get_unit_params(type), i_position + Vector2(10 * i, 0), faction, self)
+		$UnitFactory.create_unit(UnitParams.get_unit_params(type), i_position + Vector2(10 * i, 0), i_id, faction, self)
 
 func _input(event: InputEvent) -> void:
 	

@@ -7,6 +7,8 @@ func receive_damage(value : float):
 	health -= value
 	if health <= 0: 
 		get_parent().die() 
+		return true
+	return false
 
 
 # Called when the node enters the scene tree for the first time.

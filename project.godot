@@ -22,6 +22,7 @@ NavigationMap="*res://autoloads/navigation_map.tscn"
 DirectionPattern="*res://autoloads/direction_pattern.gd"
 DirectionField="*res://autoloads/direction_field.gd"
 Debug="*res://autoloads/debug.gd"
+LevelData="*res://autoloads/level_data.gd"
 
 [display]
 

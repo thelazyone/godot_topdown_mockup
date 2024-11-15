@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=9 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
 [ext_resource type="Script" path="res://autoloads/unit_factory.gd" id="3_uwktb"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 [ext_resource type="Script" path="res://cards_container.gd" id="5_7ejbv"]
 [ext_resource type="Script" path="res://dice_container.gd" id="6_wx36c"]
-[ext_resource type="Script" path="res://level_data.gd" id="7_l7ee8"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_gduh2"]
 vertices = PackedVector2Array(1170.05, 654.008, -4.03906, 655.977, -6.96094, 1, 1173.94, 1)
@@ -70,7 +69,3 @@ offset_top = 776.0
 offset_right = 395.0
 offset_bottom = 799.0
 text = "Press X to toggle debug fields, Z for debug console."
-
-[node name="LevelData" type="Node2D" parent="."]
-unique_name_in_owner = true
-script = ExtResource("7_l7ee8")

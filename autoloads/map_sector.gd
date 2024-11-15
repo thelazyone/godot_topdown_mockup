@@ -135,7 +135,7 @@ func _generate_enemies():
 	for i in range(num_enemies):
 		var enemy_position = _get_free_spot(2)
 		if enemy_position != Vector2.ZERO:
-			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 2, enemy_position + (Vector2(1 * i,0)))
+			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 0, 2, enemy_position + (Vector2(1 * i,0)))
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(randf() * i_rect.x, randf() * i_rect.y) + weight * i_rect

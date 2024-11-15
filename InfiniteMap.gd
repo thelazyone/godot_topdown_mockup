@@ -64,11 +64,11 @@ func _process(delta):
 			print("spawn position is ", spawn_offset)
 			var spawn_position = Vector2(0, spawn_offset)
 			
-			var player_starting_units = %LevelData.player_units
+			var player_starting_units = LevelData.player_units
 			for i in range(player_starting_units.size()):
 				var unit = player_starting_units[i]
 				var offset = Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
-				main_node.add_units(1, unit.type, 1, spawn_position + offset)
+				main_node.add_units(1, unit.type, unit.id, 1, spawn_position + offset)
 		else: 
 			_generate_new_sector()
 		sector_counter += 1
