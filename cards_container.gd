@@ -2,33 +2,29 @@ extends Control
 
 @onready var CardScene = preload("res://Card.tscn")
 
-var card_titles = [] 	# Strings array
 var cards = []			# All instantiated cards.
 
 const margin = 20
 const spacing = 10
 
 func _ready():
-	
 	# Temp titles, will be set from the game node
-	card_titles = ["Card 1", "Card 2", "Card 3"]
-	display_cards(card_titles)
+	display_cards(LevelData.level_cards)
 
-func display_cards(titles: Array):
+func display_cards(cards_data: Array):
 	
 	clear_cards()
 	cards = []
 	var card_size = Vector2(150, 250)
-	var total_width = (card_size.x + spacing) * titles.size() - margin
+	var total_width = (card_size.x + spacing) * cards_data.size() - margin
 	var start_x = margin
 
-	for i in range(titles.size()):
-		var card_title = titles[i]
+	for i in range(cards_data.size()):
 		var card = CardScene.instantiate()
 		card.size = card_size
 		var offscreen_y = -card_size.y * 0.8
 		card.position = Vector2(start_x + i * (card_size.x + spacing), offscreen_y)
-		card.set_title(card_title)
+		card.set_content(cards_data[i])
 		add_child(card)
 		cards.append(card)
 		

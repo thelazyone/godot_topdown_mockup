@@ -20,8 +20,10 @@ func _process(delta: float) -> void:
 		_on_mouse_exited()
 	
 
-func set_title(text):
-	get_node("Panel/Title").text = text
+func set_content(data: CardData):
+	get_node("Panel/Title").text = data.title
+	get_node("Panel/Text1").text = data.text_1 # TODO add cost_1
+	get_node("Panel/Text2").text = data.text_2 # TODO add cost_2
 
 func _on_mouse_entered():
 	print("mouse entered card ", self)

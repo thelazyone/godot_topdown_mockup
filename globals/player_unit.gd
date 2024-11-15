@@ -10,10 +10,7 @@ var out_of_combat : bool = false # If true, the unit is healing (TODO)
 
 # Get Type
 
-
-
 # Constructor
-
 static func new_unit(type : UnitParams.Types):
 	var out_unit = PlayerUnit.new()
 	out_unit.type = type
