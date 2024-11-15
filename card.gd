@@ -7,8 +7,6 @@ func _ready():
 	# Ensure the card can receive mouse input
 	mouse_filter = Control.MouseFilter.MOUSE_FILTER_PASS
 	
-	# Create a Tween for animations
-	tween = Tween.new()
 	
 func _process(delta: float) -> void:
 	

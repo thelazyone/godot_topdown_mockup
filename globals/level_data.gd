@@ -33,6 +33,8 @@ static func get_starting_units() -> Array :
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	return units
 
 static func get_starting_cards() -> Array :

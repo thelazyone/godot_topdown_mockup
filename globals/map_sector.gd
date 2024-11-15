@@ -76,13 +76,13 @@ var collision_shapes = []   # Collision shapes for navigation
 @onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
 
 # Public Functions:
-func generate_content(latest_grid_column: Array):
+func generate_content(latest_grid_column: Array, new_spawn: Array):
 	
 	_fill_grid(latest_grid_column)
 
 	_generate_buildings()
 	_generate_checkpoints()
-	_generate_enemies()
+	_generate_units(new_spawn)
 
 # Private Function
 func _generate_buildings():
@@ -119,23 +119,21 @@ func _get_free_spot(col_idx : int) -> Vector2:
 		wrap_idx = wrap_idx % sector_grid_data[col_idx].size()
 		if sector_grid_data[col_idx][wrap_idx] != GridContent.FILLED:
 			var grid_elem_size = sector_size / sector_grid_size
-			var central_position = Vector2(\
+			var corner_position = Vector2(\
 				col_idx * grid_elem_size.x,\
 				wrap_idx * grid_elem_size.y)
-			return global_position + central_position + grid_elem_size / 2
+			return global_position + corner_position + grid_elem_size / 2
 	return Vector2.ZERO
 
 func _generate_checkpoints():
 	var checkpoint_pos = _get_free_spot(1)	
 	_add_checkpoint(checkpoint_pos)
 
-func _generate_enemies():
-	# TODO very temp
-	var num_enemies = 10
-	for i in range(num_enemies):
+func _generate_units(new_spawn: Array):
+	for i in range(new_spawn.size()):
 		var enemy_position = _get_free_spot(2)
-		if enemy_position != Vector2.ZERO:
-			get_node("/root/Main").add_units(1, UnitParams.Types.BUG, 0, 2, enemy_position + (Vector2(1 * i,0)))
+		print("adding bug at ", enemy_position + (Vector2(10 * i,10 * i)))
+		get_node("/root/Main").add_units(1, new_spawn[i], 0, 2, enemy_position + (Vector2(10 * i,10 * i)))
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(randf() * i_rect.x, randf() * i_rect.y) + weight * i_rect

@@ -14,11 +14,13 @@ const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
 @onready var fow = $NavRegion/FogOfWar
 @onready var camera : Node = %Camera
+var interactive_area = null
 
 func _ready():
-	# Generate the initial sector
 	sector_factory.sector_size = sector_size
-	print("Sector size is ", sector_size)
+	
+	interactive_area = %InteractiveArea
+	interactive_area.visible = false
 	
 	# Initialize the FogOfWar
 	fow.size = Vector2(sector_size.x, get_viewport().size.y)
@@ -32,7 +34,6 @@ func _ready():
 	static_body.position = shape.size / 2
 	fow.add_child(static_body)
 	
-
 # Camera Stuff
 @onready var camera_offset = camera.position.x
 var camera_position: float = 0
@@ -48,6 +49,20 @@ func get_camera_position() -> float:
 
 func _process(delta):
 	
+	# First Sector Initialization.
+	if sector_counter == 0:
+		var main_node = get_node("/root/Main")
+		var current_sector_handle = _generate_new_sector()
+		var spawn_position = Vector2(0, current_sector_handle.get_sector_entry_position())
+		var player_starting_units = LevelData.player_units
+		for i in range(player_starting_units.size()):
+			var unit = player_starting_units[i]
+			var offset = Vector2(50, 0) + Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
+			main_node.add_units(1, unit.type, unit.id, 1, spawn_position + offset)
+			
+		# Adding a second sector at the beginning.
+		_generate_new_sector()
+		
 	# Moving the camera if target has changed.
 	var camera_spread = camera_target_position - camera_position
 	if abs(camera_spread) > .1:
@@ -57,21 +72,10 @@ func _process(delta):
 
 	# Generate new sector if needed
 	if camera_position > (sector_counter - 2) * sector_size.x:
-		if sector_counter == 0:
-			var main_node = get_node("/root/Main")
-			var current_sector_handle = _generate_new_sector()
-			var spawn_offset = current_sector_handle.get_sector_entry_position()
-			print("spawn position is ", spawn_offset)
-			var spawn_position = Vector2(0, spawn_offset)
-			
-			var player_starting_units = LevelData.player_units
-			for i in range(player_starting_units.size()):
-				var unit = player_starting_units[i]
-				var offset = Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
-				main_node.add_units(1, unit.type, unit.id, 1, spawn_position + offset)
-		else: 
-			_generate_new_sector()
-		sector_counter += 1
+		if not interactive_area.visible:
+			# Here a new sector is about to get generated - a new card choice appears! 
+			get_tree().paused = true
+			interactive_area.show_dialog()
 
 	# Remove old sectors if they're far left
 	if sectors.size() > 0 and camera_position - sectors[0].position.x > removal_distance:
@@ -82,18 +86,23 @@ func _process(delta):
 	fow.position.y = 0
 
 # Adding a new sector to the list.
-func _generate_new_sector():
+func _generate_new_sector(new_spawn: Array = []):
+	
+	print("Generating sector #", sector_counter)
+	
+	
 	var sector_position_x = sector_counter * sector_size.x
 	#var sector_position_x = sector_counter * sector_size.x
 
 	# Create a new MapSector instance
-	var sector_instance = sector_factory.new_sector(self.nav_region, sector_position_x)
+	var sector_instance = sector_factory.new_sector(self.nav_region, sector_position_x, new_spawn)
 	#sector_instance.position.x = sector_position_x
 	sectors.append(sector_instance) # TODO unelegant, double instancing!
 
 	# Rebake the navigation mesh
 	_rebake_navigation()
 	
+	sector_counter +=1
 	return sector_instance
 
 # Blindly destroying the oldest sector when the conditions require it.
