@@ -1,7 +1,7 @@
 class_name PlayerUnit
 extends Node
 
-var id : int = 0 # Unique ID, tracked throughout the game.
+var id : int = 0 # Unique ID, tracked throughout the game. # TODO could be a dict?
 var type : UnitParams.Types = UnitParams.Types.SOLDIER
 var xp : float = 0 # For levelling up; each 100 is a level (TODO)
 var formation_position : Vector2 = Vector2.ZERO # For formations (TODO)

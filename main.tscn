@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
-[ext_resource type="Script" path="res://autoloads/unit_factory.gd" id="3_uwktb"]
+[ext_resource type="Script" path="res://globals/unit_factory.gd" id="3_uwktb"]
 [ext_resource type="Shader" path="res://striped.gdshader" id="4_h84fu"]
 [ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 [ext_resource type="Script" path="res://cards_container.gd" id="5_7ejbv"]

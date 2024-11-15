@@ -22,7 +22,6 @@ func display_dice(values: Array):
 			get_viewport_rect().size.y - dice_size.y - margin)
 		dice_button.pressed.connect(self._on_dice_pressed.bind(i))
 		add_child(dice_button)
-		print("displaying dice at ", dice_button.position, " with number ", values[i])
 
 func clear_dice():
 	for child in get_children():

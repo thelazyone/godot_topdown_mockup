@@ -28,7 +28,6 @@ func display_cards(titles: Array):
 		card.size = card_size
 		var offscreen_y = -card_size.y * 0.8
 		card.position = Vector2(start_x + i * (card_size.x + spacing), offscreen_y)
-		print("DEBUG: ", card.position)
 		card.set_title(card_title)
 		add_child(card)
 		cards.append(card)

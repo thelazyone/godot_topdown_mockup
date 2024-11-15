@@ -56,7 +56,7 @@ func _process(delta):
 		camera.position.x = camera_position + camera_offset
 
 	# Generate new sector if needed
-	if camera_position > (sector_counter - 3) * sector_size.x:
+	if camera_position > (sector_counter - 2) * sector_size.x:
 		if sector_counter == 0:
 			var main_node = get_node("/root/Main")
 			var current_sector_handle = _generate_new_sector()
