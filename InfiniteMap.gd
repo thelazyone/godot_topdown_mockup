@@ -4,6 +4,7 @@ extends Node2D
 # Adjustable parameters
 var sectors = []                           		# List to keep track of active sectors
 var sector_counter : int = 0
+var hostile_sector_counter : int = 0
 const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var gaming_area_height = get_viewport().size.y 
 @onready var sector_size : Vector2 = Vector2(gaming_area_height * sector_size_ratio, gaming_area_height)
@@ -59,7 +60,6 @@ func _process(delta):
 			var unit = player_starting_units[i]
 			var offset = Vector2(50, 0) + Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
 			main_node.add_units(1, unit.type, unit.id, 1, spawn_position + offset)
-			
 		
 		# Adding a second sector at the beginning.
 		_generate_new_sector()
@@ -73,11 +73,15 @@ func _process(delta):
 		camera.position.x = camera_position + camera_offset
 
 	# Generate new sector if needed
+	
+	# If it's a hostile sector, a modal dialog should appear.
+	# TODO for now all sectors are hostile! 
 	if camera_position > (sector_counter - 2) * sector_size.x:
 		if not interactive_area.visible:
 			# Here a new sector is about to get generated - a new card choice appears! 
 			get_tree().paused = true
-			interactive_area.show_dialog()
+			interactive_area.show_dialog(hostile_sector_counter)
+			hostile_sector_counter += 1
 
 	# Remove old sectors if they're far left
 	if sectors.size() > 0 and camera_position - sectors[0].position.x > removal_distance:

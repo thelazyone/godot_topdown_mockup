@@ -36,22 +36,32 @@ static func get_starting_units() -> Array :
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	return units
+	
+static func _create_list(list : Array) -> Array:
+	# Expecting inputs in the form [UnitParams.Type, int]
+	var out_list = []
+	for block in list:
+		for i in range (block[1]):
+			out_list.append(block[0])
+	return out_list
+	
 
 static func get_starting_cards() -> Array :
 	var cards = []
 	
+	#CARD 1:
 	cards.append(CardData.new_card(
 		"The First Card", # Title
 		[CardOption.new_option( # Option 1
 			"CARD OPTION 1",
 			[[1,2], 1],
 			"Does something",
-			func(): print("Called card 1 option 1")
+			func(): return _create_list([[UnitParams.Types.BUG,10]])
 		),CardOption.new_option( # Option 2
 			"CARD OPTION 2",
 			[[1,6], 6],
 			"Does something else",
-			func(): print("Called card 1 option 2")
+			func(): return _create_list([[UnitParams.Types.TANK,10],[UnitParams.Types.BUG,10]])
 		)]))
 		
 	cards.append(CardData.new_card(

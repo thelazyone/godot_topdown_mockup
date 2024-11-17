@@ -1,7 +1,7 @@
 class_name CardData
 extends Node
 
-var options = [] # Array of card_option
+var options = [] # Array of CardOption
 var title = ""
 
 static func new_card(\
