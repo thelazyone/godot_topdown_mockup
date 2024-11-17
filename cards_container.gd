@@ -3,6 +3,7 @@ extends Control
 @onready var CardScene = preload("res://Card.tscn")
 
 var cards = []			# All instantiated cards.
+var cards_counter = 0 # counting the spent cards.
 
 const margin = 20
 const spacing = 10
@@ -10,6 +11,21 @@ const spacing = 10
 func _ready():
 	# Temp titles, will be set from the game node
 	display_cards(LevelData.level_cards)
+	
+func get_card_at_index(index: int) -> CardData:
+	if cards.size() <= index:
+		return CardData.new() # TODO should be an error instead!
+	return cards[index]
+	
+func set_card_active(index: int, active: bool):
+	if cards.size() <= index:
+		return
+	cards[index].is_active = active
+	
+func set_card_spent(index: int, active: bool):
+	if cards.size() <= index:
+		return
+	cards[index].is_spent = active
 
 func display_cards(cards_data: Array):
 	

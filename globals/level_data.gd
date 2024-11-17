@@ -39,22 +39,74 @@ static func get_starting_units() -> Array :
 
 static func get_starting_cards() -> Array :
 	var cards = []
-	cards.append(CardData.new_card(\
-		"Card 1",
-		[[1,4],2],
-		"Option 1",
-		[[5,6],[5,6]],
-		"Option 2"))
-	cards.append(CardData.new_card(\
-		"Card 2",
-		[2],
-		"Option 1",
-		[1],
-		"Option 2"))
-	cards.append(CardData.new_card(\
-		"Card 3",
-		[],
-		"Option 1",
-		[[1,6]],
-		"Option 2"))
+	
+	cards.append(CardData.new_card(
+		"The First Card", # Title
+		[CardOption.new_option( # Option 1
+			"CARD OPTION 1",
+			[[1,2], 1],
+			"Does something",
+			func(): print("Called card 1 option 1")
+		),CardOption.new_option( # Option 2
+			"CARD OPTION 2",
+			[[1,6], 6],
+			"Does something else",
+			func(): print("Called card 1 option 2")
+		)]))
+		
+	cards.append(CardData.new_card(
+		"The Second Card", # Title
+		[CardOption.new_option( # Option 1
+			"CARD OPTION 1",
+			[[1,2], 1],
+			"Does something",
+			func(): print("Called card 1 option 1")
+		),CardOption.new_option( # Option 2
+			"CARD OPTION 2",
+			[[1,6], 6],
+			"Does something else",
+			func(): print("Called card 1 option 2")
+		)]))	
+			
+	cards.append(CardData.new_card(
+		"The Third Card", # Title
+		[CardOption.new_option( # Option 1
+			"CARD OPTION 1",
+			[[1,2], 1],
+			"Does something",
+			func(): print("Called card 1 option 1")
+		),CardOption.new_option( # Option 2
+			"CARD OPTION 2",
+			[[1,6], 6],
+			"Does something else",
+			func(): print("Called card 1 option 2")
+		)]))		
+		
+	cards.append(CardData.new_card(
+		"The Fourth Card", # Title
+		[CardOption.new_option( # Option 1
+			"CARD OPTION 1",
+			[[1,2], 1],
+			"Does something",
+			func(): print("Called card 1 option 1")
+		),CardOption.new_option( # Option 2
+			"CARD OPTION 2",
+			[[1,6], 6],
+			"Does something else",
+			func(): print("Called card 1 option 2")
+		)]))		
+		
+	cards.append(CardData.new_card(
+		"The Fifth Card", # Title
+		[CardOption.new_option( # Option 1
+			"CARD OPTION 1",
+			[[1,2], 1],
+			"Does something",
+			func(): print("Called card 1 option 1")
+		),CardOption.new_option( # Option 2
+			"CARD OPTION 2",
+			[[1,6], 6],
+			"Does something else",
+			func(): print("Called card 1 option 2")
+		)]))
 	return cards
