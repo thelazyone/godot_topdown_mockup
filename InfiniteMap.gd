@@ -24,15 +24,15 @@ func _ready():
 	
 	# Initialize the FogOfWar
 	fow.size = Vector2(sector_size.x, get_viewport().size.y)
-	fow.position = Vector2(sector_size.x, 0)
+	#fow.position = Vector2(sector_size.x, 0)
+	var static_body = StaticBody2D.new()
+	fow.add_child(static_body)
+	var collision_shape = CollisionShape2D.new()
+	static_body.add_child(collision_shape)
 	var shape = RectangleShape2D.new()
 	shape.size = fow.size
-	var collision_shape = CollisionShape2D.new()
 	collision_shape.set_shape(shape)
-	var static_body = StaticBody2D.new()
-	static_body.add_child(collision_shape)
 	static_body.position = shape.size / 2
-	fow.add_child(static_body)
 	
 # Camera Stuff
 @onready var camera_offset = camera.position.x
@@ -60,8 +60,10 @@ func _process(delta):
 			var offset = Vector2(50, 0) + Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
 			main_node.add_units(1, unit.type, unit.id, 1, spawn_position + offset)
 			
+		
 		# Adding a second sector at the beginning.
 		_generate_new_sector()
+
 		
 	# Moving the camera if target has changed.
 	var camera_spread = camera_target_position - camera_position
@@ -81,15 +83,11 @@ func _process(delta):
 	if sectors.size() > 0 and camera_position - sectors[0].position.x > removal_distance:
 		_remove_old_sector()
 		
-	# Update FogOfWar position to the right of the latest sector
-	fow.position.x = sector_counter * sector_size.x
-	fow.position.y = 0
 
 # Adding a new sector to the list.
 func _generate_new_sector(new_spawn: Array = []):
 	
 	print("Generating sector #", sector_counter)
-	
 	
 	var sector_position_x = sector_counter * sector_size.x
 	#var sector_position_x = sector_counter * sector_size.x
@@ -100,9 +98,10 @@ func _generate_new_sector(new_spawn: Array = []):
 	sectors.append(sector_instance) # TODO unelegant, double instancing!
 
 	# Rebake the navigation mesh
-	_rebake_navigation()
-	
 	sector_counter +=1
+	fow.position.x = sector_counter * sector_size.x
+	_rebake_navigation()
+
 	return sector_instance
 
 # Blindly destroying the oldest sector when the conditions require it.
@@ -125,5 +124,6 @@ func _rebake_navigation():
 		Vector2(get_viewport().size.x * 2 + camera_position, get_viewport().size.y),
 		Vector2(camera_position, get_viewport().size.y),
 	]
+	print("baking navigation around ", polygon)
 	nav_region.navigation_polygon.add_outline(polygon)
 	nav_region.bake_navigation_polygon()
