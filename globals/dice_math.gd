@@ -1,7 +1,7 @@
 extends Node
 
 
-func is_valid_assignment(dice, slots):
+func dice_satisfy_slots(dice, slots):
 	
 	var local_dice = dice.duplicate()
 	var local_slots = slots.duplicate() 
@@ -9,6 +9,18 @@ func is_valid_assignment(dice, slots):
 	# Sort slots by range size (smallest range first for optimization)
 	local_slots.sort_custom(self._compare_slot_ranges)
 	return _backtrack(local_dice, local_slots)
+
+func die_fits_slots(value, slots):
+	for range in slots:
+		if typeof(range) == TYPE_ARRAY and range.size() == 2:
+			if value >= range[0] and value <= range[1]:
+				return true
+		elif typeof(range) == TYPE_INT or typeof(range) == TYPE_FLOAT:
+			if value == range:
+				return true
+	return false
+
+
 
 # Helper function to compare slot range sizes
 func _compare_slot_ranges(a, b):
@@ -28,9 +40,7 @@ func _backtrack(dice, slots):
 		# Check if die satisfies the slot
 		if die >= slot[0] and die <= slot[1]:
 			var new_dice = dice.duplicate()
-			print("debug, dice are ", new_dice, "good dice is index ", i)
 			new_dice.erase(new_dice[i])  # Remove the die from the available dice
-			print("and calling backtrack with ", new_dice)
 			
 			# Recursively check remaining slots with remaining dice
 			if _backtrack(new_dice, new_slots):

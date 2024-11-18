@@ -4,7 +4,6 @@ extends Node2D
 var player_units = []
 var level_cards = []
 var dice_values = []
-var car
 
 func _init() -> void:
 	player_units = get_starting_units()
@@ -69,12 +68,12 @@ static func get_starting_cards() -> Array :
 		"The Second Card", # Title
 		[CardOption.new_option( # Option 1
 			"CARD OPTION 1",
-			[[1,2], 1],
+			[[1,2], [1,1]],
 			"Does something",
 			func(): print("Called card 1 option 1")
 		),CardOption.new_option( # Option 2
 			"CARD OPTION 2",
-			[[1,6], 6],
+			[[1,6], [6,6]],
 			"Does something else",
 			func(): print("Called card 1 option 2")
 		)]))	
