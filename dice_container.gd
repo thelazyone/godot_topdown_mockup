@@ -122,6 +122,7 @@ func _on_use_dice_button_pressed():
 	
 	# I cannot 
 	var reverse_indices = selected_dice_indices
+	reverse_indices.sort()
 	reverse_indices.reverse()
 	for index in reverse_indices:
 		_delete_dice_at_index(index)

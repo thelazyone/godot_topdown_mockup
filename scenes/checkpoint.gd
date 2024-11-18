@@ -35,8 +35,8 @@ func _process(delta: float) -> void:
 			queue_free()
 	
 	# If it reaches negative positions,
-	if global_position.x < 0:
-		queue_free
+	if global_position.x < 20:
+		queue_free()
 
 func _draw():
 	
