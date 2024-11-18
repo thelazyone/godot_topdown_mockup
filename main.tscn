@@ -78,11 +78,9 @@ offset_right = 395.0
 offset_bottom = 799.0
 text = "Press X to toggle debug fields, Z for debug console."
 
-[node name="InteractiveArea" type="Control" parent="."]
+[node name="InteractiveArea" type="Container" parent="."]
 unique_name_in_owner = true
 material = SubResource("CanvasItemMaterial_yjfes")
-layout_mode = 3
-anchors_preset = 0
 offset_left = 397.0
 offset_top = 197.0
 offset_right = 1197.0

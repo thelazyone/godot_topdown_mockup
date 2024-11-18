@@ -27,64 +27,63 @@ func show_dialog(card_counter):
 	anchor_right = 1
 	anchor_top = 0
 	anchor_bottom = 1
-	modulate = Color(0, 0, 0, 0.5)  # Semi-transparent background
+	#modulate = Color(0, 0, 0, 0.5)  # Semi-transparent background
 
 	print("Adding buttons to the interactive area!")
 
 	# Create a container for the options
 	var hbox = HBoxContainer.new()
-	hbox.anchor_left = 0
-	hbox.anchor_right = 1
-	hbox.anchor_top = 0
-	hbox.anchor_bottom = 1
-	hbox.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(hbox)
+	hbox.anchor_left = ANCHOR_BEGIN
+	hbox.anchor_right = ANCHOR_END
+	hbox.anchor_top = ANCHOR_BEGIN
+	hbox.anchor_bottom = ANCHOR_END
+	hbox.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	# Iterate over the options in card_data
 	var option_counter: int = 0
 	for option in LevelData.level_cards[card_counter].options:
 		# Create a Button to represent the option as a big rectangle
 		var option_button = Button.new()
-		option_button.text = ""  # We'll add labels inside
 		option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		option_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		option_button.process_mode = Node.PROCESS_MODE_ALWAYS
 		option_button.focus_mode = Control.FOCUS_ALL
 		option_button.clip_contents = true  # So content doesn't overflow
-		option_button.custom_minimum_size = Vector2(200, 200)  # Adjust size as needed
 
-		# Style the button to look like a big rectangle
+		# Style the button to have a black background
 		var style = StyleBoxFlat.new()
-		style.bg_color = Color(0.9, 0.9, 0.9)  # Light gray background
-		style.set_border_width_all(2)
 		style.border_color = Color.BLACK
+		style.set_border_width_all(2)
 		option_button.add_theme_stylebox_override("normal", style)
 
 		# Create a VBoxContainer to hold the cost display and the text
 		var vbox = VBoxContainer.new()
-		vbox.anchor_left = 0
-		vbox.anchor_right = 1
-		vbox.anchor_top = 0
-		vbox.anchor_bottom = 1
-		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 		option_button.add_child(vbox)
+		vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vbox.set_h_size_flags(Control.SIZE_EXPAND)
+		vbox.set_v_size_flags(Control.SIZE_EXPAND)
+		vbox.set_alignment(BoxContainer.ALIGNMENT_CENTER)
 
 		# Generate the cost display
 		var cost_container = Control.new()
-		cost_container.custom_minimum_size = Vector2(150, 60)  # Adjust as needed
+		vbox.add_child(cost_container)
+		cost_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+		cost_container.custom_minimum_size = Vector2(150, 150)
 		cost_container.process_mode = Node.PROCESS_MODE_ALWAYS
 		_generate_dice(cost_container, option.cost)
-		vbox.add_child(cost_container)
 
 		# Create the Label for the option text
 		var option_label = Label.new()
 		option_label.text = option.title  # Use option.title or option.text as needed
-		option_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		option_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		option_label.autowrap_mode = true
+		option_label.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+		option_label.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+		option_label.set_autowrap_mode(TextServer.AUTOWRAP_WORD)
+		option_label.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
 		option_label.add_theme_font_size_override("font_size", 18)
+		option_label.add_theme_color_override("font_color", Color.RED)
+		vbox.add_child(option_label)
+		vbox.add_child(option_label)
 		vbox.add_child(option_label)
 
 		# Check if the option is valid using is_valid_assignment()
@@ -92,7 +91,7 @@ func show_dialog(card_counter):
 		if not is_valid:
 			option_button.disabled = true  # Disable the button
 			option_button.modulate = Color(0.5, 0.5, 0.5, 1)  # Grey out the button
-			
+
 		# Connect the button's pressed signal
 		var current_option = option  # Capture the current option
 		option_button.pressed.connect(_on_interactive_button_pressed.bind(option_counter, current_option.cost, current_option.effect))
@@ -191,31 +190,23 @@ func _on_option_mouse_exited():
 func _center_dialog():
 	position = %Camera.position - size / 2
 
-
 func _generate_dice(target_control: Control, intervals: Array):
 	# Clear existing dice
 	for child in target_control.get_children():
 		child.queue_free()
 
-	var spacing = 10  # Space between dice
 	var dice_size = Vector2(50, 50)  # Size of each dice
 
 	# Use an HBoxContainer to arrange dice
 	var hbox = HBoxContainer.new()
-	hbox.anchor_left = 0.5
-	hbox.anchor_right = 0.5
-	hbox.anchor_top = 0.5
-	hbox.anchor_bottom = 0.5
-	hbox.alignment = BoxContainer.AlignmentMode.ALIGNMENT_CENTER
+	hbox.set_alignment(BoxContainer.ALIGNMENT_CENTER)
+	hbox.add_theme_constant_override("separation", 40)
+	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	target_control.add_child(hbox)
+
 
 	# Create dice labels
 	for interval in intervals:
-		var dice_label = Label.new()
-		dice_label.custom_minimum_size = dice_size
-		dice_label.autowrap_mode = true
-		dice_label.add_theme_font_size_override("font_size", 20)
-
 		# Determine text to display
 		var text = ""
 		if typeof(interval) == TYPE_ARRAY and interval.size() == 2:
@@ -228,14 +219,35 @@ func _generate_dice(target_control: Control, intervals: Array):
 			# Invalid data, skip this element
 			continue
 
+		# Create a Panel to represent the dice
+		var dice_panel = Panel.new()
+		#dice_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+		dice_panel.custom_minimum_size = dice_size
+		dice_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+		# Style the dice panel
+		var panel_style = StyleBoxFlat.new()
+		panel_style.bg_color = Color(0.2, 0.2, 0.2, 1)  # Dark grey background
+		panel_style.set_corner_radius_all(5)
+		panel_style.border_color = Color.BLACK
+		panel_style.set_border_width_all(2)
+		dice_panel.add_theme_stylebox_override("panel", panel_style)
+
+		# Create the Label for the dice text
+		var dice_label = Label.new()
+		dice_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		dice_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		dice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		dice_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		dice_label.autowrap_mode = true
+		dice_label.add_theme_font_size_override("font_size", 20)
+		dice_label.add_theme_color_override("font_color", Color(1, 1, 1, 1))
 		dice_label.text = text
+		dice_label.set_anchors_preset(Control.PRESET_FULL_RECT)
 
-		# Style the dice square
-		var style = StyleBoxFlat.new()
-		style.bg_color = Color.WHITE
-		style.border_color = Color.BLACK
-		style.set_border_width_all(2)
-		dice_label.add_theme_stylebox_override("panel", style)
-		dice_label.add_theme_color_override("font_color", Color.BLACK)
+		# Add the label to the panel
+		dice_panel.add_child(dice_label)
 
-		hbox.add_child(dice_label)
+		# Add the panel to the hbox
+		
+		hbox.add_child(dice_panel)
