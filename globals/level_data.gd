@@ -49,74 +49,53 @@ static func _create_list(list : Array) -> Array:
 static func get_starting_cards() -> Array :
 	var cards = []
 	
-	#CARD 1:
-	cards.append(CardData.new_card(
+	cards.append(generate_card_1())
+	cards.append(generate_card_2())
+	cards.append(generate_card_2())
+	cards.append(generate_card_2())
+	cards.append(generate_card_2())
+	return cards
+
+static func generate_card_1() -> CardData:
+	
+	var func_1 = func():
+		return _create_list([[UnitParams.Types.BUG,10]])
+	
+	var func_2 = func():
+		return _create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,2]])
+
+	return CardData.new_card(
 		"The First Card", # Title
 		[CardOption.new_option( # Option 1
 			"CARD OPTION 1",
 			[[1, 1], [1, 1]],
 			"Does something",
-			func(): return _create_list([[UnitParams.Types.BUG,10]])
+			func_1
 		),CardOption.new_option( # Option 2
 			"CARD OPTION 2",
 			[[1,6], [6, 6]],
 			"Does something else",
-			func(): return _create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,2]])
-		)]))
-		
-	cards.append(CardData.new_card(
-		"The Second Card", # Title
+			func_2
+		)])
+
+static func generate_card_2() -> CardData:
+	
+	var func_1 = func():
+		return _create_list([[UnitParams.Types.BUG,5]])
+	
+	var func_2 = func():
+		return _create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,2]])
+
+	return CardData.new_card(
+		"The First Card", # Title
 		[CardOption.new_option( # Option 1
 			"CARD OPTION 1",
-			[[1,2], [1,1]],
+			[[1, 6]],
 			"Does something",
-			func(): return _create_list([[UnitParams.Types.BUG,10]])
+			func_1
 		),CardOption.new_option( # Option 2
 			"CARD OPTION 2",
-			[[1,6], [6,6]],
+			[[1, 6]],
 			"Does something else",
-			func(): return _create_list([[UnitParams.Types.BUG,10]])
-		)]))	
-			
-	cards.append(CardData.new_card(
-		"The Third Card", # Title
-		[CardOption.new_option( # Option 1
-			"CARD OPTION 1",
-			[[1,2], 1],
-			"Does something",
-			func(): print("Called card 1 option 1")
-		),CardOption.new_option( # Option 2
-			"CARD OPTION 2",
-			[[1,6], 6],
-			"Does something else",
-			func(): print("Called card 1 option 2")
-		)]))		
-		
-	cards.append(CardData.new_card(
-		"The Fourth Card", # Title
-		[CardOption.new_option( # Option 1
-			"CARD OPTION 1",
-			[[1,2], 1],
-			"Does something",
-			func(): print("Called card 1 option 1")
-		),CardOption.new_option( # Option 2
-			"CARD OPTION 2",
-			[[1,6], 6],
-			"Does something else",
-			func(): print("Called card 1 option 2")
-		)]))		
-		
-	cards.append(CardData.new_card(
-		"The Fifth Card", # Title
-		[CardOption.new_option( # Option 1
-			"CARD OPTION 1",
-			[[1,2], 1],
-			"Does something",
-			func(): print("Called card 1 option 1")
-		),CardOption.new_option( # Option 2
-			"CARD OPTION 2",
-			[[1,6], 6],
-			"Does something else",
-			func(): print("Called card 1 option 2")
-		)]))
-	return cards
+			func_2
+		)])

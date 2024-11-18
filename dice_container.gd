@@ -119,6 +119,13 @@ func _on_return_button_pressed():
 
 func _on_use_dice_button_pressed():
 	print("Use Dice button pressed")
+	
+	# I cannot 
+	var reverse_indices = selected_dice_indices
+	reverse_indices.reverse()
+	for index in reverse_indices:
+		_delete_dice_at_index(index)
+	display_dice()
 
 	# Proceed to generate new sector
 	emit_signal("dice_selection_complete")
@@ -137,9 +144,11 @@ func _on_clear_dice_highlight():
 	for die in current_dice:
 		die.modulate = Color(1, 1, 1)
 
-func display_dice(input_dice: Array):
+func display_dice(input_dice: Array = []):
 	clear_dice()
-	current_dice_values = input_dice
+	if input_dice != []:
+		current_dice_values = input_dice
+	print("current dice are ", current_dice_values)
 	var dice_size = Vector2(80, 80)
 	var total_width = (dice_size.x + spacing) * current_dice_values.size() - spacing
 	var start_x = (get_viewport_rect().size.x - total_width) / 2  # Center the dice
@@ -208,3 +217,11 @@ func _update_use_dice_button_state():
 				return
 		# Disable the "USE DICE" button
 		use_dice_button.disabled = true
+		
+func _delete_dice_at_index(index):
+	if current_dice.size() >= index or current_dice_values.size() >= index:
+		print("ERROR - size mismatch in the dice metadata!")
+	
+	current_dice[index].queue_free()
+	current_dice.remove_at(index)
+	current_dice_values.remove_at(index)

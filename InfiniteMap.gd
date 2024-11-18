@@ -80,6 +80,7 @@ func _process(delta):
 		if not interactive_area.visible:
 			# Here a new sector is about to get generated - a new card choice appears! 
 			get_tree().paused = true
+			%CardsContainer.set_active_card_index(hostile_sector_counter)
 			interactive_area.show_dialog(hostile_sector_counter)
 			hostile_sector_counter += 1
 
