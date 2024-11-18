@@ -5,13 +5,15 @@ enum GridContent {EMPTY, CHECKPOINT, FILLED}
 
 var sector_grid_data : Array = [] #Saved as Column Major.
 @onready var sector_grid_size = MapSectorFactory.sector_grid_size
-var gateway_index = -1
+var sector_gateway_index = -1
+var local_gateway_index = -1
 
 func _fill_grid(entry_points : Array) -> Array:
 	sector_grid_data.clear()
 	# Working Column after Column, making sure that as least one is connected.
 	var temp_column = _fill_grid_column(entry_points)
 	sector_grid_data.append(temp_column)
+	sector_gateway_index = local_gateway_index
 	for i in range(sector_grid_size.x - 1):
 		temp_column = _fill_grid_column(temp_column)
 		sector_grid_data.append(temp_column)
@@ -19,9 +21,10 @@ func _fill_grid(entry_points : Array) -> Array:
 	return sector_grid_data
 	
 func get_sector_entry_index() -> int:
-	return gateway_index
+	return sector_gateway_index
 	
 func get_sector_entry_position() -> float:
+	print("debug: ", get_sector_entry_index(),  " ", (get_sector_entry_index() + .5) * (sector_size.y / sector_grid_size.y))
 	return (get_sector_entry_index() + .5) * (sector_size.y / sector_grid_size.y)
 	
 func _get_grid_gateway(column: Array) -> int :
@@ -43,8 +46,8 @@ func _fill_grid_column(prev_points : Array):
 	out_column.fill(GridContent.FILLED)
 	
 	# First deciding which entry point is the sure gateway.
-	gateway_index = _get_grid_gateway(prev_points)
-	out_column[gateway_index] = GridContent.EMPTY
+	local_gateway_index = _get_grid_gateway(prev_points)
+	out_column[local_gateway_index] = GridContent.EMPTY
 	
 	# Then populate straight channels.
 	var straight_counter = 1
@@ -83,6 +86,17 @@ func generate_content(latest_grid_column: Array, new_spawn: Array):
 	_generate_buildings()
 	_generate_checkpoints()
 	_generate_units(new_spawn)
+
+func display_debug():
+	var out_string = ""
+	for yi in range(sector_grid_size.y):
+		for xi in range(sector_grid_size.x):
+			if sector_grid_data[xi][yi] == GridContent.FILLED:
+				out_string += "#"
+			else:
+				out_string += " "
+		out_string += "\n"
+	print(out_string)
 
 # Private Function
 func _generate_buildings():

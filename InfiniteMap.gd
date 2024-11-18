@@ -54,7 +54,10 @@ func _process(delta):
 	if sector_counter == 0:
 		var main_node = get_node("/root/Main")
 		var current_sector_handle = _generate_new_sector()
+		print("Debug, map is:")
+		current_sector_handle.display_debug()
 		var spawn_position = Vector2(0, current_sector_handle.get_sector_entry_position())
+		print("spawn_position is ", spawn_position)
 		var player_starting_units = LevelData.player_units
 		for i in range(player_starting_units.size()):
 			var unit = player_starting_units[i]
