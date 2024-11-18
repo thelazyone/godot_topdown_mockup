@@ -67,7 +67,7 @@ func show_dialog(card_counter):
 		button.focus_mode = Control.FOCUS_ALL
 		# Connect the button's pressed signal
 		var current_option = option  # Capture the current option
-		button.pressed.connect(self._on_interactive_button_pressed.bind(current_option.effect))
+		button.pressed.connect(self._on_interactive_button_pressed.bind(current_option.cost, current_option.effect))
 		vbox.add_child(button)
 
 		hbox.add_child(vbox)
@@ -124,8 +124,15 @@ func _generate_dice(target_control: Control, intervals: Array):
 func _center_dialog():
 	position = %Camera.position - size/2
 
-func _on_interactive_button_pressed(effect : Callable):
-	print("Button pressed, calling effect")
+func _on_interactive_button_pressed(cost : Array, effect : Callable):
+	print("Button pressed, cost is ", cost ,", calling effect")
+	
+	if DiceMath.is_valid_assignment(LevelData.dice_values, cost):
+		print("There are enough dice for this!")
+	else: 
+		print("not enough dice!")
+		return
+	
 	if effect == null or !effect.is_valid():
 		print("Effect is null or invalid")
 

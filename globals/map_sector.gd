@@ -132,7 +132,6 @@ func _generate_checkpoints():
 func _generate_units(new_spawn: Array):
 	for i in range(new_spawn.size()):
 		var enemy_position = _get_free_spot(2)
-		print("adding bug at ", enemy_position + (Vector2(10 * i,10 * i)))
 		get_node("/root/Main").add_units(1, new_spawn[i], 0, 2, enemy_position + (Vector2(10 * i,10 * i)))
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:

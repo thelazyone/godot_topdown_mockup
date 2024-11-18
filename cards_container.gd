@@ -10,6 +10,7 @@ const spacing = 10
 
 func _ready():
 	# Temp titles, will be set from the game node
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	display_cards(LevelData.level_cards)
 	
 func get_card_at_index(index: int) -> CardData:

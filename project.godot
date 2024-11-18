@@ -23,6 +23,7 @@ DirectionPattern="*res://globals/direction_pattern.gd"
 DirectionField="*res://globals/direction_field.gd"
 Debug="*res://globals/debug.gd"
 LevelData="*res://globals/level_data.gd"
+DiceMath="*res://globals/dice_math.gd"
 
 [display]
 

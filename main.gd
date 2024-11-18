@@ -11,6 +11,7 @@ var current_camera_position : float = 0
 		
 func _ready() -> void:
 	
+	
 	# Testing the new UI TODO TBR
 	var dice_values = [1, 2, 3, 4, 5, 5, 6]
 	$UI/DiceContainer.display_dice(dice_values)

@@ -1,13 +1,12 @@
 extends Control
 
-var dice_values = []  # Array of numbers representing dice values
 const margin = 20
 const spacing = 10
 
 func display_dice(values: Array):
 	
 	clear_dice()
-	dice_values = values
+	LevelData.dice_values = values
 	var dice_size = Vector2(80, 80)
 	var total_width = (dice_size.x + spacing) * values.size() - spacing
 	var start_x = 0 
@@ -28,4 +27,4 @@ func clear_dice():
 		child.queue_free()
 
 func _on_dice_pressed(index):
-	print("Dice", index, " pressed with value ", dice_values[index])
+	print("Dice", index, " pressed with value ", LevelData.dice_values[index])

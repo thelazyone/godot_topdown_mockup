@@ -128,6 +128,5 @@ func _rebake_navigation():
 		Vector2(get_viewport().size.x * 2 + camera_position, get_viewport().size.y),
 		Vector2(camera_position, get_viewport().size.y),
 	]
-	print("baking navigation around ", polygon)
 	nav_region.navigation_polygon.add_outline(polygon)
 	nav_region.bake_navigation_polygon()

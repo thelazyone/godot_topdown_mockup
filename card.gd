@@ -88,8 +88,6 @@ func update_draw():
 		$Panel.get_theme_stylebox("panel")
 		
 func _on_mouse_entered():
-	print("mouse entered card ", self)
-
 	# Animate the card moving into view
 	var tween = create_tween()
 	tween.tween_property( \
@@ -97,8 +95,6 @@ func _on_mouse_entered():
 		).set_trans(Tween.TransitionType.TRANS_SINE).set_ease(Tween.EaseType.EASE_OUT)
 
 func _on_mouse_exited():
-	print("mouse exited card ", self)
-
 	# Animate the card moving partially off-screen
 	var offscreen_y = -size.y * 0.8  # Adjust as needed
 	var tween = create_tween()
