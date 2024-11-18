@@ -15,6 +15,8 @@ extends CharacterBody2D
 @onready var field = $FieldsComponent
 @onready var health = $HealthComponent
 
+var default_facing_right = true
+
 # Rotation handling
 var current_bearing = 0
 const ROTATION_SPEED_RAD_S = 4*PI
@@ -47,16 +49,23 @@ func _process(delta: float) -> void:
 	var local_target = strat.get_next_move()
 	
 	if local_target :
-		
 		# Updating the bearing
+		# This is good to do even if the image doesn't move.
 		var target_bearing = (local_target - position).angle()
 		_apply_rotation_step(target_bearing, delta)		
-		#$Image.rotation = current_bearing + PI/2
 		
 		# Speed is in the direction of the facing, rather than directly towards the target
 		velocity = Vector2(1,0).rotated(current_bearing) * SPEED
 	else:
 		velocity = Vector2.ZERO
+	
+	# Flipping the image if necessary
+	if velocity.x < 0:
+		$Image.flip_h = true
+	elif velocity.x > 0:
+		$Image.flip_h = false
+	else:
+		$Image.flip_h = !default_facing_right
 	
 	# Showing if attacking:
 	var shooting_target = strat.get_shooting_target()

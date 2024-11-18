@@ -47,6 +47,8 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction
 		3: goon.get_node("Image").self_modulate = Color.LIGHT_GREEN
 		_: goon.get_node("Image").self_modulate = Color.WEB_GRAY
 	
+	if goon.FACTION != 1:
+		goon.default_facing_right = false	
 	return goon
 	
 	
