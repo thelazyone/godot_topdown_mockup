@@ -61,7 +61,7 @@ static func get_starting_cards() -> Array :
 			"CARD OPTION 2",
 			[[1,6], [6, 6]],
 			"Does something else",
-			func(): return _create_list([[UnitParams.Types.TANK,10],[UnitParams.Types.BUG,10]])
+			func(): return _create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,2]])
 		)]))
 		
 	cards.append(CardData.new_card(
@@ -70,12 +70,12 @@ static func get_starting_cards() -> Array :
 			"CARD OPTION 1",
 			[[1,2], [1,1]],
 			"Does something",
-			func(): print("Called card 1 option 1")
+			func(): return _create_list([[UnitParams.Types.BUG,10]])
 		),CardOption.new_option( # Option 2
 			"CARD OPTION 2",
 			[[1,6], [6,6]],
 			"Does something else",
-			func(): print("Called card 1 option 2")
+			func(): return _create_list([[UnitParams.Types.BUG,10]])
 		)]))	
 			
 	cards.append(CardData.new_card(
