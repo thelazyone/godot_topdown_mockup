@@ -34,8 +34,9 @@ func _process(delta: float) -> void:
 		if CONTROL_FACTION == 1.:
 			queue_free()
 	
-	# If it reaches negative positions,
-	if global_position.x < 20:
+	# If it reaches negative positions, delete it
+	var canvas_position = get_global_transform_with_canvas()	
+	if canvas_position.origin.x < 20:
 		queue_free()
 
 func _draw():

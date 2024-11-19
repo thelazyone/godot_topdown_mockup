@@ -1,6 +1,6 @@
 extends Control
 
-@onready var CardScene = preload("res://Card.tscn")
+@onready var CardScene = preload("res://card.tscn")
 
 var local_cards_data = [] 
 var cards = []			# All instantiated cards.
@@ -11,6 +11,9 @@ const margin = 20
 const spacing = 10
 
 func _ready():
+	
+	print("CARDS CONTAINER LOADED!")
+	
 	# Temp titles, will be set from the game node
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	display_cards(LevelData.level_cards)

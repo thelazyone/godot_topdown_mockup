@@ -31,12 +31,23 @@ static func get_starting_units() -> Array :
 	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
-	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
-	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
-	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
+
 	return units
 	
 static func _create_list(list : Array) -> Array:
@@ -52,10 +63,10 @@ static func get_starting_cards() -> Array :
 	var cards = []
 	
 	cards.append(generate_card_1())
-	cards.append(generate_card_2())
-	cards.append(generate_card_2())
-	cards.append(generate_card_2())
-	cards.append(generate_card_2())
+	#cards.append(generate_card_2())
+	#cards.append(generate_card_2())
+	#cards.append(generate_card_2())
+	#cards.append(generate_card_2())
 	return cards
 
 static func generate_card_1() -> CardData:

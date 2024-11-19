@@ -10,6 +10,14 @@ var current_card_counter: int = -1
 
 func show_dialog(card_counter):
 	current_card_counter = card_counter
+	
+	# Initial check - if the whole thing has been completed, calling "you won!"
+	if card_counter >= LevelData.level_cards.size():
+		print("End of test demo! Back to splashscreen!")
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://scenes/spash.tscn")
+		return
+
 
 	# Show the InteractiveArea
 	_center_dialog()
@@ -21,13 +29,6 @@ func show_dialog(card_counter):
 	# Clear any existing children
 	for n in get_children():
 		n.queue_free()
-
-	# Set up the InteractiveArea properties (optional styling)
-	anchor_left = 0
-	anchor_right = 1
-	anchor_top = 0
-	anchor_bottom = 1
-	#modulate = Color(0, 0, 0, 0.5)  # Semi-transparent background
 
 	print("Adding buttons to the interactive area!")
 
@@ -43,17 +44,16 @@ func show_dialog(card_counter):
 	# Iterate over the options in card_data
 	var option_counter: int = 0
 	for option in LevelData.level_cards[card_counter].options:
-		# Create a Button to represent the option as a big rectangle
 		var option_button = Button.new()
-		option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		option_button.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		option_button.process_mode = Node.PROCESS_MODE_ALWAYS
-		option_button.focus_mode = Control.FOCUS_ALL
-		option_button.clip_contents = true  # So content doesn't overflow
+		option_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+		option_button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+		option_button.set_process(Node.PROCESS_MODE_ALWAYS)
+		option_button.set_focus_mode(Control.FOCUS_ALL)
+		option_button.set_clip_contents(true)
 
 		# Style the button to have a black background
 		var style = StyleBoxFlat.new()
-		style.border_color = Color.BLACK
+		style.set_border_color(Color.BLACK)
 		style.set_border_width_all(2)
 		option_button.add_theme_stylebox_override("normal", style)
 
@@ -69,8 +69,8 @@ func show_dialog(card_counter):
 		var cost_container = Control.new()
 		vbox.add_child(cost_container)
 		cost_container.set_anchors_preset(Control.PRESET_FULL_RECT)
-		cost_container.custom_minimum_size = Vector2(150, 150)
-		cost_container.process_mode = Node.PROCESS_MODE_ALWAYS
+		cost_container.set_custom_minimum_size(Vector2(150, 150))
+		option_button.set_process(Node.PROCESS_MODE_ALWAYS)
 		_generate_dice(cost_container, option.cost)
 
 		# Create the Label for the option text
@@ -82,8 +82,6 @@ func show_dialog(card_counter):
 		option_label.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
 		option_label.add_theme_font_size_override("font_size", 18)
 		option_label.add_theme_color_override("font_color", Color.RED)
-		vbox.add_child(option_label)
-		vbox.add_child(option_label)
 		vbox.add_child(option_label)
 
 		# Check if the option is valid using is_valid_assignment()
@@ -186,6 +184,7 @@ func _on_option_mouse_exited():
 
 func _center_dialog():
 	position = %Camera.position - size / 2
+	position.y -= get_viewport_rect().size.y / 8
 
 func _generate_dice(target_control: Control, intervals: Array):
 	# Clear existing dice
@@ -207,11 +206,10 @@ func _generate_dice(target_control: Control, intervals: Array):
 		# Determine text to display
 		var text = ""
 		if typeof(interval) == TYPE_ARRAY and interval.size() == 2:
-			# It's an interval [a, b]
-			text = "%d-%d" % [interval[0], interval[1]]
-		elif typeof(interval) == TYPE_INT or typeof(interval) == TYPE_FLOAT:
-			# It's a single number
-			text = str(interval)
+			if interval[0] == interval[1]:
+				text = str(interval[0])
+			else:
+				text = "%d-%d" % [interval[0], interval[1]]
 		else:
 			# Invalid data, skip this element
 			continue

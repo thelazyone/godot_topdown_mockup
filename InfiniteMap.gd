@@ -15,6 +15,7 @@ const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
 @onready var fow = $NavRegion/FogOfWar
 @onready var camera : Node = %Camera
+@onready var cards_container = %CardsContainer
 var interactive_area = null
 
 func _ready():
@@ -83,7 +84,7 @@ func _process(delta):
 		if not interactive_area.visible:
 			# Here a new sector is about to get generated - a new card choice appears! 
 			get_tree().paused = true
-			%CardsContainer.set_active_card_index(hostile_sector_counter)
+			cards_container.set_active_card_index(hostile_sector_counter)
 			interactive_area.show_dialog(hostile_sector_counter)
 			hostile_sector_counter += 1
 
