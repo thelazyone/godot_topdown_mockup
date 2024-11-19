@@ -139,7 +139,7 @@ static func generate_card_4() -> CardData:
 		var goons = main.get_tree().get_nodes_in_group("goons")
 		for goon in goons:
 			if goon.FACTION != 1:
-				goon.receive_damage(100)
+				goon.health.receive_damage(100)
 		return
 	
 	return CardData.new_card(
