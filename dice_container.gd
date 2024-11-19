@@ -25,7 +25,10 @@ func _ready():
 func start_dice_selection(cost, effect):
 	print("DEBUG starting dice selection!")
 	selecting_dice = true
-	required_slots = cost
+	if cost.size() == 1 and cost[0] == []:
+		required_slots = []
+	else:
+		required_slots = cost
 	current_effect = effect
 	selected_dice_indices.clear()
 
@@ -92,6 +95,8 @@ func start_dice_selection(cost, effect):
 	use_dice_button.disabled = true  # Initially disabled
 	use_dice_button.pressed.connect(_on_use_dice_button_pressed)
 	button_container.add_child(use_dice_button)
+	
+	_update_use_dice_button_state()
 
 func end_dice_selection():
 	selecting_dice = false

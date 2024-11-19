@@ -63,10 +63,10 @@ static func get_starting_cards() -> Array :
 	var cards = []
 	
 	cards.append(generate_card_1())
-	#cards.append(generate_card_2())
-	#cards.append(generate_card_2())
-	#cards.append(generate_card_2())
-	#cards.append(generate_card_2())
+	cards.append(generate_card_2())
+	cards.append(generate_card_3())
+	cards.append(generate_card_4())
+	cards.append(generate_card_5())
 	return cards
 
 static func generate_card_1() -> CardData:
@@ -86,6 +86,7 @@ static func generate_card_1() -> CardData:
 			no_func,
 			_create_list([[UnitParams.Types.TANK,3],[UnitParams.Types.BUG,5]])
 		)])
+
 
 static func generate_card_2() -> CardData:
 	
@@ -112,3 +113,71 @@ static func generate_card_2() -> CardData:
 			_create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,4]])
 		)])
 	
+
+static func generate_card_3() -> CardData:
+	
+	return CardData.new_card(
+		"The Third Card", # Title
+		[CardOption.new_option( # Option 1
+			"A Lone Tank ",
+			[[3, 3]],
+			"You got lucky this time!",
+			no_func,
+			_create_list([[UnitParams.Types.TANK,1]])
+		),CardOption.new_option( # Option 2
+			"MORE BUGS!",
+			[],
+			"No more dice? bad luck!",
+			no_func,
+			_create_list([[UnitParams.Types.BUG,35]])
+		)])
+	
+
+static func generate_card_4() -> CardData:
+	
+	var func_1 = func(main):
+		var goons = main.get_tree().get_nodes_in_group("goons")
+		for goon in goons:
+			if goon.FACTION != 1:
+				goon.receive_damage(100)
+		return
+	
+	return CardData.new_card(
+		"The Fourth Card", # Title
+		[CardOption.new_option( # Option 1
+			"Cleanup time! ",
+			[[6, 6]],
+			"let's kill it all!",
+			func_1,
+			[]
+		),CardOption.new_option( # Option 2
+			"MORE BUGS!",
+			[],
+			"No more dice? more bad luck!",
+			no_func,
+			_create_list([[UnitParams.Types.BUG,25]])
+		)])
+
+static func generate_card_5() -> CardData:
+	var func_1 = func(main):
+		var goons = main.get_tree().get_nodes_in_group("goons")
+		for goon in goons:
+			if goon.FACTION != 1:
+				goon.receive_damage(100)
+		return
+	
+	return CardData.new_card(
+		"The Final Card", # Title
+		[CardOption.new_option( # Option 1
+			"LAST PUSH!",
+			[[1, 3],[1, 3]],
+			"Juuuust a few more!",
+			func_1,
+			_create_list([[UnitParams.Types.BUG,25]])
+		),CardOption.new_option( # Option 2
+			"THE END",
+			[[1,1]],
+			"You might be dead.",
+			no_func,
+			_create_list([[UnitParams.Types.TANK,25]])
+		)])

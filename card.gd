@@ -52,14 +52,12 @@ func _generate_dice(target_control: Control, intervals: Array):
 		# Determine text to display
 		var text = ""
 		if typeof(interval) == TYPE_ARRAY and interval.size() == 2:
-			# It's an interval [a, b]
-			text = "%d-%d" % [interval[0], interval[1]]
-		elif typeof(interval) == TYPE_INT or typeof(interval) == TYPE_FLOAT:
-			# It's a single number
-			text = str(interval)
+			if interval[0] == interval[1]:
+				text = str(interval[0])
+			else:
+				text = "%d-%d" % [interval[0], interval[1]]
 		else:
-			# Invalid data, skip this element
-			continue
+			text = "FREE"
 
 		dice_label.text = text
 

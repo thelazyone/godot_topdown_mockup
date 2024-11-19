@@ -33,6 +33,8 @@ func _backtrack(dice, slots):
 	
 	# Take the first slot
 	var slot = slots.pop_front()
+	if slot.is_empty():
+		return true
 	var new_slots = slots.duplicate()  # Work with a copy of slots
 	
 	for i in range(dice.size()):

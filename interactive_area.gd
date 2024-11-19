@@ -15,7 +15,7 @@ func show_dialog(card_counter):
 	if card_counter >= LevelData.level_cards.size():
 		print("End of test demo! Back to splashscreen!")
 		get_tree().paused = false
-		get_tree().change_scene_to_file("res://scenes/spash.tscn")
+		get_tree().change_scene_to_file("res://scenes/end.tscn")
 		return
 
 
@@ -202,6 +202,8 @@ func _generate_dice(target_control: Control, intervals: Array):
 
 
 	# Create dice labels
+	if intervals.is_empty():
+		intervals.append([])
 	for interval in intervals:
 		# Determine text to display
 		var text = ""
@@ -211,8 +213,7 @@ func _generate_dice(target_control: Control, intervals: Array):
 			else:
 				text = "%d-%d" % [interval[0], interval[1]]
 		else:
-			# Invalid data, skip this element
-			continue
+			text = "FREE"
 
 		# Create a Panel to represent the dice
 		var dice_panel = Panel.new()
