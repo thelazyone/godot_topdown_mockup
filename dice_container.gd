@@ -12,6 +12,8 @@ var selected_dice_indices = []
 var current_effect = null
 var use_dice_button = null
 
+var dice_selection_ui = null
+
 signal dice_selection_complete()
 signal dice_selection_canceled()
 
@@ -36,20 +38,20 @@ func start_dice_selection(cost, effect):
 	_clear_selection_ui()
 
 	# Create a VBoxContainer to hold the instruction label and buttons
-	var vbox = VBoxContainer.new()
-	vbox.name = "SelectionUI"
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.anchor_left = 0
-	vbox.anchor_right = 1
-	vbox.anchor_top = 0
-	vbox.anchor_bottom = 0
-	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Ignore mouse events
-	add_child(vbox)
+	dice_selection_ui = VBoxContainer.new()
+	dice_selection_ui.name = "SelectionUI"
+	dice_selection_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dice_selection_ui.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	dice_selection_ui.alignment = BoxContainer.ALIGNMENT_CENTER
+	dice_selection_ui.anchor_left = 0
+	dice_selection_ui.anchor_right = 1
+	dice_selection_ui.anchor_top = 0
+	dice_selection_ui.anchor_bottom = 0
+	dice_selection_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Ignore mouse events
+	dice_selection_ui.position = Vector2(0, get_viewport_rect().size.y - 250)  # Adjust as needed
+	add_child(dice_selection_ui)
 
 	# Position the VBoxContainer just above the dice
-	vbox.position = Vector2(0, get_viewport_rect().size.y - 250)  # Adjust as needed
 
 	# Create the instruction label
 	var instruction_label = Label.new()
@@ -61,7 +63,7 @@ func start_dice_selection(cost, effect):
 	instruction_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	instruction_label.size_flags_vertical = Control.SIZE_FILL
 	instruction_label.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Ignore mouse events
-	vbox.add_child(instruction_label)
+	dice_selection_ui.add_child(instruction_label)
 
 	# Create the buttons container
 	var button_container = HBoxContainer.new()
@@ -70,7 +72,7 @@ func start_dice_selection(cost, effect):
 	button_container.alignment = BoxContainer.ALIGNMENT_CENTER
 	button_container.custom_minimum_size = Vector2(0, 50)
 	button_container.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Ignore mouse events
-	vbox.add_child(button_container)
+	dice_selection_ui.add_child(button_container)
 
 	# Create the "Return" button
 	var return_button = Button.new()
@@ -104,9 +106,11 @@ func end_dice_selection():
 	# Remove instruction label and buttons if they exist
 	_clear_selection_ui()
 
+
 func _clear_selection_ui():
-	if has_node("SelectionUI"):
-		get_node("SelectionUI").queue_free()
+	if dice_selection_ui:
+		dice_selection_ui.queue_free()
+		dice_selection_ui = null
 
 func _on_return_button_pressed():
 	print("Return button pressed, canceling dice selection")

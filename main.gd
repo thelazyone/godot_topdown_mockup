@@ -13,7 +13,7 @@ func _ready() -> void:
 	
 	
 	# Testing the new UI TODO TBR
-	LevelData.dice_values = [1, 2, 3, 4, 5, 5, 6]
+	LevelData.dice_values = [1, 1, 2, 3, 4, 5, 5, 6]
 	$UI/DiceContainer.display_dice(LevelData.dice_values)
 	
 	pass
