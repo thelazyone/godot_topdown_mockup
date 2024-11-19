@@ -5,6 +5,8 @@ var player_units = []
 var level_cards = []
 var dice_values = []
 
+static var no_func = func(main): return
+
 func _init() -> void:
 	player_units = get_starting_units()
 	level_cards = get_starting_cards()
@@ -58,44 +60,44 @@ static func get_starting_cards() -> Array :
 
 static func generate_card_1() -> CardData:
 	
-	var func_1 = func():
-		return _create_list([[UnitParams.Types.BUG,10]])
-	
-	var func_2 = func():
-		return _create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,2]])
-
 	return CardData.new_card(
 		"The First Card", # Title
 		[CardOption.new_option( # Option 1
-			"CARD OPTION 1",
+			"An Easy Start",
 			[[1, 1], [1, 1]],
-			"Does something",
-			func_1
+			"a small horde approaches!",
+			no_func,
+			_create_list([[UnitParams.Types.BUG,20]])
 		),CardOption.new_option( # Option 2
-			"CARD OPTION 2",
+			"Early Tanks",
 			[[1,6], [6, 6]],
-			"Does something else",
-			func_2
+			"Harder enemies to begin",
+			no_func,
+			_create_list([[UnitParams.Types.TANK,3],[UnitParams.Types.BUG,5]])
 		)])
 
 static func generate_card_2() -> CardData:
 	
-	var func_1 = func():
-		return _create_list([[UnitParams.Types.BUG,5]])
-	
-	var func_2 = func():
-		return _create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,2]])
-
+	var func_2 = func(main):
+		var goons = main.get_tree().get_nodes_in_group("goons")
+		for goon in goons:
+			if goon.FACTION != 1:
+				main.add_units(1, UnitParams.Types.BUG, 0, 2, goon.global_position)
+		return
+				
 	return CardData.new_card(
-		"The First Card", # Title
+		"The Second Card", # Title
 		[CardOption.new_option( # Option 1
-			"CARD OPTION 1",
-			[[1, 6]],
-			"Does something",
-			func_1
+			"The horde continues ",
+			[[1, 1]],
+			"More stuff coming!",
+			no_func,
+			_create_list([[UnitParams.Types.BUG,15]])
 		),CardOption.new_option( # Option 2
-			"CARD OPTION 2",
+			"They can multiply?!",
 			[[1, 6]],
-			"Does something else",
-			func_2
+			"All bugs multiply in number!",
+			func_2,
+			_create_list([[UnitParams.Types.TANK,1],[UnitParams.Types.BUG,4]])
 		)])
+	

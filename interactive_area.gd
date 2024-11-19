@@ -144,14 +144,11 @@ func _on_dice_selection_complete():
 		return
 
 	var selected_option = LevelData.level_cards[current_card_counter].options[current_option_index]
-	var call_result = selected_option.effect.call()
-	var horde = []
-	if typeof(call_result) != TYPE_ARRAY:
-		print("Card Function is not returning an array!")
-	else:
-		horde = call_result
-	%InfiniteMap._generate_new_sector(horde)
-
+	%InfiniteMap._generate_new_sector(selected_option.spawn)
+	var main = get_node("/root/Main");
+	print("main is", main)
+	selected_option.effect.call(main)
+	
 	# Reset selection state
 	current_option_index = -1
 	current_card_counter = -1
