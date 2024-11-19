@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdllr05jrsas3"]
+
+[ext_resource type="Script" path="res://scenes/splash.gd" id="1_ggmpe"]
+
+[node name="Splash" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ggmpe")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+offset_left = 606.0
+offset_top = 350.0
+offset_right = 997.0
+offset_bottom = 425.0
+text = "This is a gameplay demo.
+
+Get to the end of the level, if you manage to!"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="."]
+layout_mode = 2
+offset_left = 585.0
+offset_top = 443.0
+offset_right = 1023.0
+offset_bottom = 604.0
+text = "START"
