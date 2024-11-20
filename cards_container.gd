@@ -11,10 +11,6 @@ const margin = 20
 const spacing = 10
 
 func _ready():
-	
-	print("CARDS CONTAINER LOADED!")
-	
-	# Temp titles, will be set from the game node
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	display_cards(LevelData.level_cards)
 

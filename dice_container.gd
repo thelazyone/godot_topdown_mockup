@@ -229,8 +229,8 @@ func _update_use_dice_button_state():
 		use_dice_button.disabled = true
 		
 func _delete_dice_at_index(index):
-	if current_dice.size() >= index or current_dice_values.size() >= index:
-		print("ERROR - size mismatch in the dice metadata!")
+	if current_dice.size() <= index or current_dice_values.size() <= index:
+		print("ERROR - size mismatch in the dice metadata. Size is ", current_dice.size(), ", index is ", index, " current dice values size is ", current_dice_values.size())
 	
 	current_dice[index].queue_free()
 	current_dice.remove_at(index)

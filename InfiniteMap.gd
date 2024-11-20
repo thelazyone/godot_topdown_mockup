@@ -19,7 +19,7 @@ const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 var interactive_area = null
 
 func _ready():
-	sector_factory.sector_size = sector_size
+	sector_factory.pixel_size = sector_size
 	
 	interactive_area = %InteractiveArea
 	interactive_area.visible = false

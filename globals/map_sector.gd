@@ -1,76 +1,20 @@
 class_name MapSector
 extends Node2D
 
-enum GridContent {EMPTY, CHECKPOINT, FILLED}
+# Sectors are generated on the go as the map advances, and each is currently organized in a grid.
+# On a first approximation the grid is made of non-crossable cubes, but that should change.
 
-var sector_grid_data : Array = [] #Saved as Column Major.
-@onready var sector_grid_size = MapSectorFactory.sector_grid_size
-var sector_gateway_index = -1
-var local_gateway_index = -1
+# TODO should be a mask with multiple flags, for now it's just EMPTY and FILLED
+enum GridContent {EMPTY, MAIN, FILLED}
 
-func _fill_grid(entry_points : Array) -> Array:
-	sector_grid_data.clear()
-	# Working Column after Column, making sure that as least one is connected.
-	var temp_column = _fill_grid_column(entry_points)
-	sector_grid_data.append(temp_column)
-	sector_gateway_index = local_gateway_index
-	for i in range(sector_grid_size.x - 1):
-		temp_column = _fill_grid_column(temp_column)
-		sector_grid_data.append(temp_column)
-	
-	return sector_grid_data
-	
-func get_sector_entry_index() -> int:
-	return sector_gateway_index
-	
-func get_sector_entry_position() -> float:
-	print("debug: ", get_sector_entry_index(),  " ", (get_sector_entry_index() + .5) * (sector_size.y / sector_grid_size.y))
-	return (get_sector_entry_index() + .5) * (sector_size.y / sector_grid_size.y)
-	
-func _get_grid_gateway(column: Array) -> int :
-	if column.is_empty():
-		return -1
-	
-	var start_point = randi() % column.size()
-	var gateway_idx = 0
-	for i in range(column.size()):
-		var wrap_idx = (i + start_point) % column.size()
-		if column[wrap_idx] != GridContent.FILLED:
-			gateway_idx = wrap_idx
-	return gateway_idx
-	
-func _fill_grid_column(prev_points : Array):
-	
-	var out_column = []
-	out_column.resize(sector_grid_size.y)
-	out_column.fill(GridContent.FILLED)
-	
-	# First deciding which entry point is the sure gateway.
-	local_gateway_index = _get_grid_gateway(prev_points)
-	out_column[local_gateway_index] = GridContent.EMPTY
-	
-	# Then populate straight channels.
-	var straight_counter = 1
-	for i in range(prev_points.size()):
-		if prev_points[i] == GridContent.EMPTY:
-			if randf() > .2 + straight_counter * .2:
-				out_column[i] = GridContent.EMPTY
-	
-	# Then check vertical channels.	
-	for i in range(out_column.size()):
-		var prev_idx = max(0, i - 1)
-		var next_idx = min(i + 1, out_column.size() - 1)
-		if out_column[prev_idx] == GridContent.EMPTY or out_column[next_idx] == GridContent.EMPTY:
-			if randf() > .3:
-				out_column[i] = GridContent.EMPTY
-	
-	return out_column
+var grid_data : Array = [] #Saved as Column Major.
+@onready var grid_size = MapSectorFactory.grid_size
 
 var buildings: Array[Rect2] = []  # Array of Rect2 representing building positions and sizes
 var enemies: Array[Vector2] = []  # Array of Vector2 representing enemy positions
 var checkpoints: Array[Vector2] = []  # Array of Vector2 representing enemy positions
 
-var sector_size
+var pixel_size : Vector2 = Vector2.ZERO
 
 # Possibly TBR
 var building_nodes = []     # Nodes representing the buildings (visuals)
@@ -86,15 +30,21 @@ func generate_content(latest_grid_column: Array, new_spawn: Array):
 	_generate_buildings()
 	_generate_checkpoints()
 	_generate_units(new_spawn)
+	
+func get_sector_entry_position() -> float:
+	return (_get_sector_entry_index() + .5) * (pixel_size.y / grid_size.y)
 
 func display_debug():
 	var out_string = ""
-	for yi in range(sector_grid_size.y):
-		for xi in range(sector_grid_size.x):
-			if sector_grid_data[xi][yi] == GridContent.FILLED:
-				out_string += "#"
-			else:
-				out_string += " "
+	for yi in range(grid_size.y):
+		for xi in range(grid_size.x):
+			match grid_data[xi][yi]:
+				GridContent.FILLED:
+					out_string += "#"
+				GridContent.MAIN:
+					out_string += "*"
+				_:
+					out_string += " "
 		out_string += "\n"
 	print(out_string)
 
@@ -102,37 +52,37 @@ func display_debug():
 func _generate_buildings():
 	
 	var main_building_rects = []
-	for xi in range(int(sector_grid_size.x)):
-		for yi in range(int(sector_grid_size.y)):
-			if sector_grid_data[xi][yi] == GridContent.FILLED:
-				var grid_elem_size = sector_size / sector_grid_size
-				var building_position = Vector2(\
+	var grid_elem_size = pixel_size / grid_size
+	for xi in range(int(grid_size.x)):
+		for yi in range(int(grid_size.y)):
+			var building_position = Vector2(\
 					(xi) * grid_elem_size.x,\
 					(yi) * grid_elem_size.y)
+			if grid_data[xi][yi] == GridContent.FILLED:
 				_add_building(Rect2(building_position, grid_elem_size * 1.05))
 				main_building_rects.append(Rect2(building_position, grid_elem_size))
-	
-	#for each main rect, adding a few sub-rects
-	for main_rect in main_building_rects:
-		for i in range(randi() % 4):
-			var local_pos = Vector2((randf() * .5) * main_rect.size.x, (randf() * .5) * main_rect.size.y)
-			var protrusion_value = randf() * .55 * min(main_rect.size.x, main_rect.size.y)
-			var random_sign = Vector2(sign(randf() - .5),sign(randf() - .5))
-			var new_position = main_rect.position + local_pos * random_sign
-			var new_size_x = min(main_rect.size.x - local_pos.x, local_pos.x) + protrusion_value 
-			var new_size_y = min(main_rect.size.y - local_pos.y, local_pos.y) + protrusion_value 
-			_add_building(Rect2(new_position, Vector2(new_size_x, new_size_y)))
+
+	##for each main rect, adding a few sub-rects
+	#for main_rect in main_building_rects:
+		#for i in range(randi() % 4):
+			#var local_pos = Vector2((randf() * .5) * main_rect.size.x, (randf() * .5) * main_rect.size.y)
+			#var protrusion_value = randf() * .55 * min(main_rect.size.x, main_rect.size.y)
+			#var random_sign = Vector2(sign(randf() - .5),sign(randf() - .5))
+			#var new_position = main_rect.position + local_pos * random_sign
+			#var new_size_x = min(main_rect.size.x - local_pos.x, local_pos.x) + protrusion_value 
+			#var new_size_y = min(main_rect.size.y - local_pos.y, local_pos.y) + protrusion_value 
+			#_add_building(Rect2(new_position, Vector2(new_size_x, new_size_y)))
 	
 	# Finally adding buildings on top and bottom.
-	_add_building(Rect2(Vector2(0,-90), Vector2(sector_size.x, 100)))
-	_add_building(Rect2(Vector2(0,sector_size.y - 10), Vector2(sector_size.x, 100)))
+	_add_building(Rect2(Vector2(0,-90), Vector2(pixel_size.x, 100)))
+	_add_building(Rect2(Vector2(0,pixel_size.y - 10), Vector2(pixel_size.x, 100)))
 
 func _get_free_spot(col_idx : int) -> Vector2:
-	for i in range(	sector_grid_data[col_idx].size()):
-		var wrap_idx = i + randi() % sector_grid_data[col_idx].size()
-		wrap_idx = wrap_idx % sector_grid_data[col_idx].size()
-		if sector_grid_data[col_idx][wrap_idx] != GridContent.FILLED:
-			var grid_elem_size = sector_size / sector_grid_size
+	for i in range(	grid_data[col_idx].size()):
+		var wrap_idx = i + randi() % grid_data[col_idx].size()
+		wrap_idx = wrap_idx % grid_data[col_idx].size()
+		if grid_data[col_idx][wrap_idx] != GridContent.FILLED:
+			var grid_elem_size = pixel_size / grid_size
 			var corner_position = Vector2(\
 				col_idx * grid_elem_size.x,\
 				wrap_idx * grid_elem_size.y)
@@ -153,7 +103,7 @@ func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 
 func _random_point() -> Vector2:
 	# Generate a random point within the sector bounds
-	return Vector2(randf() * sector_size.x, randf() * sector_size.y)
+	return Vector2(randf() * pixel_size.x, randf() * pixel_size.y)
 
 
 func _is_overlapping_building(point: Vector2) -> bool:
@@ -161,6 +111,78 @@ func _is_overlapping_building(point: Vector2) -> bool:
 		if building.has_point(point):
 			return true
 	return false
+
+
+func _fill_grid(entry_points : Array) -> Array:
+	grid_data.clear()
+	# Working Column after Column, making sure that as least one is connected.
+	var temp_column = _fill_grid_column(entry_points)
+	grid_data.append(temp_column)
+	for i in range(grid_size.x - 1):
+		temp_column = _fill_grid_column(temp_column)
+		grid_data.append(temp_column)
+	return grid_data
+	
+func _get_sector_entry_index() -> int:
+	if grid_data.size() < 1:
+		return -1
+		
+	return _get_grid_gateway(grid_data[0])
+
+func _get_grid_gateway(column: Array) -> int :
+	if column.is_empty():
+		return -1
+		
+	for i in range(column.size()):
+		if column[i] == MapSector.GridContent.MAIN:
+			return i
+			
+	# There should always be a MAIN, so this should never happen.
+	return -1
+	
+func _fill_grid_column(prev_points : Array):
+	
+	var out_column = []
+	out_column.resize(grid_size.y)
+	out_column.fill(GridContent.FILLED)
+	
+	# First deciding which entry point is the sure gateway. The space in front is marked as empty
+	# but it's not necessarily the next MAIN
+	var previous_main_index = _get_grid_gateway(prev_points)
+	out_column[previous_main_index] = GridContent.MAIN
+	
+	# Then populate straight channels.
+	var straight_counter = 1
+	for i in range(prev_points.size()):
+		if prev_points[i] != GridContent.FILLED:
+			if randf() > .2 + straight_counter * .2:
+				out_column[i] = GridContent.EMPTY
+	
+	# Then check vertical channels.	
+	for i in range(out_column.size()):
+		var prev_idx = max(0, i - 1)
+		var next_idx = min(i + 1, out_column.size() - 1)
+		if out_column[prev_idx] != GridContent.FILLED or out_column[next_idx] != GridContent.FILLED:
+			if randf() > .3:
+				out_column[i] = GridContent.EMPTY
+	
+	# Finally check if the MAIN has space on the sides, and potentially move it all the way up or down.
+	var direction_down : bool = randf() - .5 > 0
+	var new_main_index : int = previous_main_index
+	for i in range(out_column.size()):
+		var temp_index = new_main_index + (1 if direction_down else -1)
+		if temp_index < 0 or temp_index >= out_column.size():
+			out_column[new_main_index] = GridContent.MAIN
+			break
+		elif out_column[temp_index] == GridContent.EMPTY:
+			out_column[new_main_index] = GridContent.EMPTY
+			new_main_index = temp_index
+			out_column[new_main_index] = GridContent.MAIN
+		else:
+			out_column[new_main_index] = GridContent.MAIN
+			break
+	
+	return out_column
 
 func _add_building(rect: Rect2) -> Dictionary:
 	
