@@ -22,6 +22,7 @@ func show_dialog(card_counter):
 	# Show the InteractiveArea
 	_center_dialog()
 	visible = true
+	z_index = 99
 
 	# Ensure it processes during pause
 	process_mode = Node.PROCESS_MODE_ALWAYS

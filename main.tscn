@@ -41,11 +41,11 @@ script = ExtResource("4_nyr5v")
 [node name="NavRegion" type="NavigationRegion2D" parent="InfiniteMap"]
 navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
+[node name="MapSectorFactory" type="Node" parent="InfiniteMap/NavRegion"]
+script = ExtResource("5_ne50f")
+
 [node name="FogOfWar" type="ColorRect" parent="InfiniteMap/NavRegion"]
 material = SubResource("ShaderMaterial_b2edw")
-
-[node name="MapSectorFactory" type="Node" parent="InfiniteMap"]
-script = ExtResource("5_ne50f")
 
 [node name="Camera" type="Camera2D" parent="."]
 unique_name_in_owner = true

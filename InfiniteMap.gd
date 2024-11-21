@@ -9,7 +9,7 @@ const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var gaming_area_height = get_viewport().size.y 
 @onready var sector_size : Vector2 = Vector2(gaming_area_height * sector_size_ratio, gaming_area_height)
 @onready var removal_distance = sector_size.x * 5    	# Distance after which sectors are removed
-@onready var sector_factory = $MapSectorFactory
+@onready var sector_factory = $NavRegion/MapSectorFactory
 
 # References to child nodes
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
