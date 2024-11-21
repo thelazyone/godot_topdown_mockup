@@ -94,7 +94,7 @@ static func generate_card_2() -> CardData:
 		var goons = main.get_tree().get_nodes_in_group("goons")
 		for goon in goons:
 			if goon.FACTION != 1:
-				main.add_units(1, UnitParams.Types.BUG, 0, 2, goon.global_position)
+				main.get_node("UnitFactory").create_unit_by_type(UnitParams.Types.BUG, goon.global_position + Vector2(1,1), 0, 2)
 		return
 				
 	return CardData.new_card(

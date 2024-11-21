@@ -4,33 +4,31 @@ extends Node2D
 # Sectors are generated on the go as the map advances, and each is currently organized in a grid.
 # On a first approximation the grid is made of non-crossable cubes, but that should change.
 
-# TODO should be a mask with multiple flags, for now it's just EMPTY and FILLED
 enum GridContent {EMPTY, MAIN, FILLED}
 
-var grid_data : Array = [] #Saved as Column Major.
-@onready var grid_size = MapSectorFactory.grid_size
+# Input for creation:
+var last_sector_column : Array = [] # to know where to create openings
+var new_spawn : Array = [] # Where to add units.
 
+# Geometric Data
+var grid_data : Array = [] #Saved as Column Major.
 var buildings: Array[Rect2] = []  # Array of Rect2 representing building positions and sizes
 var enemies: Array[Vector2] = []  # Array of Vector2 representing enemy positions
 var checkpoints: Array[Vector2] = []  # Array of Vector2 representing enemy positions
-
 var pixel_size : Vector2 = Vector2.ZERO
 
-# Possibly TBR
+# Storage for late deletion
 var building_nodes = []     # Nodes representing the buildings (visuals)
 var collision_shapes = []   # Collision shapes for navigation
 
+@onready var grid_size = MapSectorFactory.grid_size
 @onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
+var unit_factory = null
+
+func _ready() -> void:
+	_generate_content(last_sector_column, new_spawn)
 
 # Public Functions:
-func generate_content(latest_grid_column: Array, new_spawn: Array):
-	
-	_fill_grid(latest_grid_column)
-
-	_generate_buildings()
-	_generate_checkpoints()
-	_generate_units(new_spawn)
-	
 func get_sector_entry_position() -> float:
 	return (_get_sector_entry_index() + .5) * (pixel_size.y / grid_size.y)
 
@@ -49,6 +47,13 @@ func display_debug():
 	print(out_string)
 
 # Private Function
+func _generate_content(latest_grid_column: Array, new_spawn: Array):
+	_fill_grid(latest_grid_column)
+	
+	_generate_buildings()
+	_generate_checkpoints()
+	_generate_units(new_spawn)
+	
 func _generate_buildings():
 	
 	var main_building_rects = []
@@ -94,9 +99,11 @@ func _generate_checkpoints():
 	_add_checkpoint(checkpoint_pos)
 
 func _generate_units(new_spawn: Array):
+	print("unitfactory is ", %UnitFactory)
 	for i in range(new_spawn.size()):
 		var enemy_position = _get_free_spot(2)
-		get_node("/root/Main").add_units(1, new_spawn[i], 0, 2, enemy_position + (Vector2(10 * i,10 * i)))
+		OS.delay_msec(10)
+		unit_factory.create_unit_by_type(new_spawn[i], enemy_position + (Vector2(10 * i,10 * i)), 0, 2)
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(randf() * i_rect.x, randf() * i_rect.y) + weight * i_rect
@@ -105,13 +112,11 @@ func _random_point() -> Vector2:
 	# Generate a random point within the sector bounds
 	return Vector2(randf() * pixel_size.x, randf() * pixel_size.y)
 
-
 func _is_overlapping_building(point: Vector2) -> bool:
 	for building in buildings:
 		if building.has_point(point):
 			return true
 	return false
-
 
 func _fill_grid(entry_points : Array) -> Array:
 	grid_data.clear()

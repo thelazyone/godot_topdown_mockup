@@ -1,8 +1,10 @@
 extends Node2D
 const goon_scene = preload("res://scenes/actors/goon.tscn")
 
+func _init() -> void:
+	print("UNITFACTORY CREATED!")
+
 func get_containing_rect_for_faction(i_faction : int):
-	
 	# TODO in the future holding a handle to the goons could end up being faster - or not.
 	var goons = get_tree().get_nodes_in_group("goons")
 	if goons.is_empty():
@@ -19,14 +21,17 @@ func get_containing_rect_for_faction(i_faction : int):
 	return Rect2(min_point, max_point - min_point)
 
 # Public Method
-func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction: int, i_parent) -> Node:
+func create_unit_by_type(i_type : UnitParams.Types, i_position: Vector2, i_id: int, i_faction: int,) -> Node:
+	return create_unit(UnitParams.get_unit_params(i_type), i_position, i_id, i_faction)
+
+func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction: int,) -> Node:
 	
 	var goon = goon_scene.instantiate()
 	goon.position = i_position
 	goon.FACTION = i_faction
 	goon.ID = i_id
 	goon.add_to_group("goons")
-	i_parent.add_child(goon)
+	add_child(goon)
 	
 	# General Params
 	goon.NAME = i_params.name_id

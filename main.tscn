@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=13 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
 [ext_resource type="Script" path="res://globals/unit_factory.gd" id="3_uwktb"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 [ext_resource type="Script" path="res://cards_container.gd" id="5_7ejbv"]
 [ext_resource type="Script" path="res://camera.gd" id="5_a7b6k"]
+[ext_resource type="Script" path="res://globals/map_sector_factory.gd" id="5_ne50f"]
 [ext_resource type="Script" path="res://dice_container.gd" id="6_wx36c"]
 [ext_resource type="Script" path="res://interactive_area.gd" id="7_8hcks"]
 
@@ -42,6 +43,9 @@ navigation_polygon = SubResource("NavigationPolygon_gduh2")
 
 [node name="FogOfWar" type="ColorRect" parent="InfiniteMap/NavRegion"]
 material = SubResource("ShaderMaterial_b2edw")
+
+[node name="MapSectorFactory" type="Node" parent="InfiniteMap"]
+script = ExtResource("5_ne50f")
 
 [node name="Camera" type="Camera2D" parent="."]
 unique_name_in_owner = true

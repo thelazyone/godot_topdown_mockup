@@ -9,13 +9,14 @@ const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var gaming_area_height = get_viewport().size.y 
 @onready var sector_size : Vector2 = Vector2(gaming_area_height * sector_size_ratio, gaming_area_height)
 @onready var removal_distance = sector_size.x * 5    	# Distance after which sectors are removed
-@onready var sector_factory = MapSectorFactory.new()
+@onready var sector_factory = $MapSectorFactory
 
 # References to child nodes
 @onready var nav_region = $NavRegion       # NavigationRegion2D node
 @onready var fow = $NavRegion/FogOfWar
 @onready var camera : Node = %Camera
 @onready var cards_container = %CardsContainer
+@onready var unit_factory = %UnitFactory
 var interactive_area = null
 
 func _ready():
@@ -46,13 +47,12 @@ func _process(delta):
 		print("Debug, map is:")
 		current_sector_handle.display_debug()
 		var spawn_position = Vector2(0, current_sector_handle.get_sector_entry_position())
-		print("spawn_position is ", spawn_position)
 		var player_starting_units = LevelData.player_units
 		for i in range(player_starting_units.size()):
 			var unit = player_starting_units[i]
 			var offset = Vector2(50, 0) + Vector2(10 * (i%4 - 1.5), 10 * (i/4 - 1.5))
-			main_node.add_units(1, unit.type, unit.id, 1, spawn_position + offset)
-		
+			unit_factory.create_unit_by_type(unit.type, spawn_position + offset, unit.id, 1)
+
 		# Adding a second sector at the beginning.
 		_generate_new_sector()
 

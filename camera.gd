@@ -11,7 +11,6 @@ var last_update_s = 0
 
 func move_camera_right(new_position : float):
 	camera_target_position = max(camera_target_position, new_position)
-	print("target pos is ", camera_target_position)
 
 func get_camera_position_h() -> float:
 	return position.x - camera_offset_h
@@ -28,7 +27,6 @@ func _process(delta: float) -> void:
 	if last_update_s > CAMERA_UPDATE_PERIOD_S:
 		last_update_s = 0
 		var bounding_rect = unit_factory.get_containing_rect_for_faction(1)
-		print("bounding is ", bounding_rect)
 		move_camera_right(bounding_rect.position.x - CAMERA_MARGIN)
 	
 	# Moving the camera if target has changed.

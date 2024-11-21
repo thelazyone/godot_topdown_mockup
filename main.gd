@@ -3,16 +3,11 @@ extends Node2D
 		
 func _ready() -> void:
 	
-	
 	# Testing the new UI TODO TBR
 	LevelData.dice_values = [1, 1, 1, 2, 3, 4, 5, 5, 6]
 	$UI/DiceContainer.display_dice(LevelData.dice_values)
 	
 	pass
-
-func add_units(number : int, type : UnitParams.Types, i_id: int, faction : int, i_position : Vector2) :
-	for i in range(number):
-		$UnitFactory.create_unit(UnitParams.get_unit_params(type), i_position + Vector2(10 * i, 0), i_id, faction, self)
 
 func _input(event: InputEvent) -> void:
 	
