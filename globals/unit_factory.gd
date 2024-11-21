@@ -1,6 +1,23 @@
 extends Node2D
 const goon_scene = preload("res://scenes/actors/goon.tscn")
 
+func get_containing_rect_for_faction(i_faction : int):
+	
+	# TODO in the future holding a handle to the goons could end up being faster - or not.
+	var goons = get_tree().get_nodes_in_group("goons")
+	if goons.is_empty():
+		return Rect2(Vector2.ZERO, Vector2.ZERO)
+	var min_point = Vector2(1e308,1e308)
+	var max_point = Vector2(-1e308,-1e308)
+	for goon in goons:
+		if goon.FACTION == i_faction:
+			var pos = goon.global_position
+			min_point.x = min(pos.x, min_point.x)
+			min_point.y = min(pos.y, min_point.y)
+			max_point.x = max(pos.x, max_point.x)
+			max_point.y = max(pos.y, max_point.y)
+	return Rect2(min_point, max_point - min_point)
+
 # Public Method
 func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction: int, i_parent) -> Node:
 	

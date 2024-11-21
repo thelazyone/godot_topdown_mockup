@@ -48,7 +48,6 @@ func display_cards(cards_data: Array = []):
 		card.size = card_size
 		var offscreen_y = -card_size.y * 0.8
 		if i == active_card_index:
-			print("offset for active card ", i)
 			offscreen_y += 40
 		card.position = Vector2(start_x + i * (card_size.x + spacing), offscreen_y)
 		card.set_content(local_cards_data[i])

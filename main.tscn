@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://csp4bbpukpnoi"]
+[gd_scene load_steps=12 format=3 uid="uid://csp4bbpukpnoi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0tp6l"]
 [ext_resource type="Script" path="res://globals/unit_factory.gd" id="3_uwktb"]
 [ext_resource type="Shader" path="res://striped.gdshader" id="4_h84fu"]
 [ext_resource type="Script" path="res://InfiniteMap.gd" id="4_nyr5v"]
 [ext_resource type="Script" path="res://cards_container.gd" id="5_7ejbv"]
+[ext_resource type="Script" path="res://camera.gd" id="5_a7b6k"]
 [ext_resource type="Script" path="res://dice_container.gd" id="6_wx36c"]
 [ext_resource type="Script" path="res://interactive_area.gd" id="7_8hcks"]
 
@@ -29,6 +30,7 @@ shader_parameter/angle = 1.0
 script = ExtResource("1_0tp6l")
 
 [node name="UnitFactory" type="Node2D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("3_uwktb")
 
 [node name="InfiniteMap" type="Node2D" parent="."]
@@ -44,6 +46,7 @@ material = SubResource("ShaderMaterial_b2edw")
 [node name="Camera" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(801, 397)
+script = ExtResource("5_a7b6k")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

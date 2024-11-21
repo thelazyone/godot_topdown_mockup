@@ -1,13 +1,5 @@
 extends Node2D
 
-const start_1 = Vector2(100,300)
-const start_2 = Vector2(1000, 300)
-const start_goons = 16	
-
-var cumulateTime = 0
-
-const CAMERA_MARGIN : float = 200
-var current_camera_position : float = 0
 		
 func _ready() -> void:
 	
@@ -39,17 +31,5 @@ func _input(event: InputEvent) -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	
-	# Check the leftmost goon, and move the map accordingly.
-	var goons = get_tree().get_nodes_in_group("goons")
-	var leftmost_pos : float = 99999
-	var goon_found = false
-	for goon in goons: 
-		if goon.FACTION == 1 and goon.global_position.x < leftmost_pos:
-			leftmost_pos = goon.global_position.x
-			goon_found = true
-	if goon_found: 
-		$InfiniteMap.move_camera(leftmost_pos - CAMERA_MARGIN)
-	current_camera_position = $InfiniteMap.get_camera_position()
-		
+
 	pass

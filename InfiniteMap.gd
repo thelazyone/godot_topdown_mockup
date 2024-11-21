@@ -36,18 +36,6 @@ func _ready():
 	collision_shape.set_shape(shape)
 	static_body.position = shape.size / 2
 	
-# Camera Stuff
-@onready var camera_offset = camera.position.x
-var camera_position: float = 0
-var camera_target_position : float = 0
-const CAMERA_SPEED = 150
-
-func move_camera(new_position : float):
-	if new_position > camera_target_position:
-		camera_target_position = new_position
-
-func get_camera_position() -> float:
-	return camera_position
 
 func _process(delta):
 	
@@ -68,15 +56,9 @@ func _process(delta):
 		# Adding a second sector at the beginning.
 		_generate_new_sector()
 
-		
-	# Moving the camera if target has changed.
-	var camera_spread = camera_target_position - camera_position
-	if abs(camera_spread) > .1:
-		var move_amount = CAMERA_SPEED * delta * sign(camera_spread)
-		camera_position += min(abs(camera_spread), abs(move_amount)) * sign(camera_spread)
-		camera.position.x = camera_position + camera_offset
 
 	# Generate new sector if needed
+	var camera_position = camera.get_camera_position_h()
 	
 	# If it's a hostile sector, a modal dialog should appear.
 	# TODO for now all sectors are hostile! 
@@ -122,11 +104,13 @@ func _remove_old_sector():
 	# Rebake the navigation mesh
 	_rebake_navigation()
 	
+	
 # Moving the navigation area rectangle to the current active sectors, and baking.
 func _rebake_navigation():
 
 	# Move the navigation region centered where it should be, then bake
 	nav_region.navigation_polygon.clear_outlines()
+	var camera_position = camera.get_camera_position_h()
 	var polygon = [
 		Vector2(camera_position, 0),
 		Vector2(get_viewport().size.x * 2 + camera_position, 0),
