@@ -1,8 +1,5 @@
-extends Node2D
+extends Node
 const goon_scene = preload("res://scenes/actors/goon.tscn")
-
-func _init() -> void:
-	print("UNITFACTORY CREATED!")
 
 func get_containing_rect_for_faction(i_faction : int):
 	# TODO in the future holding a handle to the goons could end up being faster - or not.
