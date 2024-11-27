@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cxk0bcefp310h"]
+[gd_scene load_steps=11 format=3 uid="uid://cxk0bcefp310h"]
 
 [ext_resource type="Script" path="res://scenes/actors/goon.gd" id="1_np6xr"]
 [ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://scenes/splat.tscn" id="2_qg86p"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scenes/actors/shoot_component.gd" id="5_ptigm"]
 [ext_resource type="Script" path="res://scenes/actors/health_component.gd" id="7_cq3ig"]
 [ext_resource type="Script" path="res://scenes/actors/fields_component.gd" id="9_myp1d"]
+[ext_resource type="Script" path="res://scenes/actors/decision_component.gd" id="9_psrb4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_87qmj"]
 
@@ -43,3 +44,6 @@ script = ExtResource("7_cq3ig")
 
 [node name="FieldsComponent" type="Node2D" parent="."]
 script = ExtResource("9_myp1d")
+
+[node name="DecisionComponent" type="Node2D" parent="."]
+script = ExtResource("9_psrb4")

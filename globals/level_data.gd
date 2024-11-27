@@ -163,7 +163,7 @@ static func generate_card_5() -> CardData:
 		var goons = main.get_tree().get_nodes_in_group("goons")
 		for goon in goons:
 			if goon.FACTION != 1:
-				goon.receive_damage(100)
+				goon.health.receive_damage(100)
 		return
 	
 	return CardData.new_card(
@@ -172,7 +172,7 @@ static func generate_card_5() -> CardData:
 			"LAST PUSH!",
 			[[1, 3],[1, 3]],
 			"Juuuust a few more!",
-			func_1,
+			no_func,
 			_create_list([[UnitParams.Types.BUG,25]])
 		),CardOption.new_option( # Option 2
 			"THE END",
