@@ -12,8 +12,8 @@ extends Node2D
 
 # Internal Alert System
 var alert_level : float = 0
-const yellow_threshold : float = 1
-const red_threshold : float = 2
+const YELLOW_THRESHOLD : float = 1
+const RED_THRESHOLD : float = 2
 
 var is_in_cover : bool = false
 var is_shooting : bool = false
@@ -32,7 +32,7 @@ func get_decision() -> Decision:
 	var out_decision = Decision.new()
 	
 	# If low alert, a simple movement would do.
-	if alert_level < 1:
+	if alert_level < YELLOW_THRESHOLD:
 		
 		# Search for the next checkpoint.
 		var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
@@ -55,7 +55,7 @@ func get_decision() -> Decision:
 				return out_decision
 
 	# If medium alert, there's movement towards things that are suspicious.
-	if alert_level < 2:
+	if alert_level < RED_THRESHOLD:
 		var selected_target = _get_best_target(_get_spot_range())
 		if selected_target != null:
 			out_decision.type = Decision.Types.PURSUE
@@ -66,7 +66,7 @@ func get_decision() -> Decision:
 			return out_decision
 	
 	# Case Attack
-	if alert_level > 2:
+	if alert_level > RED_THRESHOLD:
 		var selected_target = _get_best_target(min(get_parent().WEAPON_RANGE, _get_spot_range()))
 		if selected_target:
 			out_decision.type = Decision.Types.ATTACK
@@ -99,6 +99,15 @@ func _process(delta: float) -> void:
 		alert_level -= delta * NOTICE_SPEED
 	else:
 		alert_level += delta * NOTICE_SPEED * sqrt(float(nearby_threats))
+	clamp(alert_level, 0, RED_THRESHOLD * 2)
+	
+	if get_parent().FACTION == 1:
+		print( "spotting at ", _get_spot_range() ," found ", nearby_threats, " threats. Alert is ", alert_level)
+	
+	if alert_level > YELLOW_THRESHOLD:
+		get_parent().get_node("DebugLabel").text = "??"
+	if alert_level > RED_THRESHOLD:
+		get_parent().get_node("DebugLabel").text = "!!!"
 
 ##############################
 ## PRIVATE METHODS

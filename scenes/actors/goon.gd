@@ -37,8 +37,8 @@ func die():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_to_group("goons")
-	strat.navigation_component = nav
-	strat.fields_component = field
+	strat.navigation_component = nav 		## TODO TBR
+	strat.fields_component = field			## TODO TBR
 	field.navigation_component = nav
 	field.strategy_component = strat
 	decision.navigation_component = nav
@@ -47,13 +47,47 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	# Movement
-	var local_target = strat.get_next_move()
 	
-	if local_target :
+	# Get Latest Decision
+	var current_decision = decision.get_decision()
+	var local_movement = Vector2.ZERO
+	var shooting_target = null
+	
+	var target_position = null
+	
+	match current_decision.type:
+		Decision.Types.IDLE:
+			# Do nothing.
+			pass
+		Decision.Types.MOVE:
+			match typeof(current_decision.target):
+				TYPE_VECTOR2:
+					target_position = current_decision.target
+				TYPE_OBJECT:
+					target_position = current_decision.target.global_position
+			pass
+		Decision.Types.PURSUE:
+			target_position = current_decision.target.global_position
+			pass
+		Decision.Types.COVER:
+			target_position = current_decision.target.global_position
+			pass
+		Decision.Types.ATTACK:
+			# Nothing for now, but i know it's wrong TODO.
+			shooting_target = current_decision.target.global_position
+			pass
+		_: 
+			
+			print("Unknown decision: ", current_decision)
+	
+	# Calculating the pathfinding.
+	local_movement = nav.get_move(target_position)
+	
+	# Movement
+	if local_movement :
 		# Updating the bearing
 		# This is good to do even if the image doesn't move.
-		var target_bearing = (local_target - position).angle()
+		var target_bearing = (local_movement - position).angle()
 		_apply_rotation_step(target_bearing, delta)		
 		
 		# Speed is in the direction of the facing, rather than directly towards the target
@@ -70,7 +104,7 @@ func _process(delta: float) -> void:
 		$Image.flip_h = !default_facing_right
 	
 	# Showing if attacking:
-	var shooting_target = strat.get_shooting_target()
+	#var shooting_target = strat.get_shooting_target()
 	
 	if Debug.debug_enabled: 
 		$LineOfSight.visible = false

@@ -23,7 +23,6 @@ func new_sector(parent: Node, position_x: float, new_spawn: Array) -> MapSector:
 	add_child(sector_instance)
 	
 	# Updating the "last column" before returning
-	print("grid data is ", sector_instance.grid_data)
 	last_sector_column = sector_instance.grid_data[sector_instance.grid_data.size() - 1]
 	
 	return sector_instance

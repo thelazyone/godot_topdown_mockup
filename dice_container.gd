@@ -186,22 +186,18 @@ func clear_dice():
 	current_dice.clear()
 
 func _on_dice_pressed(index: int):
-	print("pressed dice ", index)
-
 	if not selecting_dice:
 		return  # Ignore clicks if not in selection mode
 
 	# Toggle selection
 	if index in selected_dice_indices:
 		# Deselect
-		print("deselecting dice ", index)
 		selected_dice_indices.erase(index)
 		current_dice[index].modulate = Color(1, 1, 1)  # Normal color
 	else:
 		# Check if we can select more dice
 		if selected_dice_indices.size() < required_slots.size():
 			# Select
-			print("selecting dice ", index)
 			selected_dice_indices.append(index)
 			current_dice[index].modulate = Color(0, 1, 0)  # Selected color (green)
 		else:
@@ -212,7 +208,6 @@ func _on_dice_pressed(index: int):
 	_update_use_dice_button_state()
 
 func _update_use_dice_button_state():
-	print("testing use_dice")
 	if use_dice_button:
 		if selected_dice_indices.size() == required_slots.size():
 			# Gather the selected dice values
@@ -220,7 +215,6 @@ func _update_use_dice_button_state():
 			for idx in selected_dice_indices:
 				selected_values.append(current_dice_values[idx])
 			# Check if selected dice satisfy the criteria
-			print("checking if ", selected_values, " satisfy ", required_slots)
 			if DiceMath.dice_satisfy_slots(selected_values, required_slots):
 				# Enable the "USE DICE" button
 				use_dice_button.disabled = false

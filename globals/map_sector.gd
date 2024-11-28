@@ -99,7 +99,6 @@ func _generate_checkpoints():
 	_add_checkpoint(checkpoint_pos)
 
 func _generate_units(new_spawn: Array):
-	print("unitfactory is ", %UnitFactory)
 	for i in range(new_spawn.size()):
 		var enemy_position = _get_free_spot(2)
 		OS.delay_msec(10)

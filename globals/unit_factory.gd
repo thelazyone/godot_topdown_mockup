@@ -36,6 +36,8 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction
 	goon.get_node("Image").texture = load(i_params.icon)
 	goon.SPEED = i_params.speed
 	goon.SPOTTING_RANGE = i_params.spotting_range
+	goon.decision.SPOT_RANGE_LONG = i_params.spotting_range * 2
+	goon.decision.SPOT_RANGE_CLOSE = i_params.spotting_range 
 
 	# Attack Params
 	goon.shoot.COOLDOWN_TIME_MS = i_params.attack_speed
