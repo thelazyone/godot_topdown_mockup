@@ -5,8 +5,12 @@ extends Node2D
 # - "checkpoints" -> targets that you might want to reach and control
 # - "cover" -> all cover elements
 
+# Low period usage.
+const DECISION_PERIOD_S = 0.2
+var elapsed_time = 0
+
 # Parameters
-@export var NOTICE_SPEED = 1 # How fast alert grows
+@export var NOTICE_SPEED = 10 # How fast alert grows
 @export var SPOT_RANGE_CLOSE = 200 # while in green-yellow alert
 @export var SPOT_RANGE_LONG = 500 # while in red alert.
 
@@ -92,22 +96,28 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
-	# TODO this could be done more rarely, for optimization
-	# Checking whether to increase or decrease the attention.
-	var nearby_threats = _get_targets(_get_spot_range()).size()
-	if nearby_threats == 0:
-		alert_level -= delta * NOTICE_SPEED
-	else:
-		alert_level += delta * NOTICE_SPEED * sqrt(float(nearby_threats))
-	clamp(alert_level, 0, RED_THRESHOLD * 2)
-	
-	if get_parent().FACTION == 1:
-		print( "spotting at ", _get_spot_range() ," found ", nearby_threats, " threats. Alert is ", alert_level)
-	
-	if alert_level > YELLOW_THRESHOLD:
-		get_parent().get_node("DebugLabel").text = "??"
-	if alert_level > RED_THRESHOLD:
-		get_parent().get_node("DebugLabel").text = "!!!"
+	elapsed_time += delta
+	if elapsed_time > DECISION_PERIOD_S:
+		
+		# TODO this could be done more rarely, for optimization
+		# Checking whether to increase or decrease the attention.
+		var nearby_threats = _get_targets(_get_spot_range()).size()
+		if nearby_threats == 0:
+			alert_level -= elapsed_time * NOTICE_SPEED
+		else:
+			alert_level += elapsed_time * NOTICE_SPEED * sqrt(float(nearby_threats))
+		alert_level = clamp(alert_level, 0, RED_THRESHOLD * 2)
+		
+		if get_parent().FACTION == 1:
+			print( "spotting at ", _get_spot_range() ," found ", nearby_threats, " threats. Alert is ", alert_level)
+		
+		if alert_level > YELLOW_THRESHOLD:
+			get_parent().get_node("DebugLabel").text = "??"
+		if alert_level > RED_THRESHOLD:
+			get_parent().get_node("DebugLabel").text = "!!!"
+		
+		# Resetting the elapsed time.
+		elapsed_time = 0
 
 ##############################
 ## PRIVATE METHODS

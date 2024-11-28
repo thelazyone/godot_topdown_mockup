@@ -8,7 +8,7 @@ var PROJECTILE = null
 func try_shoot(angle):
 	if Time.get_ticks_msec() - last_shot_tick_ms > COOLDOWN_TIME_MS:
 		var curr_projectile = PROJECTILE.duplicate()
-		add_child(curr_projectile)
+		add_child(curr_projectile) # TODO this should be handled parametrically.
 		curr_projectile.FACTION = get_parent().FACTION
 		
 		curr_projectile.shoot(angle)

@@ -50,10 +50,10 @@ func _process(delta: float) -> void:
 	
 	# Get Latest Decision
 	var current_decision = decision.get_decision()
-	var local_movement = Vector2.ZERO
+	var local_movement = null
 	var shooting_target = null
-	
 	var target_position = null
+	var speed_multiplier : float = 1
 	
 	match current_decision.type:
 		Decision.Types.IDLE:
@@ -73,15 +73,19 @@ func _process(delta: float) -> void:
 			target_position = current_decision.target.global_position
 			pass
 		Decision.Types.ATTACK:
-			# Nothing for now, but i know it's wrong TODO.
+			# No movement for now, but i know it's wrong TODO.
+			target_position = current_decision.target.global_position
+			speed_multiplier = .1
 			shooting_target = current_decision.target.global_position
+			print("Shooting target is ", shooting_target)
 			pass
 		_: 
 			
 			print("Unknown decision: ", current_decision)
 	
 	# Calculating the pathfinding.
-	local_movement = nav.get_move(target_position)
+	if target_position:
+		local_movement = nav.get_move(target_position)
 	
 	# Movement
 	if local_movement :
@@ -91,7 +95,7 @@ func _process(delta: float) -> void:
 		_apply_rotation_step(target_bearing, delta)		
 		
 		# Speed is in the direction of the facing, rather than directly towards the target
-		velocity = Vector2(1,0).rotated(current_bearing) * SPEED
+		velocity = Vector2(1,0).rotated(current_bearing) * SPEED * speed_multiplier
 	else:
 		velocity = Vector2.ZERO
 	
@@ -115,8 +119,9 @@ func _process(delta: float) -> void:
 		$LineOfSight.visible = false
 		
 	if shooting_target:
+		
 		# Handling the attack.
-		shoot.try_shoot((shooting_target-position).angle())
+		shoot.try_shoot((shooting_target - position).angle())
 		
 	# Applying the physics rules
 	move_and_slide()
