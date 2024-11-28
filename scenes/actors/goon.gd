@@ -10,6 +10,7 @@ extends CharacterBody2D
 @export var SPLAT : Resource = null
 
 @onready var nav = $NavigationComponent
+@onready var decision = $DecisionComponent
 @onready var strat = $StrategyComponent
 @onready var shoot = $ShootComponent
 @onready var field = $FieldsComponent
@@ -40,6 +41,7 @@ func _ready() -> void:
 	strat.fields_component = field
 	field.navigation_component = nav
 	field.strategy_component = strat
+	decision.navigation_component = nav
 	
 	pass # Replace with function body.
 

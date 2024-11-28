@@ -1,23 +1,110 @@
 extends Node2D
 
+# Decision Component relies on the current types of groups to exist:
+# - "goons" -> all kinds of units
+# - "checkpoints" -> targets that you might want to reach and control
+# - "cover" -> all cover elements
+
 # Parameters
 @export var NOTICE_SPEED = 1 # How fast alert grows
 @export var SPOT_RANGE_CLOSE = 200 # while in green-yellow alert
 @export var SPOT_RANGE_LONG = 500 # while in red alert.
 
-# Alert System
+# Internal Alert System
 var alert_level : float = 0
 const yellow_threshold : float = 1
 const red_threshold : float = 2
 
+var is_in_cover : bool = false
+var is_shooting : bool = false
+
 # Local decision variables
 var current_target_enemy = null
+
+# Other components' handles
+var navigation_component = Resource # TODO probably useless-TBR
 
 ##############################
 ## PUBLIC METHODS
 ##############################
 
-func get_best_target(range : float, faction : int = 0) -> Node:
+func get_decision() -> Decision:
+	var out_decision = Decision.new()
+	
+	# If low alert, a simple movement would do.
+	if alert_level < 1:
+		
+		# Search for the next checkpoint.
+		var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
+		if all_checkpoints: 
+		
+			# Checking for each checkpoint if it's reachable, and finding the closer to reach. 
+			var min_distance = 999999
+			var chosen_checkpoint = null
+			for checkpoint in all_checkpoints:
+				if _range_to(checkpoint) < min_distance:
+					min_distance = _range_to(checkpoint)
+					chosen_checkpoint = checkpoint
+			
+			if chosen_checkpoint != null:
+				out_decision.type = Decision.Types.MOVE
+				out_decision.target = chosen_checkpoint
+				out_decision.weight = 1 # TODO this should be evaluated properly.
+				
+				## Returning decision MOVE
+				return out_decision
+
+	# If medium alert, there's movement towards things that are suspicious.
+	if alert_level < 2:
+		var selected_target = _get_best_target(_get_spot_range())
+		if selected_target != null:
+			out_decision.type = Decision.Types.PURSUE
+			out_decision.target = selected_target
+			out_decision.weight = 1 # TODO this should be evaluated properly.
+			
+			## Returning decision PURSUE
+			return out_decision
+	
+	# Case Attack
+	if alert_level > 2:
+		var selected_target = _get_best_target(min(get_parent().WEAPON_RANGE, _get_spot_range()))
+		if selected_target:
+			out_decision.type = Decision.Types.ATTACK
+			out_decision.target = selected_target
+			out_decision.weight = 1 # TODO this should be calculated!
+			
+			## Returning decision ATTACK
+			return out_decision 
+	
+	# TODO COVER!!!
+	
+	## Returning decision IDLE
+	return out_decision
+
+##############################
+## LOOPS
+##############################
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	
+	# TODO this could be done more rarely, for optimization
+	# Checking whether to increase or decrease the attention.
+	var nearby_threats = _get_targets(_get_spot_range()).size()
+	if nearby_threats == 0:
+		alert_level -= delta * NOTICE_SPEED
+	else:
+		alert_level += delta * NOTICE_SPEED * sqrt(float(nearby_threats))
+
+##############################
+## PRIVATE METHODS
+##############################
+
+func _get_best_target(range : float, faction : int = 0) -> Node:
 	var all_targets = _get_targets(range, faction)
 	
 	# TODO IMPROVE pick the closest for now, there could be more decision-making
@@ -37,30 +124,6 @@ func get_best_target(range : float, faction : int = 0) -> Node:
 			closest_range = target_distance
 			best_target = target
 	return best_target
-
-
-##############################
-## LOOPS
-##############################
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	
-	# Checking whether to increase or decrease the attention.
-	var nearby_threats = _get_targets(_get_spot_range()).size()
-	if nearby_threats == 0:
-		alert_level -= delta * NOTICE_SPEED
-	else:
-		alert_level += delta * NOTICE_SPEED * sqrt(float(nearby_threats))
-
-##############################
-## PRIVATE METHODS
-##############################
 
 # Returns the range of spotting considering the current alert level of the goon.
 func _get_spot_range():

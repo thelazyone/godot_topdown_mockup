@@ -31,7 +31,6 @@ func get_move(input_position = null):
 	if not local_target:
 		return null
 		
-
 	return local_target
 
 ##############################
