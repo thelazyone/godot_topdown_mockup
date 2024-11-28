@@ -25,7 +25,7 @@ func get_move(input_position = null):
 ##############################
 
 func _ready() -> void:
-	NavigationServer2D.agent_set_avoidance_enabled(navigation_agent, true)
+	NavigationServer2D.agent_set_avoidance_enabled(navigation_agent.get_rid(), true)
 
 func _process(delta: float) -> void:
 	pass

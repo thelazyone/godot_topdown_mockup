@@ -2,7 +2,6 @@ extends Node2D
 
 var PROJECTILE = null
 @export var COOLDOWN_TIME_MS = 500
-
 @onready var last_shot_tick_ms = Time.get_ticks_msec()
 
 func try_shoot(angle):

@@ -43,9 +43,9 @@ static func get_unit_params(unit_type : Types) -> UnitParams :
 			par.name_id = "Tank"
 			par.icon = "res://scenes/actors/enlisted_tank.png"
 			par.hp = 40
-			par.speed = 200 #was 60
+			par.speed = 60 
 			par.spotting_range = 800
-			par.attack_speed = 200 # Was 2000
+			par.attack_speed = 2000 
 			par.attack_damage = 20
 			par.attack_range = 800
 			par.threats_weight = 5
@@ -61,8 +61,8 @@ static func get_unit_params(unit_type : Types) -> UnitParams :
 			par.attack_damage = 2
 			par.attack_range = 50
 			par.threats_weight = 0
-			par.threats_range = 100
-			par.decision_weight = 1
+			par.threats_range = 1
+			par.decision_weight = 10
 		Types.TOTEM:
 			par.name_id = "Totem"
 			par.icon = "res://scenes/actors/enlisted_troop_gun.png"

@@ -52,10 +52,11 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction
 	goon.THREAT_RANGE = i_params.threats_range
 
 	# Orders Field
-	if goon.FACTION != 1:
-		goon.field.decision_weight = 0
-	else:
-		goon.field.decision_weight = i_params.decision_weight
+	goon.field.decision_weight = i_params.decision_weight
+	#if goon.FACTION != 1:
+		#goon.field.decision_weight = 0
+	#else:
+		#goon.field.decision_weight = i_params.decision_weight
 
 	match goon.FACTION:
 		1: goon.get_node("Image").self_modulate = Color.ROYAL_BLUE

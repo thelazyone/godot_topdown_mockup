@@ -1,10 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://cxk0bcefp310h"]
+[gd_scene load_steps=11 format=3 uid="uid://cxk0bcefp310h"]
 
 [ext_resource type="Script" path="res://scenes/actors/goon.gd" id="1_np6xr"]
 [ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://scenes/splat.tscn" id="2_qg86p"]
 [ext_resource type="Script" path="res://scenes/actors/navigation_component.gd" id="3_3mihf"]
 [ext_resource type="Texture2D" uid="uid://dc8van0gdv2w4" path="res://scenes/actors/enlisted_troop_gun.png" id="3_yhdra"]
-[ext_resource type="Script" path="res://scenes/actors/strategy_component.gd" id="4_spkq7"]
 [ext_resource type="Script" path="res://scenes/actors/shoot_component.gd" id="5_ptigm"]
 [ext_resource type="Script" path="res://scenes/actors/health_component.gd" id="7_cq3ig"]
 [ext_resource type="Script" path="res://scenes/actors/fields_component.gd" id="9_myp1d"]
@@ -42,9 +41,6 @@ shape = SubResource("CircleShape2D_87qmj")
 script = ExtResource("3_3mihf")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="NavigationComponent"]
-
-[node name="StrategyComponent" type="Node2D" parent="."]
-script = ExtResource("4_spkq7")
 
 [node name="LineOfSight" type="Line2D" parent="."]
 width = 0.8

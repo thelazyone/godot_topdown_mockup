@@ -25,9 +25,6 @@ var is_shooting : bool = false
 # Local decision variables
 var current_target_enemy = null
 
-# Other components' handles
-var navigation_component = Resource # TODO probably useless-TBR
-
 ##############################
 ## PUBLIC METHODS
 ##############################
@@ -38,37 +35,27 @@ func get_decision() -> Decision:
 	# If low alert, a simple movement would do.
 	if alert_level < YELLOW_THRESHOLD:
 		
-		# Search for the next checkpoint.
-		var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
-		if all_checkpoints: 
-		
-			# Checking for each checkpoint if it's reachable, and finding the closer to reach. 
-			var min_distance = 999999
-			var chosen_checkpoint = null
-			for checkpoint in all_checkpoints:
-				if _range_to(checkpoint) < min_distance:
-					min_distance = _range_to(checkpoint)
-					chosen_checkpoint = checkpoint
+		if get_parent().FACTION == 1:
+			# Search for the next checkpoint.
+			var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
+			if all_checkpoints: 
 			
-			if chosen_checkpoint != null:
-				out_decision.type = Decision.Types.MOVE
-				out_decision.target = chosen_checkpoint
-				out_decision.weight = 1 # TODO this should be evaluated properly.
+				# Checking for each checkpoint if it's reachable, and finding the closer to reach. 
+				var min_distance = 999999
+				var chosen_checkpoint = null
+				for checkpoint in all_checkpoints:
+					if _range_to(checkpoint) < min_distance:
+						min_distance = _range_to(checkpoint)
+						chosen_checkpoint = checkpoint
 				
-				## Returning decision MOVE
-				return out_decision
-
-	# If medium alert, there's movement towards things that are suspicious.
-	if alert_level < RED_THRESHOLD:
-		var selected_target = _get_best_target(_get_spot_range())
-		if selected_target != null:
-			out_decision.type = Decision.Types.PURSUE
-			out_decision.target = selected_target
-			out_decision.weight = 1 # TODO this should be evaluated properly.
-			
-			## Returning decision PURSUE
-			return out_decision
-	
+				if chosen_checkpoint != null:
+					out_decision.type = Decision.Types.MOVE
+					out_decision.target = chosen_checkpoint
+					out_decision.weight = 1 # TODO this should be evaluated properly.
+					
+					## Returning decision MOVE
+					return out_decision
+					
 	# Case Attack
 	if alert_level > RED_THRESHOLD:
 		var selected_target = _get_best_target(min(get_parent().WEAPON_RANGE, _get_spot_range()))
@@ -79,6 +66,17 @@ func get_decision() -> Decision:
 			
 			## Returning decision ATTACK
 			return out_decision 
+			
+	# If medium alert, there's movement towards things that are suspicious.
+	var selected_target = _get_best_target(_get_spot_range())
+	if selected_target != null:
+		out_decision.type = Decision.Types.PURSUE
+		out_decision.target = selected_target
+		out_decision.weight = 1 # TODO this should be evaluated properly.
+		
+		## Returning decision PURSUE
+		return out_decision
+
 	
 	# TODO COVER!!!
 	
@@ -187,7 +185,7 @@ func _check_line_of_sight(target_object : Node) -> bool:
 		
 		# Using this: https://www.reddit.com/r/godot/comments/duy05l/npc_line_of_sight_godot_2d_tutorial_the_combat/
 		var space_state = get_world_2d().direct_space_state
-		var raycast_query = PhysicsRayQueryParameters2D.create(get_parent().position, target_object.position, get_parent().collision_mask, [self, target_object])
+		var raycast_query = PhysicsRayQueryParameters2D.create(get_parent().global_position, target_object.global_position, get_parent().collision_mask, [self, target_object])
 		var raycast_result = space_state.intersect_ray(raycast_query)
 		if raycast_result.is_empty():
 			return true

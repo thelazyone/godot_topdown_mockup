@@ -89,13 +89,13 @@ func get_composite_result() -> Vector2:
 		cumulative_value += current_pattern.values[i]
 	
 	# TODO This solution is hacky, but works for now.
-	var result_intensity = get_sum().length()
-	var temp_ratio = result_intensity / cumulative_value
-	
-	if temp_ratio < .3:
+	var sum = get_sum()
+	var result_intensity = sum.length()
+	if sum.length() == 0 or cumulative_value == 0:
 		return Vector2.ZERO
+	var temp_ratio = sum.length() / cumulative_value
 	
-	return get_sum()
+	return sum * temp_ratio
 	
 	
 func get_sum() -> Vector2:

@@ -13,7 +13,6 @@ extends CharacterBody2D
 
 @onready var nav = $NavigationComponent
 @onready var decision = $DecisionComponent
-@onready var strat = $StrategyComponent
 @onready var shoot = $ShootComponent
 @onready var field = $FieldsComponent
 @onready var health = $HealthComponent
@@ -25,9 +24,6 @@ var current_bearing = 0
 const ROTATION_SPEED_RAD_S = 4*PI
 const FAST_ROTATION_ANGLE = .25*PI
 const SLOW_ROTATION_RATIO = .1
-
-func set_move_order(coordinates):
-	strat.go_to(coordinates, 100)
 	
 func die():
 	var new_splat = SPLAT.instantiate()
@@ -39,9 +35,6 @@ func die():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_to_group("goons")
-	strat.navigation_component = nav 		## TODO TBR
-	strat.fields_component = field			## TODO TBR
-	decision.navigation_component = nav
 	
 	pass # Replace with function body.
 
@@ -76,7 +69,8 @@ func _process(delta: float) -> void:
 		Decision.Types.ATTACK:
 			# No movement for now, but i know it's wrong TODO.
 			decision_position = current_decision.target.global_position
-			speed_multiplier = .1
+			if global_position.distance_to(decision_position) < WEAPON_RANGE:
+				speed_multiplier = .1
 			shooting_target = current_decision.target.global_position
 			pass
 		_: 
@@ -90,17 +84,16 @@ func _process(delta: float) -> void:
 		if local_movement != null:
 			field.set_decision_field(global_position.angle_to_point(local_movement), delta)
 	field.set_threat_field(decision._get_targets(THREAT_RANGE), THREAT_RANGE, delta) ## TODO using private functions of decision for now -> TODO move them in a different class?
-	field.set_formation_field(decision._get_targets(FORMATION_DISTANCE, 1), FORMATION_DISTANCE, delta) ## TODO SAME AS ABOVE
+	field.set_formation_field(decision._get_targets(FORMATION_DISTANCE, FACTION), FORMATION_DISTANCE, delta) ## TODO SAME AS ABOVE
 	
 	# Retrieving the global result:
 	var field_peak = field.get_combined_field_peak()
 	
 	# Movement
-	if local_movement :
+	if field_peak != Vector2.ZERO :
+		
 		# Updating the bearing
-		# This is good to do even if the image doesn't move.
-		var target_bearing = (local_movement - position).angle()
-		target_bearing = field_peak.angle()
+		var target_bearing = field_peak.angle()
 		_apply_rotation_step(target_bearing, delta)		
 		
 		# Speed is in the direction of the facing, but with a dot product of the actual direction to go
@@ -115,9 +108,6 @@ func _process(delta: float) -> void:
 		$Image.flip_h = false
 	elif velocity.x == 0:
 		$Image.flip_h = !default_facing_right
-	
-	# Showing if attacking:
-	#var shooting_target = strat.get_shooting_target()
 	
 	if Debug.debug_enabled: 
 		$LineOfSight.visible = false
@@ -135,7 +125,9 @@ func _process(delta: float) -> void:
 	# Applying the physics rules
 	move_and_slide()
 	
-# Private methods	
+##############################
+## PRIVATE METHODS
+##############################
 	
 func _apply_rotation_step(target : float, delta : float):
 	#print ("angles are: target " , target, ", curr ", current_bearing)

@@ -7,11 +7,6 @@ enum field_types {DECISION, THREATS, FORMATION}
 	field_types.THREATS : DirectionalField.new(),
 	field_types.FORMATION : DirectionalField.new()
 }
-
-const UPDATE_PERIOD_S = .1
-var last_update_time = 0
-
-# Temporary var when combining all the fields in one
 var combined_directional_field = DirectionalField.new()
 
 @onready var decision_weight = 4
@@ -30,6 +25,8 @@ func set_decision_field(direction: float, delta: float):
 func set_threat_field(threats: Array, threat_range: float, delta: float):
 	directional_fields[field_types.THREATS].clear_buffer()
 	for threat in threats:
+		if 	not threat or not is_instance_valid(threat):
+			continue
 		var range = _range_to(threat)
 		var effect_value = 1 * _hyperbolic_repulsion(threat_range, range) ## TODO THIS IS CLEARLY WRONG!
 		var effect_angle = _angle_to(threat) + PI
@@ -65,7 +62,7 @@ func get_combined_field_peak() -> Vector2:
 	# For debug use:
 	#combined_directional_field.display_debug(get_parent().global_position, Color.LIGHT_CYAN)
 	
-	return combined_directional_field.get_composite_result()
+	return combined_directional_field.get_sum()
 
 ##############################
 ## LOOPS
