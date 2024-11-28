@@ -107,7 +107,10 @@ func _remove_old_sector():
 	
 # Moving the navigation area rectangle to the current active sectors, and baking.
 func _rebake_navigation():
-
+	var viewport = get_viewport()
+	if not viewport:
+		return
+	
 	# Move the navigation region centered where it should be, then bake
 	nav_region.navigation_polygon.clear_outlines()
 	var camera_position = camera.get_camera_position_h()
@@ -118,4 +121,5 @@ func _rebake_navigation():
 		Vector2(camera_position, get_viewport().size.y),
 	]
 	nav_region.navigation_polygon.add_outline(polygon)
+	nav_region.navigation_polygon.agent_radius = 40
 	nav_region.bake_navigation_polygon()
