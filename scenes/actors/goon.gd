@@ -7,6 +7,8 @@ extends CharacterBody2D
 
 @export var WEAPON_RANGE = 300
 @export var SPOTTING_RANGE = 200
+@export var THREAT_RANGE = 400
+@export var FORMATION_DISTANCE = 30
 @export var SPLAT : Resource = null
 
 @onready var nav = $NavigationComponent
@@ -39,8 +41,6 @@ func _ready() -> void:
 	add_to_group("goons")
 	strat.navigation_component = nav 		## TODO TBR
 	strat.fields_component = field			## TODO TBR
-	field.navigation_component = nav
-	field.strategy_component = strat
 	decision.navigation_component = nav
 	
 	pass # Replace with function body.
@@ -51,8 +51,9 @@ func _process(delta: float) -> void:
 	# Get Latest Decision
 	var current_decision = decision.get_decision()
 	var local_movement = null
+	var decision_weight = 1
 	var shooting_target = null
-	var target_position = null
+	var decision_position = null
 	var speed_multiplier : float = 1
 	
 	match current_decision.type:
@@ -62,49 +63,57 @@ func _process(delta: float) -> void:
 		Decision.Types.MOVE:
 			match typeof(current_decision.target):
 				TYPE_VECTOR2:
-					target_position = current_decision.target
+					decision_position = current_decision.target
 				TYPE_OBJECT:
-					target_position = current_decision.target.global_position
+					decision_position = current_decision.target.global_position
 			pass
 		Decision.Types.PURSUE:
-			target_position = current_decision.target.global_position
+			decision_position = current_decision.target.global_position
 			pass
 		Decision.Types.COVER:
-			target_position = current_decision.target.global_position
+			decision_position = current_decision.target.global_position
 			pass
 		Decision.Types.ATTACK:
 			# No movement for now, but i know it's wrong TODO.
-			target_position = current_decision.target.global_position
+			decision_position = current_decision.target.global_position
 			speed_multiplier = .1
 			shooting_target = current_decision.target.global_position
-			print("Shooting target is ", shooting_target)
 			pass
 		_: 
 			
 			print("Unknown decision: ", current_decision)
 	
-	# Calculating the pathfinding.
-	if target_position:
-		local_movement = nav.get_move(target_position)
+	# Calculating the pathfinding. This provides the Movement decision, which is then
+	# Combined with the fields of other things going on.
+	if decision_position != null:
+		local_movement = nav.get_move(decision_position)
+		if local_movement != null:
+			field.set_decision_field(global_position.angle_to_point(local_movement), delta)
+	field.set_threat_field(decision._get_targets(THREAT_RANGE), THREAT_RANGE, delta) ## TODO using private functions of decision for now -> TODO move them in a different class?
+	field.set_formation_field(decision._get_targets(FORMATION_DISTANCE, 1), FORMATION_DISTANCE, delta) ## TODO SAME AS ABOVE
+	
+	# Retrieving the global result:
+	var field_peak = field.get_combined_field_peak()
 	
 	# Movement
 	if local_movement :
 		# Updating the bearing
 		# This is good to do even if the image doesn't move.
 		var target_bearing = (local_movement - position).angle()
+		target_bearing = field_peak.angle()
 		_apply_rotation_step(target_bearing, delta)		
 		
-		# Speed is in the direction of the facing, rather than directly towards the target
-		velocity = Vector2(1,0).rotated(current_bearing) * SPEED * speed_multiplier
+		# Speed is in the direction of the facing, but with a dot product of the actual direction to go
+		velocity = Vector2(1,0).rotated(current_bearing) * SPEED * speed_multiplier * cos(current_bearing - target_bearing)
 	else:
 		velocity = Vector2.ZERO
 	
 	# Flipping the image if necessary
-	if velocity.x < 0:
+	if velocity.x < -0.1:
 		$Image.flip_h = true
-	elif velocity.x > 0:
+	elif velocity.x > 0.1:
 		$Image.flip_h = false
-	else:
+	elif velocity.x == 0:
 		$Image.flip_h = !default_facing_right
 	
 	# Showing if attacking:
@@ -125,7 +134,6 @@ func _process(delta: float) -> void:
 		
 	# Applying the physics rules
 	move_and_slide()
-	
 	
 # Private methods	
 	

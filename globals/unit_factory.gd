@@ -49,18 +49,13 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction
 	# Behaviour Fields Params
 	# Threats Field
 	goon.field.threats_weight = i_params.threats_weight
-	goon.field.threats_range = i_params.threats_range
-
-	# Targets Field
-	goon.field.targets_weight = i_params.targets_weight
-	goon.field.targets_range = i_params.targets_range
-	goon.field.targets_min_range = i_params.targets_min_range
+	goon.THREAT_RANGE = i_params.threats_range
 
 	# Orders Field
 	if goon.FACTION != 1:
-		goon.field.orders_weight = 0
+		goon.field.decision_weight = 0
 	else:
-		goon.field.orders_weight = i_params.orders_weight
+		goon.field.decision_weight = i_params.decision_weight
 
 	match goon.FACTION:
 		1: goon.get_node("Image").self_modulate = Color.ROYAL_BLUE

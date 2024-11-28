@@ -108,9 +108,6 @@ func _process(delta: float) -> void:
 			alert_level += elapsed_time * NOTICE_SPEED * sqrt(float(nearby_threats))
 		alert_level = clamp(alert_level, 0, RED_THRESHOLD * 2)
 		
-		if get_parent().FACTION == 1:
-			print( "spotting at ", _get_spot_range() ," found ", nearby_threats, " threats. Alert is ", alert_level)
-		
 		if alert_level > YELLOW_THRESHOLD:
 			get_parent().get_node("DebugLabel").text = "??"
 		if alert_level > RED_THRESHOLD:
@@ -187,6 +184,7 @@ func _get_covers(range : float) -> Array:
 func _check_line_of_sight(target_object : Node) -> bool:
 	
 	if target_object and is_instance_valid(target_object):
+		
 		# Using this: https://www.reddit.com/r/godot/comments/duy05l/npc_line_of_sight_godot_2d_tutorial_the_combat/
 		var space_state = get_world_2d().direct_space_state
 		var raycast_query = PhysicsRayQueryParameters2D.create(get_parent().position, target_object.position, get_parent().collision_mask, [self, target_object])

@@ -49,20 +49,22 @@ func clear_current():
 		current_pattern.values[i] = 0.
 
 # TODO to validate, I'm not really liking this one.
-func add_effect(value: float, angle: float, spread: float = .3) -> void:
+func add_effect(value: float, angle: float, spread: float = .5) -> void:
 	var main_sector : int = fposmod(angle, 2 * PI) / sector_size
-	var falloff := value * spread
+	var support_value = value
 	
 	# Add to target pattern (will be processed next frame)
 	target_pattern.set_value(main_sector, 
 		target_pattern.get_value(main_sector) + value)
-	target_pattern.set_value(
-		(main_sector + 1) % num_sectors,
-		target_pattern.get_value((main_sector + 1) % num_sectors) + falloff)
-	target_pattern.set_value(
-		(main_sector - 1 + num_sectors) % num_sectors,
-		target_pattern.get_value((main_sector - 1 + num_sectors) % num_sectors) + falloff)
-
+		
+	for i in range (num_sectors / 2 - 1):
+		support_value *= spread
+		
+		target_pattern.set_value(wrap_sector_index(main_sector + i),
+		target_pattern.get_value(wrap_sector_index(main_sector + i)) + support_value)
+		
+		target_pattern.set_value(wrap_sector_index(main_sector - i),
+		target_pattern.get_value(wrap_sector_index(main_sector - i)) + support_value)
 
 func get_value_at_angle(angle: float) -> float:
 	angle = fposmod(angle, 2 * PI)
@@ -143,15 +145,15 @@ func get_peak() -> Vector2:
 	# Convert to Vector2 using cos/sin
 	return Vector2(cos(angle), sin(angle)) * max_value
 	
-func display_debug(parent_position: Vector2 = Vector2.ZERO) -> String:
+func display_debug(parent_position: Vector2 = Vector2.ZERO, color: Color = Color.PURPLE, scale : float = 1) -> String:
 	if Debug.debug_enabled:
 		debug_polygon.visible = true
 		var corners : Array = []
 		for i in range(num_sectors):
 			var angle = 2 * PI / num_sectors * (i + 1)
 			var offset = parent_position
-			corners.append(offset + Vector2(10, 0).rotated(angle) * current_pattern.values[i])
-		debug_polygon.color = Color.PURPLE
+			corners.append(offset + Vector2(10 * scale, 0).rotated(angle) * current_pattern.values[i])
+		debug_polygon.color = color
 		debug_polygon.set_polygon(PackedVector2Array(corners))
 	
 		# Generating the debug string as well.
@@ -162,3 +164,6 @@ func display_debug(parent_position: Vector2 = Vector2.ZERO) -> String:
 	else:
 		debug_polygon.visible = false
 		return ""
+
+func wrap_sector_index(index : int):
+	return (index + num_sectors) % num_sectors
