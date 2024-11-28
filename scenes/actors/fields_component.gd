@@ -1,11 +1,10 @@
 extends Node2D
 
 # Directional fields dictionary.
-enum field_types {ORDERS, THREATS, TARGETS, FORMATION}
+enum field_types {DECISION, THREATS, FORMATION}
 @onready var directional_fields = {
-	field_types.ORDERS : DirectionalField.new(),
+	field_types.DECISION : DirectionalField.new(),
 	field_types.THREATS : DirectionalField.new(),
-	field_types.TARGETS : DirectionalField.new(),
 	field_types.FORMATION : DirectionalField.new()
 }
 
@@ -15,48 +14,33 @@ var last_update_time = 0
 # Temporary var when combining all the fields in one
 var combined_directional_field = DirectionalField.new()
 
-# Parameters for Threats
-@onready var threats_range = 150
+@onready var decision_weight = 4
 @onready var threats_weight = 10
-
-# Parameters for Orders
-@onready var orders_weight = 10
-
-# Parameters for Targets
-@onready var targets_range = 300
-@onready var targets_min_range = 100
-@onready var targets_weight = 4
-
-# Parameters for Formation
 @onready var formation_weight = 8
-@onready var formation_distance = 30
-
-# Reference to the Navigation Field:
-var navigation_component = Resource
-var strategy_component = Resource
 
 ##############################
 ## INTERFACE
 ##############################
 
+func set_decision_field(direction: Vector2, weight: Float):
+	directional_fields[field_types.DECISION].clear_buffer()
+	directional_fields[field_types.TARGETS].add_effect(effect_value,effect_angle ) 
+
+	# Finally combining it all in the next "stable" field.
+	directional_fields[field_types.TARGETS].set_step(delta)
+	
+
 func get_combined_field_peak() -> Vector2:
 	
 	# TODO can be optimized a LOT!
 	combined_directional_field.clear_current()
-	combined_directional_field.combine(directional_fields[field_types.ORDERS], orders_weight)
+	combined_directional_field.combine(directional_fields[field_types.DECISION], decision_weight)
 	combined_directional_field.combine(directional_fields[field_types.THREATS], threats_weight)
-	combined_directional_field.combine(directional_fields[field_types.TARGETS], targets_weight)
 	combined_directional_field.combine(directional_fields[field_types.FORMATION], formation_weight)
 	
 	# For debug use:
 	combined_directional_field.display_debug(get_parent().global_position)
 	
-	# Initially I was looking for the peak, but this kind of forgets all the minor contributions
-	# This wouldn't be true if the effects were more distributed along the quadrants, 
-	# but that is not the case now.
-	#return combined_directional_field.get_peak().normalized()
-	
-	# A simple sum for now works better
 	return combined_directional_field.get_composite_result().normalized()
 
 ##############################
@@ -75,9 +59,8 @@ func _process(delta: float) -> void:
 	if last_update_time > UPDATE_PERIOD_S:
 		last_update_time = 0
 		
-		_update_orders_field(delta)
+		_update_decision_field(delta)
 		_update_threats_field(delta)
-		_update_targets_field(delta)
 		_update_formation_field(delta)
 		
 	pass
@@ -89,41 +72,26 @@ func _process(delta: float) -> void:
 # Threat field pushes the goon away from threats if too close
 func _update_threats_field(delta: float):
 	directional_fields[field_types.THREATS].clear_buffer()
-	for goon in get_tree().get_nodes_in_group("goons"):
-		var range = get_parent().global_position.distance_to(goon.global_position)
-		
-		if goon.FACTION != get_parent().FACTION and range < threats_range:
-			
-			# The direction is opposite (+PI) of the versor between the two.
-			var effect_angle = (goon.global_position - get_parent().global_position).angle() + PI
-			
-			# Note that the repulsion is never really big because the distance between goons is
-			# always a minimum of 2*range
-			var effect_value = 1 * _hyperbolic_repulsion(threats_range, range)
-			
-			directional_fields[field_types.THREATS].add_effect(effect_value, effect_angle) 
-			
-			if goon.FACTION == 1:
-				pass
+	#for goon in get_tree().get_nodes_in_group("goons"):
+		#var range = get_parent().global_position.distance_to(goon.global_position)
+		#
+		#if goon.FACTION != get_parent().FACTION and range < threats_range:
+			#
+			## The direction is opposite (+PI) of the versor between the two.
+			#var effect_angle = (goon.global_position - get_parent().global_position).angle() + PI
+			#
+			## Note that the repulsion is never really big because the distance between goons is
+			## always a minimum of 2*range
+			#var effect_value = 1 * _hyperbolic_repulsion(threats_range, range)
+			#
+			#directional_fields[field_types.THREATS].add_effect(effect_value, effect_angle) 
+			#
+			#if goon.FACTION == 1:
+				#pass
 		
 	# Finally combining it all in the next "stable" field.
 	directional_fields[field_types.THREATS].set_step(delta)
 	
-# Order brings the goon in the direction of the objective.
-func _update_orders_field(delta: float):
-	directional_fields[field_types.ORDERS].clear_buffer()
-	
-	if strategy_component.target_position:
-		navigation_component.set_target(strategy_component.target_position)
-	var temp_vector = navigation_component.get_move()
-	if temp_vector:
-		temp_vector -= get_parent().global_position
-		
-		# Creating the order by adding multiple effects to the field...
-		directional_fields[field_types.ORDERS].add_effect(1, temp_vector.angle()) 
-		
-		# Finally combining it all in the next "stable" field.
-		directional_fields[field_types.ORDERS].set_step(delta)
 
 # Target field attracts goons to enemy goons, to a minimum distance.
 # It has the tendency to distract goosn from their main directive, though.
@@ -150,23 +118,6 @@ func _update_targets_field(delta: float):
 	# Finally combining it all in the next "stable" field.
 	directional_fields[field_types.TARGETS].set_step(delta)
 
-#
-	#for goon in get_tree().get_nodes_in_group("goons"):
-		#var range = get_parent().global_position.distance_to(goon.global_position)
-		#if goon.FACTION != get_parent().FACTION and range < targets_range:
-			#var effect_angle = (goon.global_position - get_parent().global_position).angle()
-			#var effect_value = 1
-			#directional_fields[field_types.TARGETS].add_effect(effect_value, effect_angle) 
-			#
-			## If closer than min, it's repulsive!
-			#if range < targets_min_range:
-				#effect_value *= 2 * _elastic_repulsion(targets_min_range, range)
-				#effect_angle += PI
-				#
-			#directional_fields[field_types.TARGETS].add_effect(effect_value, effect_angle) 
-		#
-	## Finally combining it all in the next "stable" field.
-	#directional_fields[field_types.TARGETS].set_step(delta)
 
 # Checks if there are allies nearby, and pushes them away a bit.
 func _update_formation_field(delta: float):
