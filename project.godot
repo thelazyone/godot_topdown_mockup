@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 Geometry="*res://globals/geometry.gd"
-NavigationMap="*res://globals/navigation_map.tscn"
 DirectionPattern="*res://globals/direction_pattern.gd"
 DirectionField="*res://globals/direction_field.gd"
 Debug="*res://globals/debug.gd"

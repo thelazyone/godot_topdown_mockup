@@ -216,6 +216,7 @@ func _add_building(rect: Rect2) -> Dictionary:
 	}
 	
 func _add_checkpoint(pos : Vector2) -> void :
+	return # temporarly disabled checkpoints
 	var checkpoint = checkpoint_scene.instantiate()
 	add_child(checkpoint)
 	checkpoint.global_position = pos

@@ -145,7 +145,6 @@ func _on_dice_selection_complete():
 	var selected_option = LevelData.level_cards[current_card_counter].options[current_option_index]
 	%InfiniteMap._generate_new_sector(selected_option.spawn)
 	var main = get_node("/root/Main");
-	print("main is", main)
 	selected_option.effect.call(main)
 	
 	# Reset selection state

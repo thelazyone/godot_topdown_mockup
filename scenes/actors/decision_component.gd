@@ -25,6 +25,10 @@ var is_shooting : bool = false
 # Local decision variables
 var current_target_enemy = null
 
+# Introducing ORDERS.
+enum Order {NONE, ADVANCE, DEFEND, SCATTER}
+var order = Order.ADVANCE
+
 ##############################
 ## PUBLIC METHODS
 ##############################
@@ -38,7 +42,7 @@ func get_decision() -> Decision:
 		if get_parent().FACTION == 1:
 			# Search for the next checkpoint.
 			var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
-			if all_checkpoints: 
+			if all_checkpoints and not all_checkpoints.is_empty(): 
 			
 				# Checking for each checkpoint if it's reachable, and finding the closer to reach. 
 				var min_distance = 999999
@@ -55,6 +59,33 @@ func get_decision() -> Decision:
 					
 					## Returning decision MOVE
 					return out_decision
+			
+			# If no checkpoints are there, check the orders.
+			match order:
+				Order.ADVANCE: 
+					# Setting a "in front of you" sort of target, which keeps getting updated.
+					var nav_region = get_node("/root/Main/InfiniteMap/NavRegion")
+					var steps = 16
+					var step_size = get_viewport().size.y / (steps + 1)
+					var direction = 1.
+					if get_parent().global_position.y > get_viewport().size.y / 2 : direction = -1
+					for i in range (steps):
+						var y_offset = get_parent().global_position.y + get_viewport().size.y
+						y_offset += direction * step_size * i
+						y_offset = int(y_offset) % get_viewport().size.y # lol mod doesn't work well 
+						var new_position = Vector2(get_viewport().size.x / 2, y_offset)
+						if Geometry2D.is_point_in_polygon(new_position,nav_region.navigation_polygon.get_vertices()):
+							break
+							
+						# If not in navigation polygon, it's a good position to be!
+						out_decision.type = Decision.Types.MOVE
+						out_decision.target = new_position
+						out_decision.weight = 1 # TODO this should be evaluated properly.
+
+					pass
+				_: 
+					# not implemented orders
+					pass
 					
 	# Case Attack
 	if alert_level > RED_THRESHOLD:
