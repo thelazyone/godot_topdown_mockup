@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cxk0bcefp310h"]
+[gd_scene load_steps=12 format=3 uid="uid://cxk0bcefp310h"]
 
 [ext_resource type="Script" path="res://scenes/actors/goon.gd" id="1_np6xr"]
 [ext_resource type="PackedScene" uid="uid://bp34kpwtqwl0u" path="res://scenes/splat.tscn" id="2_qg86p"]
@@ -15,6 +15,22 @@ font_size = 12
 outline_size = 1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_87qmj"]
+
+[sub_resource type="GDScript" id="GDScript_nlked"]
+script/source = "extends CollisionShape2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+"
 
 [node name="Goon" type="CharacterBody2D"]
 y_sort_enabled = true
@@ -36,6 +52,7 @@ vertical_alignment = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_87qmj")
+script = SubResource("GDScript_nlked")
 
 [node name="NavigationComponent" type="Node2D" parent="."]
 script = ExtResource("3_3mihf")
@@ -57,3 +74,9 @@ script = ExtResource("9_myp1d")
 
 [node name="DecisionComponent" type="Node2D" parent="."]
 script = ExtResource("9_psrb4")
+
+[node name="DebugRect" type="ColorRect" parent="."]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0

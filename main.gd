@@ -11,13 +11,6 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	
-	if event is InputEventMouseButton and event.button_index == 2:
-		if event.is_pressed():
-			var goons = get_tree().get_nodes_in_group("goons")
-			for goon in goons:
-				if goon.FACTION == 1:
-					goon.set_move_order(get_viewport().get_mouse_position())
-	
 	if Input.is_action_just_pressed("debug"):
 		Debug.debug_enabled = !Debug.debug_enabled
 		

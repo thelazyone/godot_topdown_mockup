@@ -104,7 +104,6 @@ func show_dialog(card_counter):
 		option_counter += 1  # Increment the option counter
 
 func _on_interactive_button_pressed(option_index: int, cost: Array, effect: Callable):
-	print("Button pressed, cost is ", cost, ", starting dice selection")
 
 	if DiceMath.dice_satisfy_slots(LevelData.dice_values, cost):
 		print("There are enough dice for this!")

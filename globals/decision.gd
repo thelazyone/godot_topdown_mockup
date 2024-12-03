@@ -16,3 +16,11 @@ var target = null
 
 ## How "convinced" the decision is. Should be between 0 and 1 (default is 1).
 var weight : float = 1	
+
+func get_target_position() -> Vector2:
+	if typeof(target) == TYPE_VECTOR2:
+		return target
+	if typeof(target) == TYPE_OBJECT:
+		if "global_position" in target:
+			return target.global_position
+	return Vector2.ZERO

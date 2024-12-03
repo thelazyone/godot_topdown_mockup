@@ -30,10 +30,6 @@ shader_parameter/angle = 1.0
 [node name="Main" type="Node2D"]
 script = ExtResource("1_0tp6l")
 
-[node name="UnitFactory" type="Node" parent="."]
-unique_name_in_owner = true
-script = ExtResource("3_uwktb")
-
 [node name="InfiniteMap" type="Node2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("4_nyr5v")
@@ -94,3 +90,7 @@ offset_right = 1200.0
 offset_bottom = 500.0
 mouse_default_cursor_shape = 3
 script = ExtResource("7_8hcks")
+
+[node name="UnitFactory" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_uwktb")

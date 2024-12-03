@@ -1,21 +1,24 @@
 extends Node
 const goon_scene = preload("res://scenes/actors/goon.tscn")
 
-func get_containing_rect_for_faction(i_faction : int):
-	# TODO in the future holding a handle to the goons could end up being faster - or not.
-	var goons = get_tree().get_nodes_in_group("goons")
-	if goons.is_empty():
-		return Rect2(Vector2.ZERO, Vector2.ZERO)
-	var min_point = Vector2(1e308,1e308)
-	var max_point = Vector2(-1e308,-1e308)
-	for goon in goons:
-		if goon.FACTION == i_faction:
-			var pos = goon.global_position
-			min_point.x = min(pos.x, min_point.x)
-			min_point.y = min(pos.y, min_point.y)
-			max_point.x = max(pos.x, max_point.x)
-			max_point.y = max(pos.y, max_point.y)
-	return Rect2(min_point, max_point - min_point)
+# Periodic processing
+const UNIT_CHECK_PERIOD_MS = 100
+
+# To optimize, the containing rect is calculated only every now and then.
+var elapsed_times = {}
+var latest_containing_rects = {}
+
+func get_latest_containing_rect_for_faction(i_faction : int) -> Rect2:
+	if not i_faction in latest_containing_rects or not i_faction in elapsed_times:
+		return _update_containing_rect_for_faction(i_faction)
+		
+	if Time.get_ticks_msec() - elapsed_times[i_faction] > UNIT_CHECK_PERIOD_MS:
+		return _update_containing_rect_for_faction(i_faction)
+	
+	return latest_containing_rects[i_faction]
+
+func force_get_containing_rect_for_faction(i_faction : int) -> Rect2:
+	return _update_containing_rect_for_faction(i_faction)
 
 # Public Method
 func create_unit_by_type(i_type : UnitParams.Types, i_position: Vector2, i_id: int, i_faction: int,) -> Node:
@@ -68,8 +71,6 @@ func create_unit(i_params: UnitParams, i_position: Vector2, i_id: int, i_faction
 		goon.default_facing_right = false	
 	return goon
 	
-	
-	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -77,4 +78,33 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	
+	#last_elapsed += delta
+	#if last_elapsed > PROCESSING_TIME_S:
+		#last_elapsed = 0
+		#_update_containing_rect_for_faction(1)
+		
 	pass
+
+
+func _update_containing_rect_for_faction(i_faction : int) -> Rect2:
+	# TODO in the future holding a handle to the goons could end up being faster - or not.
+	var goons = get_tree().get_nodes_in_group("goons")
+	if goons.is_empty():
+		return Rect2(Vector2.ZERO, Vector2.ZERO)
+	var min_point = Vector2(1e308,1e308)
+	var max_point = Vector2(-1e308,-1e308)
+	for goon in goons:
+		if goon.FACTION == i_faction:
+			var pos = goon.global_position
+			min_point.x = min(pos.x, min_point.x)
+			min_point.y = min(pos.y, min_point.y)
+			max_point.x = max(pos.x, max_point.x)
+			max_point.y = max(pos.y, max_point.y)
+	latest_containing_rects[i_faction] = Rect2(min_point, max_point - min_point)
+	elapsed_times[i_faction] = Time.get_ticks_msec()
+	
+	#if i_faction == 1:
+		#print(latest_containing_rects[1])
+		
+	return latest_containing_rects[i_faction]

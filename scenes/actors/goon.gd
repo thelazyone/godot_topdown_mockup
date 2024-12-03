@@ -49,16 +49,32 @@ func _process(delta: float) -> void:
 	var decision_position = null
 	var speed_multiplier : float = 1
 	
+		
+	if Debug.debug_enabled:
+		$DebugRect.visible = true
+		$DebugRect.global_position = current_decision.get_target_position() - Vector2(10,10)
+		$DebugRect.size = Vector2(20,20)
+		match current_decision.type:
+			Decision.Types.IDLE:
+				$DebugRect.color = Color.YELLOW
+			Decision.Types.MOVE:
+				$DebugRect.color = Color.GREEN
+			Decision.Types.PURSUE:
+				$DebugRect.color = Color.PURPLE
+			Decision.Types.COVER:
+				$DebugRect.color = Color.ORANGE
+			Decision.Types.ATTACK:
+				$DebugRect.color = Color.RED
+
+	else:
+		$DebugRect.visible = false
+	
 	match current_decision.type:
 		Decision.Types.IDLE:
 			# Do nothing.
 			pass
 		Decision.Types.MOVE:
-			match typeof(current_decision.target):
-				TYPE_VECTOR2:
-					decision_position = current_decision.target
-				TYPE_OBJECT:
-					decision_position = current_decision.target.global_position
+			decision_position = current_decision.get_target_position()
 			pass
 		Decision.Types.PURSUE:
 			decision_position = current_decision.target.global_position
@@ -81,7 +97,7 @@ func _process(delta: float) -> void:
 	# Combined with the fields of other things going on.
 	if decision_position != null:
 		local_movement = nav.get_move(decision_position)
-		if local_movement != null:
+		if local_movement != null and global_position.distance_to(local_movement) > 30:
 			field.set_decision_field(global_position.angle_to_point(local_movement), delta)
 	field.set_threat_field(decision._get_targets(THREAT_RANGE), THREAT_RANGE, delta) ## TODO using private functions of decision for now -> TODO move them in a different class?
 	field.set_formation_field(decision._get_targets(FORMATION_DISTANCE, FACTION), FORMATION_DISTANCE, delta) ## TODO SAME AS ABOVE
@@ -141,3 +157,18 @@ func _apply_rotation_step(target : float, delta : float):
 	else: 
 		current_bearing -= delta_movement
 	current_bearing = Geometry.wrap_angle(current_bearing)
+	
+	
+	
+	
+	
+##############################
+## DEBUG
+##############################
+func _unhandled_input(event):
+	if Debug.debug_enabled and event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			print("clicked ", event.global_position, " goon is ", global_position)
+			if global_position.distance_to(get_global_mouse_position()) < 20:
+				print("selecting goon ", self, " for debug purposes!")
+				Debug.select_goon(self)

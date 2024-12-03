@@ -24,10 +24,16 @@ var is_shooting : bool = false
 
 # Local decision variables
 var current_target_enemy = null
+var latest_decision : Decision = null
+const MIN_RANGE_TO_NEW_TARGET = 50
 
 # Introducing ORDERS.
 enum Order {NONE, ADVANCE, DEFEND, SCATTER}
 var order = Order.ADVANCE
+
+# Temp TODO TBR?
+var default_pref_y : float = 0 # between 0 and 1.
+@export var FORMATION_DEPTH = 400
 
 ##############################
 ## PUBLIC METHODS
@@ -53,36 +59,36 @@ func get_decision() -> Decision:
 						chosen_checkpoint = checkpoint
 				
 				if chosen_checkpoint != null:
-					out_decision.type = Decision.Types.MOVE
-					out_decision.target = chosen_checkpoint
-					out_decision.weight = 1 # TODO this should be evaluated properly.
-					
-					## Returning decision MOVE
-					return out_decision
+					var temp_weight = 1. # TODO this should be evaluated properly.
+					return _create_out_decision(Decision.Types.MOVE, chosen_checkpoint, 1)
 			
 			# If no checkpoints are there, check the orders.
 			match order:
 				Order.ADVANCE: 
+					# If the order is too far, don't look for a new one.
+					if latest_decision and latest_decision.type == Decision.Types.MOVE \
+						and latest_decision.get_target_position().x > get_parent().global_position.x:
+						if _range_to(latest_decision.target) > MIN_RANGE_TO_NEW_TARGET:
+							return latest_decision
+					
 					# Setting a "in front of you" sort of target, which keeps getting updated.
-					var nav_region = get_node("/root/Main/InfiniteMap/NavRegion")
-					var steps = 16
+					var steps = 32
 					var step_size = get_viewport().size.y / (steps + 1)
-					var direction = 1.
-					if get_parent().global_position.y > get_viewport().size.y / 2 : direction = -1
+					var preferred_y = get_viewport().size.y * default_pref_y
+					var x_position = Utilities.get_latest_containing_rect_for_faction(get_parent().FACTION).position.x + FORMATION_DEPTH
 					for i in range (steps):
-						var y_offset = get_parent().global_position.y + get_viewport().size.y
+						var y_offset = preferred_y + get_viewport().size.y
+						var direction = 1 if (i % 2 == 0) else -1
 						y_offset += direction * step_size * i
 						y_offset = int(y_offset) % get_viewport().size.y # lol mod doesn't work well 
-						var new_position = Vector2(get_viewport().size.x / 2, y_offset)
-						if Geometry2D.is_point_in_polygon(new_position,nav_region.navigation_polygon.get_vertices()):
-							break
-							
-						# If not in navigation polygon, it's a good position to be!
-						out_decision.type = Decision.Types.MOVE
-						out_decision.target = new_position
-						out_decision.weight = 1 # TODO this should be evaluated properly.
-
+						var new_position = Vector2(x_position, y_offset)
+						if Utilities.is_point_in_navigation_polygon(new_position):
+							continue
+						
+						var temp_weight = 1. # TODO this should be evaluated properly.
+						return _create_out_decision(Decision.Types.MOVE, new_position, 1)
 					pass
+					
 				_: 
 					# not implemented orders
 					pass
@@ -120,6 +126,7 @@ func get_decision() -> Decision:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	default_pref_y = randf()
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -222,6 +229,18 @@ func _check_line_of_sight(target_object : Node) -> bool:
 			return true
 	return false
 
-func _range_to(target : Node) -> float:
-	return get_parent().global_position.distance_to(target.global_position)
+func _range_to(target) -> float:
+	match typeof(target):
+		TYPE_OBJECT: 	return get_parent().global_position.distance_to(target.global_position)
+		TYPE_VECTOR2: 	return get_parent().global_position.distance_to(target)
+		_: 				return 0			
 	
+func _create_out_decision(type : Decision.Types, target, weight: float) -> Decision:
+	var out_decision = Decision.new()
+	out_decision.type = type
+	out_decision.target = target
+	out_decision.weight = weight # TODO this should be evaluated properly.
+	
+	## Returning decision PURSUE
+	latest_decision = out_decision
+	return out_decision

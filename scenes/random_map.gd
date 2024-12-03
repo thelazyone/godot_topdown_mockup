@@ -6,7 +6,6 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	seed(12345)
 	# Prints a random integer between 0 and 49.
 	_populate(5)
 	

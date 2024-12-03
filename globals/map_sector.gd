@@ -33,7 +33,7 @@ func _init() -> void:
 	# This helps with debugging and reproducibility - but i expected not to work.
 	# Anyways, as TODO is to expose the seed, for different levels for sure!
 	rng = RandomNumberGenerator.new()
-	rng.seed = 123
+	rng.seed = 124 #124 has a big block on the side
 	
 func _ready() -> void:
 	_generate_content(last_sector_column, new_spawn)

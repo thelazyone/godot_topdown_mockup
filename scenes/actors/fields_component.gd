@@ -10,8 +10,8 @@ enum field_types {DECISION, THREATS, FORMATION}
 var combined_directional_field = DirectionalField.new()
 
 @onready var decision_weight = 4
-@onready var threats_weight = 10
-@onready var formation_weight = 8
+@onready var threats_weight = 30
+@onready var formation_weight = 16
 
 ##############################
 ## INTERFACE

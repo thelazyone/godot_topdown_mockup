@@ -1,11 +1,5 @@
 extends Node2D
 
-func wrap_angle(angle) -> float:
-	return fmod(angle + 3*PI, 2*PI) - 3*PI
-	
-func angle_diff(angle1, angle2) -> float:
-	return fmod(fmod(angle1, 2 * PI) - fmod(angle2, 2 * PI) + 3 * PI, 2 * PI) - PI
-
 func is_point_in_navigation_polygon(point: Vector2) -> bool:
 	var nav_region = get_node("/root/Main/InfiniteMap/NavRegion")
 
@@ -27,3 +21,7 @@ func is_point_in_navigation_polygon(point: Vector2) -> bool:
 	var result = space_state.intersect_point(params, 1)
 
 	return not result.is_empty()
+
+func get_latest_containing_rect_for_faction(i_faction : int) -> Rect2:
+	var unit_factory = get_node("/root/Main/UnitFactory")
+	return unit_factory.get_latest_containing_rect_for_faction(i_faction)

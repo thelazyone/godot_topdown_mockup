@@ -23,7 +23,6 @@ func _ready():
 	%InteractiveArea.option_area_left.connect(_on_clear_dice_highlight)
 
 func start_dice_selection(cost, effect):
-	print("DEBUG starting dice selection!")
 	selecting_dice = true
 	if cost.size() == 1 and cost[0] == []:
 		required_slots = []
@@ -158,7 +157,6 @@ func display_dice(input_dice: Array = []):
 	clear_dice()
 	if input_dice != []:
 		current_dice_values = input_dice
-	print("current dice are ", current_dice_values)
 	var dice_size = Vector2(80, 80)
 	var total_width = (dice_size.x + spacing) * current_dice_values.size() - spacing
 	var start_x = (get_viewport_rect().size.x - total_width) / 2  # Center the dice
