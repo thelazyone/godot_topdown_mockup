@@ -81,27 +81,33 @@ func _generate_buildings():
 	_add_building(Rect2(Vector2(0,-90), Vector2(pixel_size.x, 100)))
 	_add_building(Rect2(Vector2(0,pixel_size.y - 10), Vector2(pixel_size.x, 100)))
 
-func _get_free_spot(col_idx : int) -> Vector2:
-	for i in range(	grid_data[col_idx].size()):
-		var wrap_idx = i + rng.randi() % grid_data[col_idx].size()
-		wrap_idx = wrap_idx % grid_data[col_idx].size()
-		if grid_data[col_idx][wrap_idx] != GridContent.FILLED:
-			var grid_elem_size = pixel_size / grid_size
-			var corner_position = Vector2(\
-				col_idx * grid_elem_size.x,\
-				wrap_idx * grid_elem_size.y)
-			return global_position + corner_position + grid_elem_size / 2
+func _get_free_spot() -> Vector2:
+	var attempts = 20
+	
+	for i in range (attempts):
+		var test_position = global_position + Vector2(pixel_size.x * randf(), pixel_size.y * randf())
+		if Utilities.is_point_in_navigation_polygon(test_position):
+			return test_position
+	#for i in range(	grid_data[col_idx].size()):
+		#var wrap_idx = i + rng.randi() % grid_data[col_idx].size()
+		#wrap_idx = wrap_idx % grid_data[col_idx].size()
+		#if grid_data[col_idx][wrap_idx] != GridContent.FILLED:
+			#var grid_elem_size = pixel_size / grid_size
+			#var corner_position = Vector2(\
+				#col_idx * grid_elem_size.x,\
+				#wrap_idx * grid_elem_size.y)
+			#return global_position + corner_position + grid_elem_size / 2
 	return Vector2.ZERO
 
 func _generate_checkpoints():
-	var checkpoint_pos = _get_free_spot(1)	
+	var checkpoint_pos = _get_free_spot()	
 	_add_checkpoint(checkpoint_pos)
 
 func _generate_units(new_spawn: Array):
 	for i in range(new_spawn.size()):
-		var enemy_position = _get_free_spot(2)
-		OS.delay_msec(10)
-		unit_factory.create_unit_by_type(new_spawn[i], enemy_position + (Vector2(10 * i,10 * i)), 0, 2)
+		var enemy_position = _get_free_spot()
+		OS.delay_msec(10) # TODO this is a bad line that i am struggling to remove (bad paradigm)
+		unit_factory.create_unit_by_type(new_spawn[i], enemy_position, 0, 2)
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(rng.randf() * i_rect.x, rng.randf() * i_rect.y) + weight * i_rect
