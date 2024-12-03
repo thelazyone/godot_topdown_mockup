@@ -25,8 +25,19 @@ var collision_shapes = []   # Collision shapes for navigation
 @onready var checkpoint_scene = preload("res://scenes/checkpoint.tscn")
 var unit_factory = null
 
+var rng : RandomNumberGenerator
+
+func _init() -> void:
+	
+	# Here i'm setting the randomNumberGeneration with a fixed seed.
+	# This helps with debugging and reproducibility - but i expected not to work.
+	# Anyways, as TODO is to expose the seed, for different levels for sure!
+	rng = RandomNumberGenerator.new()
+	rng.seed = 123
+	
 func _ready() -> void:
 	_generate_content(last_sector_column, new_spawn)
+
 
 # Public Functions:
 func get_sector_entry_position() -> float:
@@ -55,7 +66,6 @@ func _generate_content(latest_grid_column: Array, new_spawn: Array):
 	_generate_units(new_spawn)
 	
 func _generate_buildings():
-	
 	var main_building_rects = []
 	var grid_elem_size = pixel_size / grid_size
 	for xi in range(int(grid_size.x)):
@@ -66,17 +76,6 @@ func _generate_buildings():
 			if grid_data[xi][yi] == GridContent.FILLED:
 				_add_building(Rect2(building_position, grid_elem_size * 1.05))
 				main_building_rects.append(Rect2(building_position, grid_elem_size))
-
-	##for each main rect, adding a few sub-rects
-	#for main_rect in main_building_rects:
-		#for i in range(randi() % 4):
-			#var local_pos = Vector2((randf() * .5) * main_rect.size.x, (randf() * .5) * main_rect.size.y)
-			#var protrusion_value = randf() * .55 * min(main_rect.size.x, main_rect.size.y)
-			#var random_sign = Vector2(sign(randf() - .5),sign(randf() - .5))
-			#var new_position = main_rect.position + local_pos * random_sign
-			#var new_size_x = min(main_rect.size.x - local_pos.x, local_pos.x) + protrusion_value 
-			#var new_size_y = min(main_rect.size.y - local_pos.y, local_pos.y) + protrusion_value 
-			#_add_building(Rect2(new_position, Vector2(new_size_x, new_size_y)))
 	
 	# Finally adding buildings on top and bottom.
 	_add_building(Rect2(Vector2(0,-90), Vector2(pixel_size.x, 100)))
@@ -84,7 +83,7 @@ func _generate_buildings():
 
 func _get_free_spot(col_idx : int) -> Vector2:
 	for i in range(	grid_data[col_idx].size()):
-		var wrap_idx = i + randi() % grid_data[col_idx].size()
+		var wrap_idx = i + rng.randi() % grid_data[col_idx].size()
 		wrap_idx = wrap_idx % grid_data[col_idx].size()
 		if grid_data[col_idx][wrap_idx] != GridContent.FILLED:
 			var grid_elem_size = pixel_size / grid_size
@@ -105,11 +104,11 @@ func _generate_units(new_spawn: Array):
 		unit_factory.create_unit_by_type(new_spawn[i], enemy_position + (Vector2(10 * i,10 * i)), 0, 2)
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
-	return (1 - weight) * Vector2(randf() * i_rect.x, randf() * i_rect.y) + weight * i_rect
+	return (1 - weight) * Vector2(rng.randf() * i_rect.x, rng.randf() * i_rect.y) + weight * i_rect
 
 func _random_point() -> Vector2:
 	# Generate a random point within the sector bounds
-	return Vector2(randf() * pixel_size.x, randf() * pixel_size.y)
+	return Vector2(rng.randf() * pixel_size.x, rng.randf() * pixel_size.y)
 
 func _is_overlapping_building(point: Vector2) -> bool:
 	for building in buildings:
@@ -159,7 +158,7 @@ func _fill_grid_column(prev_points : Array):
 	var straight_counter = 1
 	for i in range(prev_points.size()):
 		if prev_points[i] != GridContent.FILLED:
-			if randf() > .2 + straight_counter * .2:
+			if rng.randf() > .2 + straight_counter * .2:
 				out_column[i] = GridContent.EMPTY
 	
 	# Then check vertical channels.	
@@ -167,11 +166,11 @@ func _fill_grid_column(prev_points : Array):
 		var prev_idx = max(0, i - 1)
 		var next_idx = min(i + 1, out_column.size() - 1)
 		if out_column[prev_idx] != GridContent.FILLED or out_column[next_idx] != GridContent.FILLED:
-			if randf() > .3:
+			if rng.randf() > .3:
 				out_column[i] = GridContent.EMPTY
 	
 	# Finally check if the MAIN has space on the sides, and potentially move it all the way up or down.
-	var direction_down : bool = randf() - .5 > 0
+	var direction_down : bool = rng.randf() - .5 > 0
 	var new_main_index : int = previous_main_index
 	for i in range(out_column.size()):
 		var temp_index = new_main_index + (1 if direction_down else -1)
