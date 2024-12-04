@@ -34,10 +34,13 @@ func _init() -> void:
 	# Anyways, as TODO is to expose the seed, for different levels for sure!
 	rng = RandomNumberGenerator.new()
 	rng.seed = 124 #124 has a big block on the side
-	
-func _ready() -> void:
-	_generate_content(last_sector_column, new_spawn)
 
+func _ready() -> void:
+	_generate_environment(last_sector_column)
+	
+func populate() -> void:
+	print("CALLED POPULATE")
+	_generate_content(new_spawn)
 
 # Public Functions:
 func get_sector_entry_position() -> float:
@@ -58,10 +61,11 @@ func display_debug():
 	print(out_string)
 
 # Private Function
-func _generate_content(latest_grid_column: Array, new_spawn: Array):
+func _generate_environment(latest_grid_column: Array):
 	_fill_grid(latest_grid_column)
-	
 	_generate_buildings()
+	
+func _generate_content(new_spawn: Array):
 	_generate_checkpoints()
 	_generate_units(new_spawn)
 	
@@ -81,13 +85,16 @@ func _generate_buildings():
 	_add_building(Rect2(Vector2(0,-90), Vector2(pixel_size.x, 100)))
 	_add_building(Rect2(Vector2(0,pixel_size.y - 10), Vector2(pixel_size.x, 100)))
 
-func _get_free_spot() -> Vector2:
+func _get_free_spot():
 	var attempts = 20
 	
 	for i in range (attempts):
 		var test_position = global_position + Vector2(pixel_size.x * randf(), pixel_size.y * randf())
-		if Utilities.is_point_in_navigation_polygon(test_position):
+		if not Utilities.is_point_in_collision_area(test_position):
+			print("debug: FOUND free spot for in ", test_position)
 			return test_position
+		else:
+			print("debug: OCCUPIED spot for in ", test_position)
 	#for i in range(	grid_data[col_idx].size()):
 		#var wrap_idx = i + rng.randi() % grid_data[col_idx].size()
 		#wrap_idx = wrap_idx % grid_data[col_idx].size()
@@ -97,17 +104,19 @@ func _get_free_spot() -> Vector2:
 				#col_idx * grid_elem_size.x,\
 				#wrap_idx * grid_elem_size.y)
 			#return global_position + corner_position + grid_elem_size / 2
-	return Vector2.ZERO
+	return null
 
 func _generate_checkpoints():
-	var checkpoint_pos = _get_free_spot()	
-	_add_checkpoint(checkpoint_pos)
+	var checkpoint_pos = _get_free_spot()
+	if checkpoint_pos:
+		_add_checkpoint(checkpoint_pos)
 
 func _generate_units(new_spawn: Array):
 	for i in range(new_spawn.size()):
 		var enemy_position = _get_free_spot()
-		OS.delay_msec(10) # TODO this is a bad line that i am struggling to remove (bad paradigm)
-		unit_factory.create_unit_by_type(new_spawn[i], enemy_position, 0, 2)
+		if enemy_position:
+			OS.delay_msec(10) # TODO this is a bad line that i am struggling to remove (bad paradigm)
+			unit_factory.create_unit_by_type(new_spawn[i], enemy_position, 0, 2)
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
 	return (1 - weight) * Vector2(rng.randf() * i_rect.x, rng.randf() * i_rect.y) + weight * i_rect

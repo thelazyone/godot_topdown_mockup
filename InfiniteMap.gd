@@ -4,6 +4,7 @@ extends Node2D
 # Adjustable parameters
 var sectors = []                           		# List to keep track of active sectors
 var sector_counter : int = 0
+var first_run = true
 var hostile_sector_counter : int = 0
 const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var gaming_area_height = get_viewport().size.y 
@@ -19,6 +20,8 @@ const sector_size_ratio = .75 #.5 is vertical, 2 is horizontal.
 @onready var unit_factory = %UnitFactory
 var interactive_area = null
 
+signal navigation_baked
+
 func _ready():
 	sector_factory.pixel_size = sector_size
 	
@@ -27,7 +30,6 @@ func _ready():
 	
 	# Initialize the FogOfWar
 	fow.size = Vector2(sector_size.x, get_viewport().size.y)
-	#fow.position = Vector2(sector_size.x, 0)
 	var static_body = StaticBody2D.new()
 	fow.add_child(static_body)
 	var collision_shape = CollisionShape2D.new()
@@ -41,9 +43,10 @@ func _ready():
 func _process(delta):
 	
 	# First Sector Initialization.
-	if sector_counter == 0:
+	if first_run == true:
+		first_run = false
 		var main_node = get_node("/root/Main")
-		var current_sector_handle = _generate_new_sector()
+		var current_sector_handle = generate_new_sector()
 		print("Debug, map is:")
 		current_sector_handle.display_debug()
 		var spawn_position = Vector2(0, current_sector_handle.get_sector_entry_position())
@@ -54,7 +57,9 @@ func _process(delta):
 			unit_factory.create_unit_by_type(unit.type, spawn_position + offset, unit.id, 1)
 
 		# Adding a second sector at the beginning.
-		_generate_new_sector()
+		if nav_region.is_baking():
+			nav_region.bake_finished.connect(generate_new_sector, CONNECT_ONE_SHOT)
+		#generate_new_sector()
 
 
 	# Generate new sector if needed
@@ -62,8 +67,9 @@ func _process(delta):
 	
 	# If it's a hostile sector, a modal dialog should appear.
 	# TODO for now all sectors are hostile! 
-	if camera_position > (sector_counter - 2) * sector_size.x:
+	if sector_counter > 1 and camera_position > (sector_counter - 2) * sector_size.x + 100:
 		if not interactive_area.visible:
+			
 			# Here a new sector is about to get generated - a new card choice appears! 
 			get_tree().paused = true
 			cards_container.set_active_card_index(hostile_sector_counter)
@@ -76,7 +82,7 @@ func _process(delta):
 		
 
 # Adding a new sector to the list.
-func _generate_new_sector(new_spawn: Array = []):
+func generate_new_sector(new_spawn: Array = []):
 	
 	print("Generating sector #", sector_counter)
 	
@@ -92,6 +98,11 @@ func _generate_new_sector(new_spawn: Array = []):
 	sector_counter +=1
 	fow.position.x = sector_counter * sector_size.x
 	_rebake_navigation()
+	
+	# Connect the navigation_baked signal to a lambda that calls populate
+	nav_region.bake_finished.connect(sector_instance.populate)
+	# With the Fog of War moved aside, baking navigation polygon.
+	#sector_instance.populate()
 
 	return sector_instance
 
@@ -122,4 +133,6 @@ func _rebake_navigation():
 	]
 	nav_region.navigation_polygon.add_outline(polygon)
 	nav_region.navigation_polygon.agent_radius = 40
+	
 	nav_region.bake_navigation_polygon()
+	

@@ -87,7 +87,7 @@ func get_decision() -> Decision:
 						y_offset += direction * step_size * i
 						y_offset = int(y_offset) % get_viewport().size.y # lol mod doesn't work well 
 						var new_position = Vector2(x_position, y_offset)
-						if Utilities.is_point_in_navigation_polygon(new_position):
+						if Utilities.is_point_in_collision_area(new_position):
 							continue
 						
 						var temp_weight = 1. # TODO this should be evaluated properly.
