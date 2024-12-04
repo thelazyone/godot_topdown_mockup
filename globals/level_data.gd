@@ -87,7 +87,6 @@ static func generate_card_1() -> CardData:
 			_create_list([[UnitParams.Types.TANK,3],[UnitParams.Types.BUG,5]])
 		)])
 
-
 static func generate_card_2() -> CardData:
 	
 	var func_2 = func(main):

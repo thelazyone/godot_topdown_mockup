@@ -39,7 +39,6 @@ func _ready() -> void:
 	_generate_environment(last_sector_column)
 	
 func populate() -> void:
-	print("CALLED POPULATE")
 	_generate_content(new_spawn)
 
 # Public Functions:
