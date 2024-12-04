@@ -91,10 +91,8 @@ func _get_free_spot():
 	for i in range (attempts):
 		var test_position = global_position + Vector2(pixel_size.x * randf(), pixel_size.y * randf())
 		if not Utilities.is_point_in_collision_area(test_position):
-			print("debug: FOUND free spot for in ", test_position)
 			return test_position
-		else:
-			print("debug: OCCUPIED spot for in ", test_position)
+	print("WARNING - NO FREE SPOT FOUND!")
 
 	return null
 

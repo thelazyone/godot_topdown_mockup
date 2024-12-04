@@ -19,8 +19,6 @@ func is_point_in_collision_area(point: Vector2) -> bool:
 	params.collision_mask = nav_region.navigation_layers
 
 	var result = space_state.intersect_point(params, 1)
-	if not result.is_empty():
-		print("result point ", point , " in collision area: " , result[0].collider)
 	return not result.is_empty()
 
 func get_latest_containing_rect_for_faction(i_faction : int) -> Rect2:

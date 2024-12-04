@@ -78,7 +78,7 @@ static func generate_card_1() -> CardData:
 			[[1, 1], [1, 1]],
 			"a small horde approaches!",
 			no_func,
-			_create_list([[UnitParams.Types.SOLDIER,20]])
+			_create_list([[UnitParams.Types.SOLDIER,5],[UnitParams.Types.BUG,10]])
 		),CardOption.new_option( # Option 2
 			"Early Tanks",
 			[[1,6], [6, 6]],

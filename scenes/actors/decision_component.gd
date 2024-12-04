@@ -94,6 +94,7 @@ func get_decision() -> Decision:
 					
 					var temp_weight = 1. # TODO this should be evaluated properly.
 					return _create_out_decision(Decision.Types.MOVE, new_position, 1)
+				print("WARNING! NO DESTINATION FOUND FOR GOON ", get_parent())
 				pass
 				
 			_: 
