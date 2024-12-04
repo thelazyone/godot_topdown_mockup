@@ -100,9 +100,7 @@ func generate_new_sector(new_spawn: Array = []):
 	_rebake_navigation()
 	
 	# Connect the navigation_baked signal to a lambda that calls populate
-	nav_region.bake_finished.connect(sector_instance.populate)
-	# With the Fog of War moved aside, baking navigation polygon.
-	#sector_instance.populate()
+	nav_region.bake_finished.connect(sector_instance.populate, CONNECT_ONE_SHOT)
 
 	return sector_instance
 

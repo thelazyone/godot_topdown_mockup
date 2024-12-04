@@ -85,8 +85,9 @@ func _generate_buildings():
 	_add_building(Rect2(Vector2(0,pixel_size.y - 10), Vector2(pixel_size.x, 100)))
 
 func _get_free_spot():
-	var attempts = 20
+	var attempts = 10
 	
+	# a FEW WASTED ATTEMPTS IF THE TARGET IS SUPER FULL, BUT IN GENERAL IT SHOULD BE OK
 	for i in range (attempts):
 		var test_position = global_position + Vector2(pixel_size.x * randf(), pixel_size.y * randf())
 		if not Utilities.is_point_in_collision_area(test_position):
@@ -94,15 +95,7 @@ func _get_free_spot():
 			return test_position
 		else:
 			print("debug: OCCUPIED spot for in ", test_position)
-	#for i in range(	grid_data[col_idx].size()):
-		#var wrap_idx = i + rng.randi() % grid_data[col_idx].size()
-		#wrap_idx = wrap_idx % grid_data[col_idx].size()
-		#if grid_data[col_idx][wrap_idx] != GridContent.FILLED:
-			#var grid_elem_size = pixel_size / grid_size
-			#var corner_position = Vector2(\
-				#col_idx * grid_elem_size.x,\
-				#wrap_idx * grid_elem_size.y)
-			#return global_position + corner_position + grid_elem_size / 2
+
 	return null
 
 func _generate_checkpoints():
@@ -114,7 +107,6 @@ func _generate_units(new_spawn: Array):
 	for i in range(new_spawn.size()):
 		var enemy_position = _get_free_spot()
 		if enemy_position:
-			OS.delay_msec(10) # TODO this is a bad line that i am struggling to remove (bad paradigm)
 			unit_factory.create_unit_by_type(new_spawn[i], enemy_position, 0, 2)
 
 func _random_rect(i_rect: Vector2, weight = 0) -> Vector2:
