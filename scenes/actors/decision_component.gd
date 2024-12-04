@@ -47,56 +47,58 @@ func get_decision() -> Decision:
 	# If low alert, a simple movement would do.
 	if alert_level < YELLOW_THRESHOLD:
 		
-		if get_parent().FACTION == 1:
-			# Search for the next checkpoint.
-			var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
-			if all_checkpoints and not all_checkpoints.is_empty(): 
+		# Search for the next checkpoint.
+		var all_checkpoints = get_tree().get_nodes_in_group("checkpoints")
+		if all_checkpoints and not all_checkpoints.is_empty(): 
+		
+			# Checking for each checkpoint if it's reachable, and finding the closer to reach. 
+			var min_distance = 999999
+			var chosen_checkpoint = null
+			for checkpoint in all_checkpoints:
+				if _range_to(checkpoint) < min_distance:
+					min_distance = _range_to(checkpoint)
+					chosen_checkpoint = checkpoint
 			
-				# Checking for each checkpoint if it's reachable, and finding the closer to reach. 
-				var min_distance = 999999
-				var chosen_checkpoint = null
-				for checkpoint in all_checkpoints:
-					if _range_to(checkpoint) < min_distance:
-						min_distance = _range_to(checkpoint)
-						chosen_checkpoint = checkpoint
+			if chosen_checkpoint != null:
+				var temp_weight = 1. # TODO this should be evaluated properly.
+				return _create_out_decision(Decision.Types.MOVE, chosen_checkpoint, 1)
+		
+		# If no checkpoints are there, check the orders.
+		match order:
+			Order.ADVANCE: 
+				# If the order is too far, don't look for a new one.
+				if latest_decision and latest_decision.type == Decision.Types.MOVE:
+					if latest_decision.get_target_position().x > get_parent().global_position.x and\
+						_range_to(latest_decision.target) > MIN_RANGE_TO_NEW_TARGET and\
+						Time.get_ticks_msec() - latest_decision_time < MAX_DECISION_PERIOD_MS:
+						return latest_decision
 				
-				if chosen_checkpoint != null:
+				latest_decision_time = Time.get_ticks_msec()
+				
+				# Setting a "in front of you" sort of target, which keeps getting updated.
+				var steps = 32
+				var step_size = get_viewport().size.y / (steps + 1)
+				var preferred_y = get_viewport().size.y * default_pref_y
+				var containing_rect = Utilities.get_latest_containing_rect_for_faction(get_parent().FACTION)
+				var x_position = containing_rect.position.x + FORMATION_DEPTH
+				if get_parent().FACTION != 1:
+					x_position = containing_rect.position.x + containing_rect.size.x - FORMATION_DEPTH
+				for i in range (steps):
+					var y_offset = preferred_y + get_viewport().size.y
+					var direction = 1 if (i % 2 == 0) else -1
+					y_offset += direction * step_size * i
+					y_offset = int(y_offset) % get_viewport().size.y # lol mod doesn't work well 
+					var new_position = Vector2(x_position, y_offset)
+					if Utilities.is_point_in_collision_area(new_position):
+						continue
+					
 					var temp_weight = 1. # TODO this should be evaluated properly.
-					return _create_out_decision(Decision.Types.MOVE, chosen_checkpoint, 1)
-			
-			# If no checkpoints are there, check the orders.
-			match order:
-				Order.ADVANCE: 
-					# If the order is too far, don't look for a new one.
-					if latest_decision and latest_decision.type == Decision.Types.MOVE:
-						if latest_decision.get_target_position().x > get_parent().global_position.x and\
-							_range_to(latest_decision.target) > MIN_RANGE_TO_NEW_TARGET and\
-							Time.get_ticks_msec() - latest_decision_time < MAX_DECISION_PERIOD_MS:
-							return latest_decision
-					
-					latest_decision_time = Time.get_ticks_msec()
-					
-					# Setting a "in front of you" sort of target, which keeps getting updated.
-					var steps = 32
-					var step_size = get_viewport().size.y / (steps + 1)
-					var preferred_y = get_viewport().size.y * default_pref_y
-					var x_position = Utilities.get_latest_containing_rect_for_faction(get_parent().FACTION).position.x + FORMATION_DEPTH
-					for i in range (steps):
-						var y_offset = preferred_y + get_viewport().size.y
-						var direction = 1 if (i % 2 == 0) else -1
-						y_offset += direction * step_size * i
-						y_offset = int(y_offset) % get_viewport().size.y # lol mod doesn't work well 
-						var new_position = Vector2(x_position, y_offset)
-						if Utilities.is_point_in_collision_area(new_position):
-							continue
-						
-						var temp_weight = 1. # TODO this should be evaluated properly.
-						return _create_out_decision(Decision.Types.MOVE, new_position, 1)
-					pass
-					
-				_: 
-					# not implemented orders
-					pass
+					return _create_out_decision(Decision.Types.MOVE, new_position, 1)
+				pass
+				
+			_: 
+				# not implemented orders
+				pass
 					
 	# Case Attack
 	if alert_level > RED_THRESHOLD:
