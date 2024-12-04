@@ -30,6 +30,7 @@ Utilities="*res://globals/utilities.gd"
 window/size/viewport_width=1600
 window/size/viewport_height=800
 window/size/initial_position_type=2
+window/size/resizable=false
 
 [input]
 
