@@ -47,11 +47,11 @@ func set_formation_field(allies: Array, formation_range: float, delta: float):
 	directional_fields[field_types.FORMATION].set_step(delta)
 
 func get_combined_field_peak() -> Vector2:
-	
-	# For debug use:
-	directional_fields[field_types.DECISION].display_debug(get_parent().global_position, Color.BLUE, decision_weight)
-	directional_fields[field_types.THREATS].display_debug(get_parent().global_position, Color.RED, threats_weight)
-	directional_fields[field_types.FORMATION].display_debug(get_parent().global_position, Color.GREEN, formation_weight)
+	#
+	## For debug use:
+	#directional_fields[field_types.DECISION].display_debug(get_parent().global_position, Color.BLUE, decision_weight)
+	#directional_fields[field_types.THREATS].display_debug(get_parent().global_position, Color.RED, threats_weight)
+	#directional_fields[field_types.FORMATION].display_debug(get_parent().global_position, Color.GREEN, formation_weight)
 
 	# TODO can be optimized a LOT!
 	combined_directional_field.clear_current()

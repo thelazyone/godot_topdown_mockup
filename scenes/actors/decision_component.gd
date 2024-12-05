@@ -35,7 +35,7 @@ var order = Order.ADVANCE
 
 # Temp TODO TBR?
 var default_pref_y : float = 0 # between 0 and 1.
-@export var FORMATION_DEPTH = 400
+@export var FORMATION_DEPTH = 600
 
 ##############################
 ## PUBLIC METHODS
@@ -68,10 +68,13 @@ func get_decision() -> Decision:
 			Order.ADVANCE: 
 				# If the order is too far, don't look for a new one.
 				if latest_decision and latest_decision.type == Decision.Types.MOVE:
-					if latest_decision.get_target_position().x > get_parent().global_position.x and\
-						_range_to(latest_decision.target) > MIN_RANGE_TO_NEW_TARGET and\
+					if	_range_to(latest_decision.target) > MIN_RANGE_TO_NEW_TARGET and\
+						#latest_decision.get_target_position().x > get_parent().global_position.x and\
 						Time.get_ticks_msec() - latest_decision_time < MAX_DECISION_PERIOD_MS:
+						print("DBX - SAME DECISION AGAIN")
 						return latest_decision
+						
+				print("DBX - NEW DECISION")
 				
 				latest_decision_time = Time.get_ticks_msec()
 				

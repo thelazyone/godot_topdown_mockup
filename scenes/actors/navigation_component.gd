@@ -2,6 +2,9 @@ extends Node2D
 
 const POSITION_PRECISION = 20
 
+var nav_latest_tick = 0
+const PERIOD_MS = 200
+
 @onready var navigation_agent = $NavigationAgent2D
 
 ##############################

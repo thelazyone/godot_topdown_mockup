@@ -23,7 +23,13 @@ var default_facing_right = true
 var current_bearing = 0
 const ROTATION_SPEED_RAD_S = 4*PI
 const FAST_ROTATION_ANGLE = .25*PI
-const SLOW_ROTATION_RATIO = .1
+const SLOW_ROTATION_RATIO = 1
+
+# Decision change
+var latest_decision = null
+var latest_path = null
+const DECISION_PERIOD_S = 0.2
+var decision_elapsed = 0
 	
 func die():
 	var new_splat = SPLAT.instantiate()
@@ -42,19 +48,22 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	
 	# Get Latest Decision
-	var current_decision = decision.get_decision()
-	var local_movement = null
+	decision_elapsed += delta
+	if latest_decision == null or not is_instance_valid(latest_decision) or decision_elapsed > DECISION_PERIOD_S:
+		decision_elapsed = 0
+		latest_decision = decision.get_decision()
+		latest_path = nav.get_move(latest_decision.get_target_position())
 	var decision_weight = 1
 	var shooting_target = null
-	var decision_position = null
+	var decision_position = latest_decision.get_target_position()
 	var speed_multiplier : float = 1
 	
 		
 	if Debug.debug_enabled:
 		$DebugRect.visible = true
-		$DebugRect.global_position = current_decision.get_target_position() - Vector2(10,10)
+		$DebugRect.global_position = latest_decision.get_target_position() - Vector2(10,10)
 		$DebugRect.size = Vector2(20,20)
-		match current_decision.type:
+		match latest_decision.type:
 			Decision.Types.IDLE:
 				$DebugRect.color = Color.YELLOW
 			Decision.Types.MOVE:
@@ -65,42 +74,39 @@ func _process(delta: float) -> void:
 				$DebugRect.color = Color.ORANGE
 			Decision.Types.ATTACK:
 				$DebugRect.color = Color.RED
-
 	else:
 		$DebugRect.visible = false
 	
-	match current_decision.type:
+	match latest_decision.type:
 		Decision.Types.IDLE:
 			# Do nothing.
 			pass
 		Decision.Types.MOVE:
-			decision_position = current_decision.get_target_position()
 			pass
 		Decision.Types.PURSUE:
-			decision_position = current_decision.target.global_position
 			pass
 		Decision.Types.COVER:
-			decision_position = current_decision.target.global_position
 			pass
 		Decision.Types.ATTACK:
 			# No movement for now, but i know it's wrong TODO.
-			decision_position = current_decision.target.global_position
 			if global_position.distance_to(decision_position) < WEAPON_RANGE:
 				speed_multiplier = .1
-			shooting_target = current_decision.target.global_position
+			if is_instance_valid(latest_decision.target):
+				shooting_target = latest_decision.target.global_position
 			pass
 		_: 
 			
-			print("Unknown decision: ", current_decision)
+			print("Unknown decision: ", latest_decision)
 	
 	# Calculating the pathfinding. This provides the Movement decision, which is then
 	# Combined with the fields of other things going on.
-	if decision_position != null:
-		local_movement = nav.get_move(decision_position)
-		if local_movement != null and global_position.distance_to(local_movement) > 30:
-			field.set_decision_field(global_position.angle_to_point(local_movement), delta)
-	field.set_threat_field(decision._get_targets(THREAT_RANGE), THREAT_RANGE, delta) ## TODO using private functions of decision for now -> TODO move them in a different class?
-	field.set_formation_field(decision._get_targets(FORMATION_DISTANCE, FACTION), FORMATION_DISTANCE, delta) ## TODO SAME AS ABOVE
+	# Performing this only when a new decision is happening.
+	if decision_elapsed == 0:
+		if latest_path != null:
+			if global_position.distance_to(latest_path) > 30:
+				field.set_decision_field(global_position.angle_to_point(latest_path), DECISION_PERIOD_S)
+		field.set_threat_field(decision._get_targets(THREAT_RANGE), THREAT_RANGE, DECISION_PERIOD_S) ## TODO using private functions of decision for now -> TODO move them in a different class?
+		field.set_formation_field(decision._get_targets(FORMATION_DISTANCE, FACTION), FORMATION_DISTANCE, DECISION_PERIOD_S) ## TODO SAME AS ABOVE
 	
 	# Retrieving the global result:
 	var field_peak = field.get_combined_field_peak()
