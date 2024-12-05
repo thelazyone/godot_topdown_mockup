@@ -89,18 +89,19 @@ func _process(delta: float) -> void:
 
 func _update_containing_rect_for_faction(i_faction : int) -> Rect2:
 	# TODO in the future holding a handle to the goons could end up being faster - or not.
-	var goons = get_tree().get_nodes_in_group("goons")
+	var goons = UnitsRegister.get_goons(i_faction)
 	if goons.is_empty():
 		return Rect2(Vector2.ZERO, Vector2.ZERO)
 	var min_point = Vector2(1e308,1e308)
 	var max_point = Vector2(-1e308,-1e308)
 	for goon in goons:
-		if goon.FACTION == i_faction:
-			var pos = goon.global_position
-			min_point.x = min(pos.x, min_point.x)
-			min_point.y = min(pos.y, min_point.y)
-			max_point.x = max(pos.x, max_point.x)
-			max_point.y = max(pos.y, max_point.y)
+		if not is_instance_valid(goon):
+			continue
+		var pos = goon.global_position
+		min_point.x = min(pos.x, min_point.x)
+		min_point.y = min(pos.y, min_point.y)
+		max_point.x = max(pos.x, max_point.x)
+		max_point.y = max(pos.y, max_point.y)
 	latest_containing_rects[i_faction] = Rect2(min_point, max_point - min_point)
 	elapsed_times[i_faction] = Time.get_ticks_msec()
 	

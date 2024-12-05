@@ -13,11 +13,16 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
+	print ("TEST SHOULD NOT APPEAR!")
+	
 	# Checking if one faction has a majority of troops on it
-	var all_goons = get_tree().get_nodes_in_group("goons")
+	var all_goons = UnitsRegister.get_goons()
+	
 	var count_1 : float = 0
 	var count_2 : float = 0
 	for goon in all_goons:
+		if not is_instance_valid(goon):
+			continue
 		if goon.global_position.distance_to(global_position) < CONTROL_AREA:
 			match goon.FACTION:
 				1: count_1 += 1

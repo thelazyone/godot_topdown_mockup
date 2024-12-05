@@ -26,27 +26,27 @@ func update_unit(id: int, xp: int, formation: Vector2, wounds: float, out_of_com
 static func get_starting_units() -> Array :
 	var units = []
 	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
-	#units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.SOLDIER))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
+	units.append(PlayerUnit.new_unit(UnitParams.Types.TANK))
 
 	return units
 	
@@ -90,8 +90,11 @@ static func generate_card_1() -> CardData:
 static func generate_card_2() -> CardData:
 	
 	var func_2 = func(main):
-		var goons = main.get_tree().get_nodes_in_group("goons")
+		var goons = UnitsRegister.get_goons()
+
 		for goon in goons:
+			if not is_instance_valid(goon):
+				continue
 			if goon.FACTION != 1:
 				main.get_node("UnitFactory").create_unit_by_type(UnitParams.Types.BUG, goon.global_position + Vector2(1,1), 0, 2)
 		return
@@ -135,8 +138,10 @@ static func generate_card_3() -> CardData:
 static func generate_card_4() -> CardData:
 	
 	var func_1 = func(main):
-		var goons = main.get_tree().get_nodes_in_group("goons")
+		var goons = UnitsRegister.get_goons()
 		for goon in goons:
+			if not is_instance_valid(goon):
+				continue
 			if goon.FACTION != 1:
 				goon.health.receive_damage(100)
 		return
@@ -158,13 +163,6 @@ static func generate_card_4() -> CardData:
 		)])
 
 static func generate_card_5() -> CardData:
-	var func_1 = func(main):
-		var goons = main.get_tree().get_nodes_in_group("goons")
-		for goon in goons:
-			if goon.FACTION != 1:
-				goon.health.receive_damage(100)
-		return
-	
 	return CardData.new_card(
 		"The Final Card", # Title
 		[CardOption.new_option( # Option 1

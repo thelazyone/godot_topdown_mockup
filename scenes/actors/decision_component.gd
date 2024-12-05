@@ -71,10 +71,7 @@ func get_decision() -> Decision:
 					if	_range_to(latest_decision.target) > MIN_RANGE_TO_NEW_TARGET and\
 						#latest_decision.get_target_position().x > get_parent().global_position.x and\
 						Time.get_ticks_msec() - latest_decision_time < MAX_DECISION_PERIOD_MS:
-						print("DBX - SAME DECISION AGAIN")
 						return latest_decision
-						
-				print("DBX - NEW DECISION")
 				
 				latest_decision_time = Time.get_ticks_msec()
 				
@@ -199,7 +196,10 @@ func _get_spot_range():
 # looks for targets within range and LOS. Optionally, selecting only one faction (if != 0)
 func _get_targets(range : float, faction : int = 0) -> Array:
 	var targets = []
-	for goon in get_tree().get_nodes_in_group("goons"):
+	for goon in UnitsRegister.get_goons():
+		
+		if not is_instance_valid(goon):
+			continue
 		var distance = _range_to(goon)
 		if distance >= range: 
 			continue
