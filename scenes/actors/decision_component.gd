@@ -196,7 +196,7 @@ func _get_spot_range():
 # looks for targets within range and LOS. Optionally, selecting only one faction (if != 0)
 func _get_targets(range : float, faction : int = 0) -> Array:
 	var targets = []
-	for goon in UnitsRegister.get_goons():
+	for goon in UnitsRegister.get_goons(faction):
 		
 		if not is_instance_valid(goon):
 			continue
